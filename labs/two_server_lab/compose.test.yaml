@@ -1,0 +1,14 @@
+name: skinai-two-server-check
+
+services:
+  central:
+    image: skinai-two-server-central:practice
+    pull_policy: never
+    ports:
+      - "127.0.0.1:18110:8000"
+    restart: "no"
+
+  ai-mock:
+    image: skinai-two-server-ai-mock:practice
+    pull_policy: never
+    restart: "no"

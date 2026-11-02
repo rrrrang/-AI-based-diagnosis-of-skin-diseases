@@ -1,0 +1,14 @@
+name: "${TEST_PROJECT_NAME:?TEST_PROJECT_NAME must be set}"
+
+services:
+  central:
+    image: "skinai-two-server-central:${IMAGE_TAG:?IMAGE_TAG must be set}"
+    pull_policy: never
+    ports:
+      - "127.0.0.1:18120:8000"
+    restart: "no"
+
+  ai-mock:
+    image: "skinai-two-server-ai-mock:${IMAGE_TAG:?IMAGE_TAG must be set}"
+    pull_policy: never
+    restart: "no"

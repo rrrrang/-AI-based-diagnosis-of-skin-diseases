@@ -1,0 +1,44 @@
+name: skinai-two-server-lab
+
+services:
+  central:
+    image: skinai-two-server-central:practice
+    build:
+      context: .
+      dockerfile: central/Dockerfile
+    ports:
+      - "127.0.0.1:18100:8000"
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 256m
+    pids_limit: 64
+    restart: "no"
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+  ai-mock:
+    image: skinai-two-server-ai-mock:practice
+    build:
+      context: .
+      dockerfile: ai_mock/Dockerfile
+    ports:
+      - "127.0.0.1:18101:8000"
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 256m
+    pids_limit: 64
+    restart: "no"
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"

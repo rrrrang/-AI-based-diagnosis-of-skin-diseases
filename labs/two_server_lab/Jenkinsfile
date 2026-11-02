@@ -1,0 +1,113 @@
+pipeline {
+    agent any
+
+    options {
+        disableConcurrentBuilds()
+        skipDefaultCheckout(true)
+        timeout(time: 15, unit: 'MINUTES')
+    }
+
+    environment {
+        TEST_BASE_URL = 'http://127.0.0.1:18120'
+        TEST_COMPOSE_FILE = 'compose.ci.yaml'
+        TEST_PROJECT_NAME = "skinai-two-server-ci-${env.BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('1. Git 코드 가져오기') {
+            steps {
+                script {
+                    env.CI_START_ATTEMPTED = 'false'
+                    if (isUnix()) {
+                        error('이 실습 Jenkinsfile은 Windows 실행 환경용입니다.')
+                    }
+                    // Jenkins 노드의 CI_DOCKER_EXE, CI_PYTHON_EXE로 경로를 바꿀 수 있습니다.
+                    env.DOCKER_EXE = env.CI_DOCKER_EXE ?: "${env.LOCALAPPDATA}/Programs/DockerDesktop/resources/bin/docker.exe"
+                    env.PYTHON_EXE = env.CI_PYTHON_EXE ?: 'D:/miniconda3/python.exe'
+                }
+
+                dir("runs/${env.BUILD_NUMBER}/source") {
+                    script {
+                        def revision = checkout scm
+                        env.SOURCE_COMMIT = revision.GIT_COMMIT
+                        env.IMAGE_TAG = "sha-${env.SOURCE_COMMIT.take(12)}-build-${env.BUILD_NUMBER}"
+                    }
+                    echo "검사할 Git 커밋: ${env.SOURCE_COMMIT}"
+                    echo "이번 이미지 버전: ${env.IMAGE_TAG}"
+                }
+            }
+        }
+
+        stage('2. 중앙 서버 이미지 만들기') {
+            steps {
+                dir("runs/${env.BUILD_NUMBER}/source/labs/two_server_lab") {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+"%DOCKER_EXE%" build --load --progress=plain -f central/Dockerfile -t skinai-two-server-central:%IMAGE_TAG% .
+'''
+                }
+            }
+        }
+
+        stage('3. 임시 AI 서버 이미지 만들기') {
+            steps {
+                dir("runs/${env.BUILD_NUMBER}/source/labs/two_server_lab") {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+"%DOCKER_EXE%" build --load --progress=plain -f ai_mock/Dockerfile -t skinai-two-server-ai-mock:%IMAGE_TAG% .
+'''
+                }
+            }
+        }
+
+        stage('4. 별도 테스트 서버 실행') {
+            steps {
+                dir("runs/${env.BUILD_NUMBER}/source/labs/two_server_lab") {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+"%DOCKER_EXE%" compose -p "%TEST_PROJECT_NAME%" -f "%TEST_COMPOSE_FILE%" config --quiet
+'''
+
+                    script {
+                        env.CI_START_ATTEMPTED = 'true'
+                    }
+
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+"%DOCKER_EXE%" compose -p "%TEST_PROJECT_NAME%" -f "%TEST_COMPOSE_FILE%" up -d --no-build --pull never --wait --wait-timeout 60
+'''
+                }
+            }
+        }
+
+        stage('5. 장애 및 복구 자동검사') {
+            steps {
+                dir("runs/${env.BUILD_NUMBER}/source/labs/two_server_lab") {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+"%PYTHON_EXE%" -X utf8 test_recovery.py
+'''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                if (env.CI_START_ATTEMPTED == 'true') {
+                    timeout(time: 2, unit: 'MINUTES') {
+                        dir("runs/${env.BUILD_NUMBER}/source/labs/two_server_lab") {
+                            echo "이번 빌드의 테스트 서버를 정리합니다."
+
+                            bat encoding: 'UTF-8', script: '''
+@echo off
+"%DOCKER_EXE%" compose -p "%TEST_PROJECT_NAME%" -f "%TEST_COMPOSE_FILE%" down --timeout 10
+'''
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
