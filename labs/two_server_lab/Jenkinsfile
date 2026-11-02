@@ -122,8 +122,8 @@ pipeline {
 
                         Invoke-Docker tag "skinai-two-server-central:$tag" $central
                         Invoke-Docker tag "skinai-two-server-ai-mock:$tag" $aiMock
-                        Invoke-Docker push $central
-                        Invoke-Docker push $aiMock
+                        Invoke-Docker push $central | Tee-Object -FilePath "runs/$env:BUILD_NUMBER/central-push.log"
+                        Invoke-Docker push $aiMock  | Tee-Object -FilePath "runs/$env:BUILD_NUMBER/ai-mock-push.log"
                     '''
                 }
             }
@@ -145,6 +145,54 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+                success {
+            dir("runs/${env.BUILD_NUMBER}") {
+                powershell encoding: 'UTF-8', script: '''
+                    $ErrorActionPreference = 'Stop'
+
+                    function Get-ImageRecord($repo, $logFile) {
+                        $pattern = '^' + [regex]::Escape($env:IMAGE_TAG) + ': +digest: +(sha256:[0-9a-f]{64}) +size:'
+                        $found = @(Select-String -LiteralPath $logFile -Pattern $pattern)
+                        if ($found.Count -ne 1) {
+                            throw "Expected one push digest in $logFile"
+                        }
+
+                        $digest = $found[0].Matches[0].Groups[1].Value
+                        return [ordered]@{
+                            repository = "docker.io/$repo"
+                            tag = $env:IMAGE_TAG
+                            digest = $digest
+                            image = "docker.io/$repo@$digest"
+                        }
+                    }
+
+                    $release = [ordered]@{
+                        release_id = $env:IMAGE_TAG
+                        practice_only = $true
+                        model_loaded = $false
+                        source = @{
+                            repository = 'https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases'
+                            branch = 'ci/two-server-lab'
+                            commit = $env:SOURCE_COMMIT
+                        }
+                        ci = @{
+                            job = $env:JOB_NAME
+                            build = [int]$env:BUILD_NUMBER
+                            result = 'SUCCESS'
+                        }
+                        platform = 'linux/amd64'
+                        services = [ordered]@{
+                            central = Get-ImageRecord $env:CENTRAL_HUB_REPO 'central-push.log'
+                            'ai-mock' = Get-ImageRecord $env:AI_MOCK_HUB_REPO 'ai-mock-push.log'
+                        }
+                    }
+
+                    $json = $release | ConvertTo-Json -Depth 5
+                    [IO.File]::WriteAllText((Join-Path $PWD 'release.json'), $json)
+                '''
+                archiveArtifacts artifacts: 'release.json', fingerprint: true
             }
         }
     }
