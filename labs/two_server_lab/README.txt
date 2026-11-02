@@ -79,6 +79,4 @@ docker compose -p skinai-two-server-check -f compose.test.yaml down --timeout 10
 Jenkins 프로세스나 Docker 엔진 자체가 강제 종료되면 정리가 남을 수 있습니다.
 이미지는 자동 삭제하지 않습니다. 운영 서버를 교체하는 배포 단계는 없습니다.
 
-공식 참고
-https://www.jenkins.io/doc/book/pipeline/jenkinsfile/
-https://docs.docker.com/reference/cli/docker/compose/up/
+
