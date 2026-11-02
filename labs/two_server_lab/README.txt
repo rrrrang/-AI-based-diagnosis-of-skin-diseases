@@ -31,7 +31,7 @@ Repository URL: https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases.
 Credentials: 공개 저장소 읽기는 선택하지 않아도 됩니다.
 Branch Specifier: */ci/two-server-lab
 Script Path: labs/two_server_lab/Jenkinsfile
-처음에는 Build Now로 직접 시작합니다. 커밋 자동 감지 설정은 별도입니다.
+Jenkins는 Poll SCM으로 ci/two-server-lab 브랜치를 5분마다 확인하고, 새 커밋이 있으면 빌드를 시작합니다.
 
 실행 환경
 이 Jenkinsfile은 Windows + Docker Desktop(Linux 컨테이너) 실습용입니다.
@@ -55,7 +55,7 @@ Jenkins CI가 쓰는 18120 포트를 다른 작업과 함께 사용하지 않습
 같은 Jenkins 작업의 동시 실행을 막았으며, 다른 작업까지 잠그는 설정은 아닙니다.
 
 검사 실행
-Jenkins 작업에서 Build Now를 누르면 빌드·서버 기동·검사·정리를 순서대로 실행합니다.
+자동 빌드에서 두 서버를 실행해 검사하고, 통과하면 두 이미지를 Docker Hub에 업로드한 뒤 테스트 환경을 정리합니다.
 Jenkins가 TEST_PROJECT_NAME, IMAGE_TAG, TEST_COMPOSE_FILE, TEST_BASE_URL,
 DOCKER_EXE를 설정합니다.
 test_recovery.py는 CI 전용 검사입니다. TEST_PROJECT_NAME이 없으면 즉시 중단합니다.
