@@ -2,6 +2,17 @@ import json
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class PracticeRequest(BaseModel):
+    """실제 의료 API와 별개인 연결 실습용 입력입니다."""
+
+    model_config = ConfigDict(strict=True, extra="forbid")
+
+    sample_id: str = Field(min_length=1, max_length=64)
+    sample_text: str = Field(min_length=1, max_length=200)
+
 
 app = FastAPI(title="SkinAI 실습 중앙 서버", version="0.1.0")
 
@@ -27,9 +38,11 @@ def health():
 
 
 @app.post("/analyze")
-def analyze():
+def analyze(payload: PracticeRequest):
     request = Request(
         "http://ai-mock:8000/analyze",
+        data=json.dumps(payload.model_dump(), ensure_ascii=False).encode("utf-8"),
+        headers={"Content-Type": "application/json; charset=utf-8"},
         method="POST",
     )
 
