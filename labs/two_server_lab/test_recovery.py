@@ -9,20 +9,22 @@ from urllib.request import Request, urlopen
 
 BASE_URL = os.getenv(
     "TEST_BASE_URL",
-    "http://127.0.0.1:18110",
+    "http://127.0.0.1:18120",
 )
 
 CONFIG = Path(
     os.getenv(
         "TEST_COMPOSE_FILE",
-        str(Path(__file__).resolve().with_name("compose.test.yaml")),
+        str(Path(__file__).resolve().with_name("compose.ci.yaml")),
     )
 )
 
-PROJECT_NAME = os.getenv(
-    "TEST_PROJECT_NAME",
-    "skinai-two-server-check",
-)
+# CI가 지정한 이번 검사 환경만 조작합니다.
+PROJECT_NAME = os.getenv("TEST_PROJECT_NAME", "").strip()
+if not PROJECT_NAME:
+    raise RuntimeError(
+        "TEST_PROJECT_NAME이 필요합니다. Jenkins CI 작업에서 실행하세요."
+    )
 
 DOCKER_EXE = os.getenv("DOCKER_EXE", "docker")
 

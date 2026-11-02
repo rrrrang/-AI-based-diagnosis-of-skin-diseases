@@ -10,7 +10,7 @@ Git 코드 가져오기 -> 두 Docker 이미지 빌드 -> 별도 테스트 서�
 -> 정상 연결 검사 -> 임시 AI 중지 및 503 응답 검사 -> AI 재시작 및 복구 검사
 -> 이번 빌드에서 사용한 테스트 서버 정리
 
-파일 역할
+파일 역할 (총 11개)
 Jenkinsfile                 Jenkins가 실행하는 CI 순서
 compose.ci.yaml              이번 빌드의 이미지로 별도 테스트 서버 실행
 test_recovery.py             정상 연결·장애 처리·복구 자동검사
@@ -19,9 +19,9 @@ ai_mock/mock_ai_server.py    실제 AI 대신 응답하는 임시 서버
 central/Dockerfile           중앙 서버 이미지 정의
 ai_mock/Dockerfile           임시 AI 이미지 정의
 requirements.txt            서버 패키지 버전
-compose.yaml                수동 실습용 이미지 빌드 및 서버 실행
-compose.test.yaml           수동 장애·복구 검사 환경
-ai_mock/test_connection.py   수동 실습 서버(18100)의 정상 연결 검사
+.dockerignore               Docker 빌드에 불필요한 파일 제외
+.gitignore                  Git에 환경설정·임시 파일이 올라가지 않도록 제외
+README.txt                  CI 연결 및 검사 안내
 
 Jenkins 연결
 작업: SkinAI-Two-Server-CI
@@ -48,23 +48,19 @@ Jenkinsfile의 checkout scm이 반환한 Git 커밋을 이미지 태그에 기�
 예: sha-커밋앞12자리-build-빌드번호
 테스트 중에는 이미지 재빌드 및 외부 이미지 pull을 하지 않습니다.
 
-환경 구분
-수동 실습: 프로젝트 skinai-two-server-lab / 중앙 18100 / 임시 AI 18101
-수동 검사: 프로젝트 skinai-two-server-check / 중앙 18110
-Jenkins CI: 프로젝트 skinai-two-server-ci-빌드번호 / 중앙 18120 / AI는 내부 통신만
+CI 실행 환경
+프로젝트: skinai-two-server-ci-빌드번호
+중앙 서버: 127.0.0.1:18120 / 임시 AI: Docker 내부 통신만 사용
 Jenkins CI가 쓰는 18120 포트를 다른 작업과 함께 사용하지 않습니다.
 같은 Jenkins 작업의 동시 실행을 막았으며, 다른 작업까지 잠그는 설정은 아닙니다.
 
-수동 실습
-터미널에서 저장소의 labs/two_server_lab 폴더로 이동한 뒤 실행합니다.
-docker compose up -d --build
-python ai_mock/test_connection.py
-
-수동 장애·복구 검사
-먼저 위 명령으로 practice 이미지가 있어야 합니다.
-docker compose -p skinai-two-server-check -f compose.test.yaml up -d --no-build --wait
-python test_recovery.py
-docker compose -p skinai-two-server-check -f compose.test.yaml down --timeout 10
+검사 실행
+Jenkins 작업에서 Build Now를 누르면 빌드·서버 기동·검사·정리를 순서대로 실행합니다.
+Jenkins가 TEST_PROJECT_NAME, IMAGE_TAG, TEST_COMPOSE_FILE, TEST_BASE_URL,
+DOCKER_EXE를 설정합니다.
+test_recovery.py는 CI 전용 검사입니다. TEST_PROJECT_NAME이 없으면 즉시 중단합니다.
+기본 Compose 파일은 compose.ci.yaml, 기본 중앙 서버 주소는 http://127.0.0.1:18120입니다.
+수동 실습 파일은 이 CI 폴더에서 제외했으며, 기존 개인 실습 폴더에 보관합니다.
 
 검사 의미
 중앙 서버 /health = 200: 중앙 서버 자체가 응답합니다.
