@@ -6,16 +6,11 @@
 
 **1. GitHub에서 테스트 브랜치를 내려받습니다.**
 
-1. [테스트 브랜치 열기](https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases/tree/ci/two-server-lab)를 누릅니다. 파일 목록 위의 브랜치 이름이 `ci/two-server-lab`인지 확인합니다.
-2. `main`이 보이면 브랜치 이름을 클릭하고 `ci/two-server-lab`을 검색해 선택합니다.
-3. 파일 목록 위의 초록색 **Code** 버튼을 누르고 **Download ZIP**을 선택합니다.
+ [테스트 브랜치 열기](https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases/tree/ci/two-server-lab)
 
 **2. 압축을 풀고 프로젝트 폴더에서 터미널을 엽니다.**
 
-1. 파일 탐색기의 **다운로드** 폴더에서 받은 ZIP을 우클릭하고 **모두 압축 풀기**를 선택합니다.
-2. 압축을 푼 폴더를 엽니다. 안에 폴더가 하나만 보이면 한 번 더 들어갑니다. **`ci`와 `labs` 폴더가 나란히 보이는 위치**에서 멈춥니다.
-3. 그 위치에서 파일 탐색기 위쪽의 **주소 표시줄**을 클릭하고 `powershell`을 입력한 뒤 **Enter**를 누릅니다. 현재 폴더에서 터미널이 열립니다.
-4. 터미널에 `dir -Name`을 입력합니다. 목록에 `ci`와 `labs`가 모두 보이면 실행 위치가 맞습니다. 이미 `ci` 폴더 안에 들어갔다면 `cd ..`로 한 단계 올라옵니다.
+
 
 **3. 테스트를 실행하고 결과를 확인합니다.**
 
