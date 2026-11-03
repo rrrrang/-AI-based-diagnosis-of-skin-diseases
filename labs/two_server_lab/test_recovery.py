@@ -85,7 +85,7 @@ class RecoveryTest(unittest.TestCase):
 
     def test_missing_body_rejected(self):
         code, data = call_api("/analyze", "POST")
-        self.assertEqual(code, 200)
+        self.assertEqual(code, 422)
         self.assertIn("detail", data)
 
     def test_missing_field_rejected(self):
