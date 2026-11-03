@@ -8,7 +8,7 @@
 python -B -X utf8 -m unittest discover -s ci -p "test_*.py" -v
 ```
 
-동현 PC에서 `python` 명령을 찾지 못하면 `D:\miniconda3\python.exe`로 바꿉니다. 마지막 줄이 `OK`이면 합성 응답과 파일을 대상으로 검사 도구가 기대대로 동작한 것입니다.
+ci담당 PC에서 `python` 명령을 찾지 못하면 `D:\miniconda3\python.exe`로 바꿉니다. 마지막 줄이 `OK`이면 합성 응답과 파일을 대상으로 검사 도구가 기대대로 동작한 것입니다.
 
 | 언제 | 누가 준비할 것 | CI에서 확인하는 것 |
 | --- | --- | --- |
@@ -16,7 +16,7 @@ python -B -X utf8 -m unittest discover -s ci -p "test_*.py" -v
 | 3번의 API가 준비되면 | 테스트 계정으로 보낸 요청의 ID와 실제 받은 HTTP 상태·JSON | 동일한 검사기에 그 응답을 넣어 v1 규칙과 비교 |
 | 1·2번의 모델이 준비되면 | 모델 폴더, 팀이 별도로 제공한 가중치 SHA-256, 클래스·전처리 규격, 실행 명령과 승인 샘플 | 먼저 필수 파일과 가중치 일치 여부 검사. 다음으로 실제 로딩·샘플 추론을 모델팀 명령으로 연결 |
 
-## 3번의 첫 응답 받기
+## 백앤드 연동 첫 응답 받기
 
 **합성 사진·문진을 쓴 테스트 접수**로 받은 JSON 본문을 저장소 밖에 저장하세요. 아래의 경로·ID·버전·라벨은 예시이므로 실제 테스트 요청과 승인 패키지 값으로 교체합니다.
 
@@ -44,6 +44,6 @@ python -B ci/check_model_package.py "D:/ci-input/approved-model" --weights-sha25
 - `SkinAI-Two-Server-CI`가 `ci/two-server-lab`의 새 커밋을 약 5분 간격으로 확인합니다. 합성 자료 검사 후 Docker 이미지 두 개를 만들고 기존 7개 연결 검사를 실행합니다. 필수 검사 실패 시 업로드와 새 릴리스 보관을 중단합니다.
 - 실제 모델을 **Jenkins에서도** 검사하려면 Jenkins 실행 노드 환경에 `CI_MODEL_DIR`(Jenkins가 읽을 수 있는 폴더)와 `CI_MODEL_WEIGHTS_SHA256`(팀에서 준 값)을 함께 설정합니다. `CI_MODEL_WEIGHTS_FILE`은 파일명이 다를 때만 설정합니다. 처음에는 위 수동 명령으로 경로와 값을 확인하세요. 설정 후 코드 변경이 없으면 **Build Now**로 검사합니다.
 - 모델 설정이 전부 비어 있으면 **모델 파일 인수 검사** 단계만 건너뜁니다. 일부만 입력했거나 파일·확인값이 틀리면 그 빌드를 중단합니다. 이 단계가 통과해도 현재 발행되는 이미지는 여전히 중앙 서버와 임시 AI 서버입니다.
-- Jenkins는 동현 PC의 `http://127.0.0.1:8080`에서 실행됩니다. 자동 검사 기간에는 PC가 깨어 있고 Docker Desktop과 Jenkins 실행 터미널이 켜져 있어야 합니다. 다른 PC에서는 첫 번째 명령으로 합성 검사를 직접 실행할 수 있습니다. 재시작이 필요하면 동현 PC에서 Docker Desktop을 먼저 켜고 `D:\SkinAI_DevOps\jenkins\Start-Jenkins.cmd`를 실행합니다.
-- 동현이 돌아온 뒤 첫 통합 검사는 **합성 사진 접수 → 같은 번호로 상태 조회 → 분석 완료 또는 판단 보류 → 의사 확정 전·후 환자 조회** 순서입니다. 이때 실제 서버가 반환한 값과 검사 결과를 기록합니다.
+- Jenkins는 ci담당 PC의 `http://127.0.0.1:8080`에서 실행됩니다. 자동 검사 기간에는 PC가 깨어 있고 Docker Desktop과 Jenkins 실행 터미널이 켜져 있어야 합니다. 다른 PC에서는 첫 번째 명령으로 합성 검사를 직접 실행할 수 있습니다. 재시작이 필요하면 ci담당 PC에서 Docker Desktop을 먼저 켜고 `D:\SkinAI_DevOps\jenkins\Start-Jenkins.cmd`를 실행합니다.
+
 
