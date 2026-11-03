@@ -2,6 +2,8 @@
 
 ## 다른 PC에서 처음 실행하기 (Windows)
 
+이 검사는 CI 담당 PC에서 통과한 15개 테스트가 다른 팀원의 PC에서도 모두 통과하는지 확인하기 위해 실행합니다.
+
 **1. GitHub에서 테스트 브랜치를 내려받습니다.**
 
 1. [테스트 브랜치 열기](https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases/tree/ci/two-server-lab)를 누릅니다. 파일 목록 위의 브랜치 이름이 `ci/two-server-lab`인지 확인합니다.
