@@ -11,7 +11,7 @@ pipeline {
         TEST_BASE_URL = 'http://127.0.0.1:18120'
         TEST_COMPOSE_FILE = 'compose.ci.yaml'
         TEST_PROJECT_NAME = "skinai-two-server-ci-${env.BUILD_NUMBER}"
-            DOCKERHUB_CREDENTIALS_ID = 'skinai-dockerhub'
+        DOCKERHUB_CREDENTIALS_ID = 'skinai-dockerhub'
         CENTRAL_HUB_REPO = 'rlarns982/skinai-central-lab'
         AI_MOCK_HUB_REPO = 'rlarns982/skinai-ai-mock-lab'
     }
@@ -37,6 +37,39 @@ pipeline {
                     }
                     echo "검사할 Git 커밋: ${env.SOURCE_COMMIT}"
                     echo "이번 이미지 버전: ${env.IMAGE_TAG}"
+                }
+            }
+        }
+
+        stage('CI 규칙 검사 (합성 응답과 파일)') {
+            steps {
+                dir("runs/${env.BUILD_NUMBER}/source/ci") {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+"%PYTHON_EXE%" -B -X utf8 -m unittest -v test_responses test_model_package
+'''
+                }
+            }
+        }
+
+        stage('모델 파일 인수 검사 (자료 지정 시)') {
+            when {
+                expression {
+                    return env.CI_MODEL_DIR?.trim() || env.CI_MODEL_WEIGHTS_SHA256?.trim() || env.CI_MODEL_WEIGHTS_FILE?.trim()
+                }
+            }
+            steps {
+                dir("runs/${env.BUILD_NUMBER}/source/ci") {
+                    powershell encoding: 'UTF-8', script: '''
+                        $ErrorActionPreference = 'Stop'
+                        if ([string]::IsNullOrWhiteSpace($env:CI_MODEL_DIR) -or [string]::IsNullOrWhiteSpace($env:CI_MODEL_WEIGHTS_SHA256)) {
+                            throw 'Set both CI_MODEL_DIR and CI_MODEL_WEIGHTS_SHA256 for model intake.'
+                        }
+                        $weightsFile = $env:CI_MODEL_WEIGHTS_FILE
+                        if ([string]::IsNullOrWhiteSpace($weightsFile)) { $weightsFile = 'model.pt' }
+                        & $env:PYTHON_EXE -B -X utf8 check_model_package.py $env:CI_MODEL_DIR --weights-sha256 $env:CI_MODEL_WEIGHTS_SHA256 --weights-file $weightsFile
+                        exit $LASTEXITCODE
+                    '''
                 }
             }
         }
@@ -93,7 +126,7 @@ pipeline {
                 }
             }
         }
-                stage('6. Docker Hub에 두 이미지 업로드') {
+        stage('6. Docker Hub에 두 이미지 업로드') {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: env.DOCKERHUB_CREDENTIALS_ID,
@@ -147,7 +180,7 @@ pipeline {
                 }
             }
         }
-                success {
+        success {
             dir("runs/${env.BUILD_NUMBER}") {
                 powershell encoding: 'UTF-8', script: '''
                     $ErrorActionPreference = 'Stop'
