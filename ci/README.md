@@ -30,6 +30,8 @@ python -B -X utf8 -m unittest discover -s ci -p "test_*.py" -v
 | 데이터 전처리 및 AI 모델 설계 담당 | 모델 파일, 설정 파일, 가중치 확인값(SHA-256), 검사 샘플을 준비합니다. |
 | CI 담당 | [응답 검사](check_responses.py)와 [모델 파일 검사](check_model_package.py)를 실행하고 Jenkins 결과를 확인합니다. |
 
+모델 패키지 검사는 `classes.json`의 라벨 번호가 건선 0, 아토피 1, 여드름 2, 정상 3, 주사 4, 지루 5와 일치해야 통과합니다.
+
 ## Jenkins 자동 검사
 
 브랜치에 푸시하면 Jenkins가 자동으로 검사합니다. 기본 검사 15개와 서버 연결·복구 검사 7개를 통과하면 두 이미지를 Docker Hub에 올리고 `release.json`을 보관합니다.
