@@ -1,0 +1,5 @@
+{
+  "threshold": 0.83,
+  "rule": "val 정답 예측 확신도의 5퍼센타일",
+  "checkpoint": "best.pt"
+}

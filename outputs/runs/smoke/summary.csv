@@ -1,0 +1,2 @@
+﻿seed,best_epoch,test_acc,macro_f1,threshold,recall_건선,recall_아토피,recall_여드름,recall_정상,recall_주사,recall_지루
+0,1,0.42237061769616024,0.4019443255809598,0.3,0.297029702970297,0.87,0.12,0.49,0.51,0.24489795918367346

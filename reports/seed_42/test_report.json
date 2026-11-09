@@ -1,0 +1,77 @@
+{
+  "run": "final_v0_1",
+  "seed": 42,
+  "train_fraction": 1.0,
+  "sizes": {
+    "train": 3819,
+    "val": 958,
+    "test": 599
+  },
+  "best_epoch": 6,
+  "epochs_run": 6,
+  "train_minutes": 17.2,
+  "val": {
+    "accuracy": 0.9958246346555324,
+    "macro_f1": 0.9958133690189538
+  },
+  "test": {
+    "accuracy": 0.994991652754591,
+    "ci95": [
+      0.9853793405789922,
+      0.9982953096110411
+    ],
+    "errors": 3,
+    "macro_f1": 0.9949987546095541,
+    "per_class": {
+      "건선": {
+        "precision": 0.9805825242718447,
+        "recall": 1.0,
+        "f1": 0.9901960784313726,
+        "support": 101
+      },
+      "아토피": {
+        "precision": 1.0,
+        "recall": 0.97,
+        "f1": 0.9847715736040609,
+        "support": 100
+      },
+      "여드름": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 100
+      },
+      "정상": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 100
+      },
+      "주사": {
+        "precision": 0.9900990099009901,
+        "recall": 1.0,
+        "f1": 0.9950248756218906,
+        "support": 100
+      },
+      "지루": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 98
+      }
+    }
+  },
+  "threshold": 0.82,
+  "reject_val": {
+    "coverage": 0.9457202505219207,
+    "accuracy_on_accepted": 1.0,
+    "errors_total": 4,
+    "errors_rejected": 4
+  },
+  "reject_test": {
+    "coverage": 0.9432387312186978,
+    "accuracy_on_accepted": 1.0,
+    "errors_total": 3,
+    "errors_rejected": 3
+  }
+}

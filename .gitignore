@@ -1,0 +1,42 @@
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.*
+
+# Cache
+cache256/
+yolo_cls/
+
+# Raw data and backup
+data/
+data_front_backup/
+
+# Generated image files
+*.png
+*.jpg
+*.jpeg
+*.bmp
+*.webp
+
+# Temporary files
+*.log
+*.tmp

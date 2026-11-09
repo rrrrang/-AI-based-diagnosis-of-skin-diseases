@@ -1,0 +1,83 @@
+{
+  "config": {
+    "name": "final_v0_1",
+    "data": {
+      "meta_csv": "outputs/meta_split_block.csv",
+      "label_map": "outputs/label2id.json",
+      "path_remap": null
+    },
+    "model": {
+      "arch": "mobilenet_v3_small",
+      "pretrained": true
+    },
+    "train": {
+      "img_size": 224,
+      "epochs": 6,
+      "batch_size": 32,
+      "lr": 0.0003,
+      "weight_decay": 0.01,
+      "label_smoothing": 0.1,
+      "patience": 4,
+      "num_workers": 2
+    },
+    "aug": {
+      "random_resized_crop_scale": [
+        0.6,
+        1.0
+      ],
+      "hflip": true,
+      "vflip": true,
+      "rotation": 20,
+      "color_jitter": {
+        "brightness": 0.15,
+        "contrast": 0.15,
+        "saturation": 0.1,
+        "hue": 0.02
+      },
+      "channel_gain": [
+        0.88,
+        1.12
+      ],
+      "blur": {
+        "p": 0.3,
+        "sigma": [
+          0.3,
+          1.5
+        ]
+      },
+      "jpeg": null,
+      "grayscale": false
+    },
+    "threshold": {
+      "percentile": 5,
+      "min": 0.3,
+      "max": 0.9
+    }
+  },
+  "seed": 43,
+  "train_fraction": 1.0,
+  "run_name": "final_v0_1",
+  "device": "cpu",
+  "class_names": [
+    "건선",
+    "아토피",
+    "여드름",
+    "정상",
+    "주사",
+    "지루"
+  ],
+  "sizes": {
+    "train": 3819,
+    "val": 958,
+    "test": 599
+  },
+  "env": {
+    "python": "3.14.7",
+    "torch": "2.15.0+cpu",
+    "torchvision": "0.29.2+cpu",
+    "platform": "Windows-10-10.0.19045-SP0"
+  },
+  "git_commit": null,
+  "config_sha256": "364595e57109ee86d9352a8169b5f97295d3b0c246bf3edf16362dcf1fd8f9a6",
+  "meta_csv_sha256": "7ea90129b49bad70e23433826b7063b477730dac12816a6859184f33125f47d3"
+}

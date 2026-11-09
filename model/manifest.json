@@ -1,0 +1,36 @@
+{
+  "version": "v0.1",
+  "run": "final_v0_1",
+  "seed": 42,
+  "model": {
+    "arch": "mobilenet_v3_small",
+    "pretrained": true
+  },
+  "train_config_sha256": "364595e57109ee86d9352a8169b5f97295d3b0c246bf3edf16362dcf1fd8f9a6",
+  "meta_csv_sha256": "7ea90129b49bad70e23433826b7063b477730dac12816a6859184f33125f47d3",
+  "env": {
+    "python": "3.14.7",
+    "torch": "2.15.0+cpu",
+    "torchvision": "0.29.2+cpu",
+    "platform": "Windows-10-10.0.19045-SP0"
+  },
+  "git_commit": null,
+  "files": {
+    "model/best.pt": {
+      "sha256": "493e76716efeada4bbb3effddc7f1e9ee9f78055cef4e8492cbddfa7fc45ea6f",
+      "bytes": 6215657
+    },
+    "model/label2id.json": {
+      "sha256": "24808d33a0b77a1d09a5e823fdc3f39bf8941c96f008062ba6a519c37f470141",
+      "bytes": 105
+    },
+    "model/threshold.json": {
+      "sha256": "ac2f55479724663911f1359c3d3969a4ffd0996b73e4f4af445f8ead619b9416",
+      "bytes": 112
+    },
+    "splits/split_block_v1.csv": {
+      "sha256": "8540ebcc21846083583b14f51f7135d3f58a8876a4a8f3f97706d330dbe8305a",
+      "bytes": 417004
+    }
+  }
+}
