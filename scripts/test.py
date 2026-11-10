@@ -1,5 +1,9 @@
+from pathlib import Path
+
 import pandas as pd
-df = pd.read_csv(r"D:\skin_project\outputs\meta_split.csv", keep_default_na=False)
+
+OUT = Path(__file__).resolve().parent.parent / "outputs"
+df = pd.read_csv(OUT / "meta_split.csv", keep_default_na=False)
 
 # 1) 그룹 추출에 실패한 ID의 형태
 bad = df[~df["id"].str.match(r"^H\d+_\d+_P")]

@@ -10,7 +10,7 @@ from sklearn.metrics import f1_score, classification_report, confusion_matrix
 from dataset import get_loaders
 
 # ---------------- 설정 ----------------
-OUT = Path(r"D:\skin_project\outputs")                    
+OUT = Path(__file__).resolve().parent.parent / "outputs"
 META = OUT / "meta_split_block.csv"                      
 TAG = "block_gray" if os.environ.get("SKIN_GRAY") == "1" else ("block_robust" if os.environ.get("SKIN_AUG") == "robust" else "block")
 MODEL = "mobilenet"

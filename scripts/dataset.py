@@ -1,5 +1,6 @@
 import os
 import random
+from pathlib import Path
 
 import pandas as pd
 import torch
@@ -82,7 +83,7 @@ def get_loaders(meta_csv, img_size=224, batch_size=32, num_workers=4):
 
 
 if __name__ == "__main__":      # Windows에서는 num_workers>0일 때 이 가드가 필요합니다
-    OUT = r"D:\skin_project\outputs"
+    OUT = Path(__file__).resolve().parent.parent / "outputs"
     loaders = get_loaders(os.path.join(OUT, "meta_split_block.csv"))
     x, y = next(iter(loaders["train"]))
     print(x.shape, y[:10], x.min().item(), x.max().item(), "| GRAY:", GRAY, "| ROBUST:", ROBUST)

@@ -6,7 +6,7 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import models, transforms as T
 from sklearn.metrics import accuracy_score
 
-OUT = Path(r"D:\skin_project\outputs")
+OUT = Path(__file__).resolve().parent.parent / "outputs"
 te = pd.read_csv(OUT / "meta_split_block.csv", keep_default_na=False).query("set == 'test'").reset_index(drop=True)
 N = 6
 NORM = T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])

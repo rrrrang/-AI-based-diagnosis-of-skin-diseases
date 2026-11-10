@@ -2,7 +2,7 @@ import numpy as np, pandas as pd
 from pathlib import Path
 from PIL import Image
 
-OUT = Path(r"D:\skin_project\outputs")
+OUT = Path(__file__).resolve().parent.parent / "outputs"
 df = pd.read_csv(OUT / "meta_split.csv", keep_default_na=False)
 
 rows = []

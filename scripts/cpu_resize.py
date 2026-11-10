@@ -4,8 +4,8 @@ from pathlib import Path
 from PIL import Image
 from concurrent.futures import ThreadPoolExecutor
 
-OUT = Path(r"D:\skin_project\outputs")
-CACHE = Path(r"D:\skin_project\cache256")
+OUT = Path(__file__).resolve().parent.parent / "outputs"
+CACHE = Path(__file__).resolve().parent.parent / "cache256"
 CACHE.mkdir(exist_ok=True)
 
 df = pd.read_csv(OUT / "meta_split.csv", keep_default_na=False)

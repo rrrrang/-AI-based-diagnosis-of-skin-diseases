@@ -6,7 +6,7 @@ from pathlib import Path
 plt.rcParams["font.family"] = "Malgun Gothic"   # 윈도우 한글 폰트 (없으면 제목이 네모로 깨짐)
 plt.rcParams["axes.unicode_minus"] = False
 
-OUT = Path(r"D:\skin_project\outputs")
+OUT = Path(__file__).resolve().parent.parent / "outputs"
 df = pd.read_csv(OUT / "meta_split.csv", keep_default_na=False)
 
 fig, axes = plt.subplots(6, 8, figsize=(16, 12))

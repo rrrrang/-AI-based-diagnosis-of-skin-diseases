@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from PIL import Image
 
-OUT = Path(r"D:\skin_project\outputs")
+OUT = Path(__file__).resolve().parent.parent / "outputs"
 res = pd.read_csv(OUT / "near_dup_test.csv")
 meta = pd.read_csv(OUT / "meta_split.csv", keep_default_na=False)
 idx = meta.set_index("id")

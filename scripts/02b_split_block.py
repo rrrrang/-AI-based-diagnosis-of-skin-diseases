@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 from sklearn.model_selection import StratifiedGroupKFold
 
-OUT = Path(r"D:\skin_project\outputs")
+OUT = Path(__file__).resolve().parent.parent / "outputs"
 df = pd.read_csv(OUT / "meta_split.csv", keep_default_na=False)
 df["num"] = df["id"].str.extract(r"Z4_(\d+)_")[0].astype(int)
 df["blk"] = df["label"] + "_" + (df["num"] // 50).astype(str)   # ID가 가까운 이미지끼리 한 그룹

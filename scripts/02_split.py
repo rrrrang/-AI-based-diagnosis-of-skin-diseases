@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 from sklearn.model_selection import StratifiedGroupKFold
 
-OUT = Path(r"D:\skin_project\outputs")
+OUT = Path(__file__).resolve().parent.parent / "outputs"
 df = pd.read_csv(OUT / "meta.csv", keep_default_na=False)
 
 trainval = df[df["split"] == "Training"].copy()

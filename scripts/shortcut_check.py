@@ -4,7 +4,7 @@ from PIL import Image
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix
 
-OUT = Path(r"D:\skin_project\outputs")
+OUT = Path(__file__).resolve().parent.parent / "outputs"
 base = pd.read_csv(OUT / "meta_split.csv", keep_default_na=False)
 blk = pd.read_csv(OUT / "meta_split_block.csv", keep_default_na=False)[["id", "set"]].rename(columns={"set": "set_block"})
 df = base.merge(blk, on="id")

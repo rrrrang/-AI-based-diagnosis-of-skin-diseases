@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 
-OUT = Path(r"D:\skin_project\outputs")
+OUT = Path(__file__).resolve().parent.parent / "outputs"
 files = {
     "컬러(기본)": "robustness_best_mobilenet_block_ep2.csv",
     "컬러(강건성)": "robustness_best_mobilenet_block_robust.csv",

@@ -1,7 +1,10 @@
+from pathlib import Path
+
 import numpy as np, pandas as pd
 from PIL import Image
 
-df = pd.read_csv(r"D:\skin_project\outputs\meta.csv")
+OUT = Path(__file__).resolve().parent.parent / "outputs"
+df = pd.read_csv(OUT / "meta.csv")
 
 # 1) 해상도 × 클래스
 print(pd.crosstab(df["label"], df["real_w"]))
@@ -28,4 +31,5 @@ for i, (lab, g) in enumerate(df.groupby("label")):
         ax = axes[i, j]
         ax.imshow(Image.open(r.img_path).convert("RGB")); ax.axis("off")
         ax.set_title(f"{lab} {int(r.real_w)}", fontsize=8)
-plt.tight_layout(); plt.savefig(r"D:\skin_project\outputs\sample_grid.png", dpi=80)
+plt.tight_layout()
+plt.savefig(OUT / "sample_grid.png", dpi=80)
