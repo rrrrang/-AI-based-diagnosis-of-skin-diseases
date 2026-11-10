@@ -16,7 +16,22 @@ from urllib.request import Request, urlopen
 import yaml
 
 ROOT = Path(__file__).resolve().parent
-STATE = ROOT / '.cd-state'
+
+
+def state_directory():
+    # Jenkins가 Git에서 받은 코드로 실행해도 기존 복구 기록은 같은 곳을 사용한다.
+    configured = os.environ.get('SKINAI_CD_STATE_DIR')
+    if configured is None:
+        return ROOT / '.cd-state'  # 기존 수동 실행 방법도 유지한다.
+    directory = Path(configured)
+    if not configured.strip() or not directory.is_absolute():
+        raise ValueError('SKINAI_CD_STATE_DIR must be an absolute path')
+    if not directory.is_dir() or not (directory / 'state.json').is_file():
+        raise ValueError('Existing CD recovery state.json was not found; deployment stopped')
+    return directory.resolve()
+
+
+STATE = state_directory()
 PROJECT = 'skinai-cd-lab'
 BASE_URL = 'http://127.0.0.1:18130'
 SERVICES = {'central', 'ai-mock'}

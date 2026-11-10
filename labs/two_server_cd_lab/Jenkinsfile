@@ -4,6 +4,7 @@ pipeline {
     options {
         disableConcurrentBuilds()
         skipDefaultCheckout(true)
+        disableRestartFromStage()
         timeout(time: 30, unit: 'MINUTES')
     }
 
@@ -26,6 +27,12 @@ pipeline {
             defaultValue: false,
             description: '수동 시험 전용: CD의 임시 AI 서버를 멈춰 자동 복구를 검사합니다.'
         )
+    }
+
+    environment {
+        // 실행 코드는 Git에서 받지만 정상본과 복구 기록은 기존 경로에 유지한다.
+        SKINAI_CD_STATE_DIR = 'D:/SkinAI_DevOps/skinai_cd_project/labs/two_server_cd_lab/.cd-state'
+        CD_PYTHON_EXE = 'D:/SkinAI_DevOps/skinai_cd_project/labs/two_server_cd_lab/.venv/Scripts/python.exe'
     }
 
     stages {
@@ -81,7 +88,40 @@ pipeline {
             }
         }
 
-        stage('2. 배포 및 실패 시 자동 복구') {
+        stage('2. Git에서 Python 배포 코드 가져오기') {
+            steps {
+                dir("source/${env.BUILD_NUMBER}") {
+                    script {
+                        // 빌드마다 별도 폴더를 사용한다. 복구 기록은 이곳에 넣지 않는다.
+                        def checkedOut = checkout scm
+                        def revision = checkedOut.GIT_COMMIT ?: ''
+                        if (!(revision ==~ /[0-9a-f]{40}/)) {
+                            error('Git에서 받은 배포 코드의 커밋을 확인할 수 없습니다.')
+                        }
+                        env.CD_SOURCE_COMMIT = revision
+                        env.CD_SOURCE_DIR = "${pwd()}/labs/two_server_cd_lab"
+                        for (name in ['cd.py', 'prepare_compose.py', 'deploy_with_rollback.py', 'compose.cd.yaml']) {
+                            if (!fileExists("labs/two_server_cd_lab/${name}")) {
+                                error("Git에 필요한 배포 파일이 없습니다: ${name}")
+                            }
+                        }
+                        echo "Python 배포 코드 Git 커밋: ${env.CD_SOURCE_COMMIT}"
+                        echo "Python 배포 코드 위치: ${env.CD_SOURCE_DIR}"
+                        echo "기존 복구 기록 위치: ${env.SKINAI_CD_STATE_DIR}"
+                    }
+                }
+                dir("incoming/${env.BUILD_NUMBER}") {
+                    writeFile(
+                        file: 'cd_source.json', encoding: 'UTF-8',
+                        text: """{"repository":"https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases.git","branch":"cd/two-server-lab","commit":"${env.CD_SOURCE_COMMIT}"}
+"""
+                    )
+                    archiveArtifacts(artifacts: 'cd_source.json', fingerprint: true)
+                }
+            }
+        }
+
+        stage('3. 배포 및 실패 시 자동 복구') {
             steps {
                 dir("incoming/${env.BUILD_NUMBER}") {
                     script {
@@ -89,9 +129,10 @@ pipeline {
 @echo off
 set "PYTHONUTF8=1"
 set "PYTHONIOENCODING=utf-8"
+set "PYTHONDONTWRITEBYTECODE=1"
 set "PATH=C:\\Users\\human\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;%PATH%"
 
-"D:/SkinAI_DevOps/skinai_cd_project/labs/two_server_cd_lab/.venv/Scripts/python.exe" "D:/SkinAI_DevOps/skinai_cd_project/labs/two_server_cd_lab/deploy_with_rollback.py" --release "%CD%/release.json" --ci-build %SELECTED_CI_BUILD% --report "%CD%/deployment_report.json" %CD_TEST_ARG%
+"%CD_PYTHON_EXE%" -B "%CD_SOURCE_DIR%/deploy_with_rollback.py" --release "%CD%/release.json" --ci-build %SELECTED_CI_BUILD% --report "%CD%/deployment_report.json" %CD_TEST_ARG%
 exit /b %ERRORLEVEL%
 ''')
                         if (!fileExists('deployment_report.json')) {
