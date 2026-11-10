@@ -9,6 +9,7 @@ cd.py              릴리스 검사, 이미지 다운로드, 실행, 상태, 로
 compose.cd.yaml    중앙 서버와 모의 AI 실행 설정
 release.json       빌드 9 실습용 인수물
 smoke_test.py      스모크 테스트만 실행
+prepare_compose.py CI 릴리스에서 Compose 설정 생성, 선택적으로 배포 실행
 requirements.txt  CD 도구에 필요한 Python 패키지
 .gitignore        로컬 실행 기록과 캐시 제외
 
@@ -35,5 +36,12 @@ python cd.py rollback 이전 정상 릴리스 복구
 이 폴더에서 up을 실행하면 이 폴더에 별도의 성공 기록을 생성합니다.
 
 새 빌드 받기
-Jenkins 성공 빌드에서 release.json을 받습니다. compose.cd.yaml의 central과
-ai-mock image를 새 릴리스에 적힌 주소로 갱신하고 check부터 실행합니다.
+Jenkins 성공 빌드에서 release.json을 받은 다음 이 폴더에서 실행합니다.
+
+python prepare_compose.py --release .\release.json
+이미지 주소를 반영한 뒤 검사를 통과하면 .cd-state/compose.generated.yaml에 저장합니다.
+
+python prepare_compose.py --release .\release.json --deploy
+생성한 설정으로 이미지 다운로드, 실행, 스모크 테스트 및 성공 기록까지 진행합니다.
+두 명령 모두 --release에 다른 파일 경로를 지정할 수 있습니다.
+Jenkins에서 자동으로 호출하려면 성공 빌드의 산출물 전달과 실행 단계 설정이 필요합니다.
