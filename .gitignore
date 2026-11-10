@@ -1,42 +1,25 @@
-
-# Python
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.mypy_cache/
-
-# Virtual environment
-.venv/
-venv/
-env/
-
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Environment variables
-.env
-.env.*
-
-# Cache
+$gi = @'
+# 데이터와 중간 산출물 (이미지·원본 라벨은 저장소에 올리지 않음)
+data/
+data_front_backup/
+outputs/
 cache256/
 yolo_cls/
 
-# Raw data and backup
-data/
-data_front_backup/
+# 환경
+.venv/
+__pycache__/
+*.pyc
 
-# Generated image files
+# 이미지는 전역 차단 (데이터셋 이미지가 섞여 들어가는 사고 방지)
 *.png
 *.jpg
 *.jpeg
 *.bmp
 *.webp
-
-# Temporary files
-*.log
-*.tmp
+'@
+[System.IO.File]::WriteAllText("$PWD\.gitignore", $gi, (New-Object System.Text.UTF8Encoding($false)))
+git status --short
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+if (Test-Path .gitignore) { [System.IO.File]::AppendAllText("$dst\.gitignore", $rules, $utf8) }
+else { [System.IO.File]::WriteAllText("$dst\.gitignore", $rules.TrimStart(), $utf8) }

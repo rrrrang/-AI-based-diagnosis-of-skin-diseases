@@ -2,6 +2,7 @@
   "version": "v0.1",
   "run": "final_v0_1",
   "seed": 42,
+  "includes_splits": true,
   "model": {
     "arch": "mobilenet_v3_small",
     "pretrained": true
@@ -14,7 +15,7 @@
     "torchvision": "0.29.2+cpu",
     "platform": "Windows-10-10.0.19045-SP0"
   },
-  "git_commit": null,
+  "git_commit": "d82fe3cd87c40f5aeca445bf5dd4061fccc03e51",
   "files": {
     "model/best.pt": {
       "sha256": "493e76716efeada4bbb3effddc7f1e9ee9f78055cef4e8492cbddfa7fc45ea6f",
