@@ -1,0 +1,115 @@
+pipeline {
+    agent any
+
+    options {
+        disableConcurrentBuilds()
+        skipDefaultCheckout(true)
+        timeout(time: 30, unit: 'MINUTES')
+    }
+
+    triggers {
+        upstream(
+            upstreamProjects: 'SkinAI-Two-Server-CI',
+            threshold: hudson.model.Result.SUCCESS
+        )
+    }
+
+    parameters {
+        string(
+            name: 'CI_BUILD_NUMBER',
+            defaultValue: '',
+            description: '수동 실행 시 사용할 CI 번호. 자동 실행에서는 성공한 CI 번호를 사용합니다.',
+            trim: true
+        )
+        booleanParam(
+            name: 'TEST_AUTO_ROLLBACK',
+            defaultValue: false,
+            description: '수동 시험 전용: CD의 임시 AI 서버를 멈춰 자동 복구를 검사합니다.'
+        )
+    }
+
+    stages {
+        stage('1. CI 성공 확인 및 파일 가져오기') {
+            steps {
+                script {
+                    def causes = currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')
+                    def ciBuild = ''
+                    env.CD_TEST_ARG = ''
+
+                    if (causes.size() > 0) {
+                        if (causes.size() != 1 || causes[0].upstreamProject != 'SkinAI-Two-Server-CI') {
+                            error('배포할 CI를 하나로 확인할 수 없습니다. 번호를 지정해 수동 실행하세요.')
+                        }
+                        if (params.TEST_AUTO_ROLLBACK == true) {
+                            error('자동 실행에서는 장애 주입 시험을 허용하지 않습니다.')
+                        }
+                        ciBuild = "${causes[0].upstreamBuild}"
+                        env.CD_RUN_MODE = 'auto'
+                        echo "자동 실행: CI 빌드 #${ciBuild}"
+                    } else {
+                        if (currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause').size() == 0) {
+                            error('직접 실행 또는 지정된 CI 자동 실행만 허용합니다.')
+                        }
+                        ciBuild = (params.CI_BUILD_NUMBER ?: '').trim()
+                        env.CD_RUN_MODE = 'manual'
+                        env.CD_TEST_ARG = params.TEST_AUTO_ROLLBACK == true ? '--test-stop-ai' : ''
+                        echo "수동 실행: CI 빌드 #${ciBuild}"
+                    }
+
+                    if (!(ciBuild ==~ /[1-9][0-9]*/)) {
+                        error('CI_BUILD_NUMBER에 올바른 번호를 입력하세요.')
+                    }
+                    env.SELECTED_CI_BUILD = ciBuild
+                    currentBuild.description = "CI #${ciBuild}"
+                    def ciRun = waitForBuild(
+                        runId: "SkinAI-Two-Server-CI#${ciBuild}",
+                        propagate: false,
+                        propagateAbort: false
+                    )
+                    if (ciRun.result != 'SUCCESS') {
+                        error("CI #${ciBuild}이 SUCCESS가 아니므로 중단합니다.")
+                    }
+                    dir("incoming/${env.BUILD_NUMBER}") {
+                        copyArtifacts(
+                            projectName: 'SkinAI-Two-Server-CI',
+                            selector: specific(ciBuild),
+                            filter: 'release.json',
+                            fingerprintArtifacts: true
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('2. 배포 및 실패 시 자동 복구') {
+            steps {
+                dir("incoming/${env.BUILD_NUMBER}") {
+                    script {
+                        def result = bat(returnStatus: true, encoding: 'UTF-8', script: '''
+@echo off
+set "PYTHONUTF8=1"
+set "PYTHONIOENCODING=utf-8"
+set "PATH=C:\\Users\\human\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;%PATH%"
+
+"D:/SkinAI_DevOps/skinai_cd_project/labs/two_server_cd_lab/.venv/Scripts/python.exe" "D:/SkinAI_DevOps/skinai_cd_project/labs/two_server_cd_lab/deploy_with_rollback.py" --release "%CD%/release.json" --ci-build %SELECTED_CI_BUILD% --report "%CD%/deployment_report.json" %CD_TEST_ARG%
+exit /b %ERRORLEVEL%
+''')
+                        if (!fileExists('deployment_report.json')) {
+                            error("배포 보고서가 없습니다. 실행 오류 또는 중단 여부를 확인하세요. 종료 코드: ${result}")
+                        }
+                        echo readFile(file: 'deployment_report.json', encoding: 'UTF-8')
+                        // 실패 보고서도 보관한다. release.json만 보고 성공으로 판단하지 않는다.
+                        archiveArtifacts(
+                            artifacts: 'release.json,deployment_report.json',
+                            fingerprint: true
+                        )
+                        if (result != 0) {
+                            error('새 배포는 실패했습니다. deployment_report.json의 복구 상태를 확인하세요.')
+                        }
+                        echo '배포 및 두 서버 연결 검사 성공'
+                    }
+                }
+            }
+        }
+    }
+}
