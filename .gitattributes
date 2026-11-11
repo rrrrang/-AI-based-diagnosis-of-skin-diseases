@@ -1,2 +1,4 @@
 models/resnet50_side_best.pth filter=lfs diff=lfs merge=lfs -text
 models/resnet50_frontal_crop_best.pth filter=lfs diff=lfs merge=lfs -text
+models/resnet50_augmented_clean_best.pth filter=lfs diff=lfs merge=lfs -text
+models/resnet50_frontal_crop_ft_l42_best.pth filter=lfs diff=lfs merge=lfs -text
