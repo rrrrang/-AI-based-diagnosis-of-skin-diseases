@@ -1,0 +1,386 @@
+﻿identifier,disease,view,json_path,diagnosis_name,diagnosis_bodypart,desc,gender,generated_bodypart,photograph_file_path,photograph_width,photograph_height
+H0_112583_P1_L2,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_112583_P1_L2.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_112583_P1_L2.png,1024,1024
+H0_115008_P7_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_115008_P7_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_115008_P7_L0.png,1024,1024
+H0_115010_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_115010_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_115010_P1_L0.png,1024,1024
+H0_115010_P1_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_115010_P1_L1.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_115010_P1_L1.png,1024,1024
+H0_11639_P1_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_11639_P1_L1.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_11639_P1_L1.png,1024,1024
+H0_12510_P15_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_12510_P15_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_12510_P15_L0.png,1024,1024
+H0_125379_P6_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_125379_P6_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_125379_P6_L0.png,1024,1024
+H0_127028_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_127028_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_127028_P2_L0.png,1024,1024
+H0_128204_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_128204_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_128204_P1_L0.png,1024,1024
+H0_128302_P8_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_128302_P8_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_128302_P8_L0.png,1024,1024
+H0_13083_P9_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_13083_P9_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_13083_P9_L0.png,1024,1024
+H0_130947_P3_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_130947_P3_L1.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_130947_P3_L1.png,1024,1024
+H0_130947_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_130947_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_130947_P4_L0.png,1024,1024
+H0_133092_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_133092_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_133092_P4_L0.png,1024,1024
+H0_133805_P7_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_133805_P7_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_133805_P7_L0.png,1024,1024
+H0_134001_P9_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_134001_P9_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H0_134001_P9_L0.png,1024,1024
+H0_134196_P5_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_134196_P5_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_134196_P5_L0.png,1024,1024
+H0_135180_P5_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_135180_P5_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_135180_P5_L0.png,1024,1024
+H0_139401_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_139401_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_139401_P2_L0.png,1024,1024
+H0_147284_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_147284_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_147284_P1_L0.png,1024,1024
+H0_151365_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_151365_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_151365_P1_L0.png,1024,1024
+H0_151957_P20_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_151957_P20_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_151957_P20_L0.png,1024,1024
+H0_161877_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_161877_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_161877_P1_L0.png,1024,1024
+H0_164905_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_164905_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_164905_P2_L0.png,1024,1024
+H0_164959_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_164959_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_164959_P2_L0.png,1024,1024
+H0_166411_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_166411_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_166411_P4_L0.png,1024,1024
+H0_167166_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_167166_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_167166_P2_L0.png,1024,1024
+H0_168820_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_168820_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_168820_P1_L0.png,1024,1024
+H0_170820_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_170820_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_170820_P3_L0.png,1024,1024
+H0_171197_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_171197_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_171197_P1_L0.png,1024,1024
+H0_171253_P13_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_171253_P13_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_171253_P13_L0.png,1024,1024
+H0_171254_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_171254_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_171254_P2_L0.png,1024,1024
+H0_171515_P12_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_171515_P12_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_171515_P12_L0.png,1024,1024
+H0_172486_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_172486_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_172486_P1_L0.png,1024,1024
+H0_177311_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_177311_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_177311_P3_L0.png,1024,1024
+H0_177831_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_177831_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_177831_P3_L0.png,1024,1024
+H0_178193_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_178193_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_178193_P1_L0.png,1024,1024
+H0_179350_P8_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_179350_P8_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_179350_P8_L0.png,1024,1024
+H0_179516_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_179516_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_179516_P4_L0.png,1024,1024
+H0_179930_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_179930_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_179930_P1_L0.png,1024,1024
+H0_180171_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_180171_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_180171_P3_L0.png,1024,1024
+H0_181054_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_181054_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_181054_P1_L0.png,1024,1024
+H0_182929_P18_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_182929_P18_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_182929_P18_L0.png,1024,1024
+H0_186615_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_186615_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_186615_P1_L0.png,1024,1024
+H0_187410_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_187410_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_187410_P1_L0.png,1024,1024
+H0_187548_P5_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_187548_P5_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_187548_P5_L0.png,1024,1024
+H0_191175_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_191175_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_191175_P2_L0.png,1024,1024
+H0_205768_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_205768_P4_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H0_205768_P4_L0.png,1024,1024
+H0_21677_P3_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_21677_P3_L1.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H0_21677_P3_L1.png,1024,1024
+H0_30605_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_30605_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_30605_P2_L0.png,1024,1024
+H0_34634_P13_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_34634_P13_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_34634_P13_L0.png,1024,1024
+H0_38723_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_38723_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H0_38723_P1_L0.png,1024,1024
+H0_57537_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H0_57537_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H0_57537_P2_L0.png,1024,1024
+H1_200120_P5_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_200120_P5_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_200120_P5_L0.png,1024,1024
+H1_200176_P16_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_200176_P16_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,얼굴,건선/정면/H1_200176_P16_L0.png,1024,1024
+H1_200230_P11_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_200230_P11_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_200230_P11_L0.png,1024,1024
+H1_200253_P9_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_200253_P9_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_200253_P9_L0.png,1024,1024
+H1_200823_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_200823_P1_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_200823_P1_L0.png,1024,1024
+H1_200905_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_200905_P1_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,얼굴,건선/정면/H1_200905_P1_L0.png,1024,1024
+H1_200927_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_200927_P1_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_200927_P1_L0.png,1024,1024
+H1_200969_P16_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_200969_P16_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_200969_P16_L0.png,1024,1024
+H1_201016_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_201016_P1_L0.json,건선,두피,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,두피,건선/정면/H1_201016_P1_L0.png,1024,1024
+H1_201067_P18_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_201067_P18_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,얼굴,건선/정면/H1_201067_P18_L0.png,1024,1024
+H1_202171_P6_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_202171_P6_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_202171_P6_L0.png,1024,1024
+H1_202403_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_202403_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_202403_P2_L0.png,1024,1024
+H1_203572_P16_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_203572_P16_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_203572_P16_L0.png,1024,1024
+H1_204304_P15_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_204304_P15_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_204304_P15_L0.png,1024,1024
+H1_204933_P7_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_204933_P7_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_204933_P7_L0.png,1024,1024
+H1_206947_P6_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_206947_P6_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_206947_P6_L0.png,1024,1024
+H1_208066_P14_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_208066_P14_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_208066_P14_L0.png,1024,1024
+H1_208241_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_208241_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_208241_P2_L0.png,1024,1024
+H1_208241_P5_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_208241_P5_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_208241_P5_L0.png,1024,1024
+H1_208293_P8_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_208293_P8_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_208293_P8_L0.png,1024,1024
+H1_209043_P6_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_209043_P6_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_209043_P6_L0.png,1024,1024
+H1_212709_P13_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_212709_P13_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_212709_P13_L0.png,1024,1024
+H1_212780_P15_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_212780_P15_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_212780_P15_L0.png,1024,1024
+H1_212880_P9_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_212880_P9_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_212880_P9_L0.png,1024,1024
+H1_213256_P18_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_213256_P18_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_213256_P18_L0.png,1024,1024
+H1_213365_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_213365_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_213365_P1_L0.png,1024,1024
+H1_213480_P16_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_213480_P16_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_213480_P16_L0.png,1024,1024
+H1_213629_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_213629_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_213629_P2_L0.png,1024,1024
+H1_213691_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_213691_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_213691_P3_L0.png,1024,1024
+H1_213917_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_213917_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_213917_P4_L0.png,1024,1024
+H1_217663_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_217663_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_217663_P2_L0.png,1024,1024
+H1_218202_P12_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_218202_P12_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_218202_P12_L0.png,1024,1024
+H1_218453_P11_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_218453_P11_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_218453_P11_L0.png,1024,1024
+H1_218477_P11_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_218477_P11_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_218477_P11_L0.png,1024,1024
+H1_218714_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_218714_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_218714_P2_L0.png,1024,1024
+H1_219649_P10_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_219649_P10_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_219649_P10_L0.png,1024,1024
+H1_219698_P10_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_219698_P10_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_219698_P10_L0.png,1024,1024
+H1_220064_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_220064_P1_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_220064_P1_L0.png,1024,1024
+H1_220064_P1_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_220064_P1_L1.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_220064_P1_L1.png,1024,1024
+H1_220162_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_220162_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_220162_P1_L0.png,1024,1024
+H1_220181_P13_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_220181_P13_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_220181_P13_L0.png,1024,1024
+H1_220414_P10_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_220414_P10_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_220414_P10_L0.png,1024,1024
+H1_222129_P8_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_222129_P8_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_222129_P8_L0.png,1024,1024
+H1_223096_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_223096_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_223096_P1_L0.png,1024,1024
+H1_223106_P9_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_223106_P9_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_223106_P9_L0.png,1024,1024
+H1_223110_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_223110_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_223110_P2_L0.png,1024,1024
+H1_223495_P11_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_223495_P11_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_223495_P11_L0.png,1024,1024
+H1_223831_P5_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_223831_P5_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_223831_P5_L0.png,1024,1024
+H1_223975_P12_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_223975_P12_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_223975_P12_L0.png,1024,1024
+H1_224417_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_224417_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_224417_P4_L0.png,1024,1024
+H1_224852_P8_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_224852_P8_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,얼굴,건선/정면/H1_224852_P8_L0.png,1024,1024
+H1_225065_P6_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_225065_P6_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_225065_P6_L0.png,1024,1024
+H1_225306_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_225306_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_225306_P4_L0.png,1024,1024
+H1_225451_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_225451_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_225451_P3_L0.png,1024,1024
+H1_227400_P7_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_227400_P7_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_227400_P7_L0.png,1024,1024
+H1_227483_P14_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_227483_P14_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_227483_P14_L0.png,1024,1024
+H1_231416_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_231416_P1_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_231416_P1_L0.png,1024,1024
+H1_234187_P9_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_234187_P9_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_234187_P9_L0.png,1024,1024
+H1_234207_P8_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_234207_P8_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_234207_P8_L0.png,1024,1024
+H1_234928_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_234928_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_234928_P2_L0.png,1024,1024
+H1_234949_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_234949_P1_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,얼굴,건선/정면/H1_234949_P1_L0.png,1024,1024
+H1_235863_P8_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_235863_P8_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_235863_P8_L0.png,1024,1024
+H1_235919_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_235919_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_235919_P3_L0.png,1024,1024
+H1_235927_P6_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_235927_P6_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_235927_P6_L0.png,1024,1024
+H1_239012_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_239012_P3_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_239012_P3_L0.png,1024,1024
+H1_242609_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_242609_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_242609_P4_L0.png,1024,1024
+H1_244303_P17_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_244303_P17_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_244303_P17_L0.png,1024,1024
+H1_247267_P15_L4,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_247267_P15_L4.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_247267_P15_L4.png,1024,1024
+H1_248262_P15_L3,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_248262_P15_L3.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_248262_P15_L3.png,1024,1024
+H1_248794_P2_L2,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_248794_P2_L2.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_248794_P2_L2.png,1024,1024
+H1_249145_P14_L8,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_249145_P14_L8.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_249145_P14_L8.png,1024,1024
+H1_249158_P18_L5,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_249158_P18_L5.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,얼굴,건선/정면/H1_249158_P18_L5.png,1024,1024
+H1_249203_P21_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_249203_P21_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_249203_P21_L0.png,1024,1024
+H1_249296_P1_L2,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_249296_P1_L2.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_249296_P1_L2.png,1024,1024
+H1_250361_P21_L4,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_250361_P21_L4.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_250361_P21_L4.png,1024,1024
+H1_250361_P21_L6,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_250361_P21_L6.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_250361_P21_L6.png,1024,1024
+H1_250507_P2_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_250507_P2_L1.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_250507_P2_L1.png,1024,1024
+H1_250507_P2_L2,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_250507_P2_L2.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_250507_P2_L2.png,1024,1024
+H1_250653_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_250653_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_250653_P1_L0.png,1024,1024
+H1_250653_P1_L2,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_250653_P1_L2.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_250653_P1_L2.png,1024,1024
+H1_250654_P19_L3,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_250654_P19_L3.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_250654_P19_L3.png,1024,1024
+H1_250854_P18_L3,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_250854_P18_L3.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_250854_P18_L3.png,1024,1024
+H1_269124_P48_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_269124_P48_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_269124_P48_L0.png,1024,1024
+H1_269932_P19_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_269932_P19_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_269932_P19_L0.png,1024,1024
+H1_270240_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_270240_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_270240_P1_L0.png,1024,1024
+H1_270240_P20_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_270240_P20_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_270240_P20_L0.png,1024,1024
+H1_270240_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_270240_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_270240_P2_L0.png,1024,1024
+H1_270399_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_270399_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_270399_P4_L0.png,1024,1024
+H1_272941_P18_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_272941_P18_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_272941_P18_L0.png,1024,1024
+H1_272947_P10_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_272947_P10_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_272947_P10_L0.png,1024,1024
+H1_273752_P13_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_273752_P13_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_273752_P13_L0.png,1024,1024
+H1_273973_P9_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_273973_P9_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_273973_P9_L0.png,1024,1024
+H1_274721_P31_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_274721_P31_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_274721_P31_L0.png,1024,1024
+H1_275180_P37_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_275180_P37_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_275180_P37_L0.png,1024,1024
+H1_275220_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_275220_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_275220_P2_L0.png,1024,1024
+H1_275504_P22_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_275504_P22_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_275504_P22_L0.png,1024,1024
+H1_275515_P25_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_275515_P25_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_275515_P25_L0.png,1024,1024
+H1_275581_P21_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_275581_P21_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_275581_P21_L0.png,1024,1024
+H1_277203_P44_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_277203_P44_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_277203_P44_L0.png,1024,1024
+H1_281471_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_281471_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_281471_P1_L0.png,1024,1024
+H1_281651_P43_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_281651_P43_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_281651_P43_L0.png,1024,1024
+H1_290699_P1_L9,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_290699_P1_L9.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_290699_P1_L9.png,1024,1024
+H1_291269_P18_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_291269_P18_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_291269_P18_L0.png,1024,1024
+H1_291407_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_291407_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_291407_P2_L0.png,1024,1024
+H1_296572_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_296572_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_296572_P1_L0.png,1024,1024
+H1_296670_P6_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_296670_P6_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_296670_P6_L0.png,1024,1024
+H1_296917_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_296917_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_296917_P2_L0.png,1024,1024
+H1_297450_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_297450_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_297450_P3_L0.png,1024,1024
+H1_297559_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_297559_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_297559_P1_L0.png,1024,1024
+H1_297599_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_297599_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_297599_P1_L0.png,1024,1024
+H1_297734_P2_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_297734_P2_L1.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_297734_P2_L1.png,1024,1024
+H1_300323_P47_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_300323_P47_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_300323_P47_L0.png,1024,1024
+H1_300328_P43_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_300328_P43_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_300328_P43_L0.png,1024,1024
+H1_300394_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_300394_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_300394_P1_L0.png,1024,1024
+H1_300408_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_300408_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_300408_P2_L0.png,1024,1024
+H1_300480_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_300480_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_300480_P1_L0.png,1024,1024
+H1_300490_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_300490_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_300490_P1_L0.png,1024,1024
+H1_300942_P15_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_300942_P15_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_300942_P15_L0.png,1024,1024
+H1_301023_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_301023_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_301023_P2_L0.png,1024,1024
+H1_310205_P13_L5,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_310205_P13_L5.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_310205_P13_L5.png,1024,1024
+H1_312575_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_312575_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_312575_P2_L0.png,1024,1024
+H1_313041_P1_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_313041_P1_L1.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_313041_P1_L1.png,1024,1024
+H1_313212_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_313212_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_313212_P1_L0.png,1024,1024
+H1_313312_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_313312_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_313312_P1_L0.png,1024,1024
+H1_313435_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_313435_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_313435_P1_L0.png,1024,1024
+H1_313503_P7_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_313503_P7_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_313503_P7_L0.png,1024,1024
+H1_313835_P9_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_313835_P9_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_313835_P9_L0.png,1024,1024
+H1_314268_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_314268_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_314268_P1_L0.png,1024,1024
+H1_314409_P5_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_314409_P5_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_314409_P5_L0.png,1024,1024
+H1_314505_P31_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_314505_P31_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_314505_P31_L0.png,1024,1024
+H1_314507_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_314507_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_314507_P1_L0.png,1024,1024
+H1_314576_P20_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_314576_P20_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_314576_P20_L0.png,1024,1024
+H1_314733_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_314733_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_314733_P3_L0.png,1024,1024
+H1_315600_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_315600_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_315600_P3_L0.png,1024,1024
+H1_315733_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_315733_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_315733_P4_L0.png,1024,1024
+H1_315777_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_315777_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_315777_P4_L0.png,1024,1024
+H1_316030_P14_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_316030_P14_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_316030_P14_L0.png,1024,1024
+H1_316248_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_316248_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_316248_P2_L0.png,1024,1024
+H1_316537_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_316537_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_316537_P1_L0.png,1024,1024
+H1_316726_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_316726_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_316726_P1_L0.png,1024,1024
+H1_316954_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_316954_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_316954_P1_L0.png,1024,1024
+H1_317480_P21_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_317480_P21_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_317480_P21_L0.png,1024,1024
+H1_317653_P16_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_317653_P16_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_317653_P16_L0.png,1024,1024
+H1_317654_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_317654_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_317654_P1_L0.png,1024,1024
+H1_317774_P12_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_317774_P12_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_317774_P12_L0.png,1024,1024
+H1_318951_P17_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_318951_P17_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_318951_P17_L0.png,1024,1024
+H1_322639_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_322639_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_322639_P1_L0.png,1024,1024
+H1_322696_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_322696_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_322696_P1_L0.png,1024,1024
+H1_322895_P18_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_322895_P18_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_322895_P18_L0.png,1024,1024
+H1_323011_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_323011_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_323011_P1_L0.png,1024,1024
+H1_324578_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_324578_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_324578_P1_L0.png,1024,1024
+H1_326216_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_326216_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_326216_P1_L0.png,1024,1024
+H1_326588_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_326588_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_326588_P3_L0.png,1024,1024
+H1_370061_P6_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_370061_P6_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_370061_P6_L0.png,1024,1024
+H1_370105_P6_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_370105_P6_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_370105_P6_L0.png,1024,1024
+H1_370364_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_370364_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_370364_P1_L0.png,1024,1024
+H1_370822_P15_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_370822_P15_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_370822_P15_L0.png,1024,1024
+H1_370876_P10_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_370876_P10_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_370876_P10_L0.png,1024,1024
+H1_370973_P10_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_370973_P10_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_370973_P10_L0.png,1024,1024
+H1_371382_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_371382_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_371382_P2_L0.png,1024,1024
+H1_371600_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_371600_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_371600_P1_L0.png,1024,1024
+H1_371790_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_371790_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_371790_P1_L0.png,1024,1024
+H1_371954_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_371954_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_371954_P2_L0.png,1024,1024
+H1_371984_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_371984_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_371984_P2_L0.png,1024,1024
+H1_372176_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_372176_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_372176_P1_L0.png,1024,1024
+H1_372762_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_372762_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_372762_P2_L0.png,1024,1024
+H1_372952_P24_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_372952_P24_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_372952_P24_L0.png,1024,1024
+H1_372952_P24_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_372952_P24_L1.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_372952_P24_L1.png,1024,1024
+H1_374295_P15_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_374295_P15_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_374295_P15_L0.png,1024,1024
+H1_374295_P16_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_374295_P16_L1.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_374295_P16_L1.png,1024,1024
+H1_374307_P6_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_374307_P6_L0.json,건선,두피,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,두피,건선/정면/H1_374307_P6_L0.png,1024,1024
+H1_374864_P21_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_374864_P21_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_374864_P21_L0.png,1024,1024
+H1_375677_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_375677_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_375677_P1_L0.png,1024,1024
+H1_375785_P13_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_375785_P13_L1.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_375785_P13_L1.png,1024,1024
+H1_375907_P1_L7,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_375907_P1_L7.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_375907_P1_L7.png,1024,1024
+H1_375907_P20_L3,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_375907_P20_L3.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_375907_P20_L3.png,1024,1024
+H1_376617_P1_L3,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_376617_P1_L3.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_376617_P1_L3.png,1024,1024
+H1_377098_P12_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_377098_P12_L1.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_377098_P12_L1.png,1024,1024
+H1_377101_P9_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_377101_P9_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_377101_P9_L0.png,1024,1024
+H1_382000_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_382000_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_382000_P1_L0.png,1024,1024
+H1_382266_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_382266_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_382266_P3_L0.png,1024,1024
+H1_382295_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_382295_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_382295_P1_L0.png,1024,1024
+H1_386760_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_386760_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_386760_P3_L0.png,1024,1024
+H1_386874_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_386874_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_386874_P4_L0.png,1024,1024
+H1_388129_P16_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_388129_P16_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_388129_P16_L0.png,1024,1024
+H1_388200_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_388200_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_388200_P1_L0.png,1024,1024
+H1_388200_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_388200_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_388200_P3_L0.png,1024,1024
+H1_390156_P13_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_390156_P13_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_390156_P13_L0.png,1024,1024
+H1_391313_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_391313_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_391313_P1_L0.png,1024,1024
+H1_392169_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_392169_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_392169_P2_L0.png,1024,1024
+H1_398059_P1_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_398059_P1_L1.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_398059_P1_L1.png,1024,1024
+H1_398059_P1_L3,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_398059_P1_L3.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_398059_P1_L3.png,1024,1024
+H1_398377_P1_L3,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_398377_P1_L3.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_398377_P1_L3.png,1024,1024
+H1_399731_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_399731_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_399731_P1_L0.png,1024,1024
+H1_400612_P1_L2,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_400612_P1_L2.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_400612_P1_L2.png,1024,1024
+H1_402408_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_402408_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_402408_P2_L0.png,1024,1024
+H1_402562_P2_L5,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_402562_P2_L5.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_402562_P2_L5.png,1024,1024
+H1_403045_P1_L4,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_403045_P1_L4.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_403045_P1_L4.png,1024,1024
+H1_404169_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_404169_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_404169_P1_L0.png,1024,1024
+H1_404927_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_404927_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_404927_P3_L0.png,1024,1024
+H1_464086_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_464086_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_464086_P1_L0.png,1024,1024
+H1_464419_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_464419_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_464419_P1_L0.png,1024,1024
+H1_465078_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_465078_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_465078_P1_L0.png,1024,1024
+H1_465190_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_465190_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_465190_P1_L0.png,1024,1024
+H1_470491_P4_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_470491_P4_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_470491_P4_L0.png,1024,1024
+H1_471325_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_471325_P3_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_471325_P3_L0.png,1024,1024
+H1_488396_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_488396_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_488396_P1_L0.png,1024,1024
+H1_495601_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_495601_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_495601_P1_L0.png,1024,1024
+H1_496231_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_496231_P2_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_496231_P2_L0.png,1024,1024
+H1_498161_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_498161_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_498161_P1_L0.png,1024,1024
+H1_500078_P7_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_500078_P7_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_500078_P7_L0.png,1024,1024
+H1_95535_P6_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_95535_P6_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_95535_P6_L0.png,1024,1024
+H1_95535_P6_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_95535_P6_L1.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_95535_P6_L1.png,1024,1024
+H1_95535_P6_L2,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_95535_P6_L2.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_95535_P6_L2.png,1024,1024
+H1_95535_P6_L3,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_95535_P6_L3.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_95535_P6_L3.png,1024,1024
+H1_95548_P9_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_95548_P9_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_95548_P9_L0.png,1024,1024
+H1_95594_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_95594_P1_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,얼굴,건선/정면/H1_95594_P1_L0.png,1024,1024
+H1_95594_P1_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_95594_P1_L1.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,얼굴,건선/정면/H1_95594_P1_L1.png,1024,1024
+H1_98591_P15_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98591_P15_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_98591_P15_L0.png,1024,1024
+H1_98591_P16_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98591_P16_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_98591_P16_L0.png,1024,1024
+H1_98592_P12_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98592_P12_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_98592_P12_L0.png,1024,1024
+H1_98594_P8_L13,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98594_P8_L13.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_98594_P8_L13.png,1024,1024
+H1_98602_P2_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98602_P2_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_98602_P2_L0.png,1024,1024
+H1_98602_P3_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98602_P3_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_98602_P3_L0.png,1024,1024
+H1_98609_P11_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98609_P11_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_98609_P11_L0.png,1024,1024
+H1_98609_P1_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98609_P1_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,머리,건선/정면/H1_98609_P1_L0.png,1024,1024
+H1_98610_P19_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98610_P19_L0.json,건선,머리,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,여,머리,건선/정면/H1_98610_P19_L0.png,1024,1024
+H1_98617_P18_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98617_P18_L1.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_98617_P18_L1.png,1024,1024
+H1_98617_P18_L2,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98617_P18_L2.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_98617_P18_L2.png,1024,1024
+H1_98617_P18_L3,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98617_P18_L3.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_98617_P18_L3.png,1024,1024
+H1_98617_P19_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98617_P19_L0.json,건선,두피,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,두피,건선/정면/H1_98617_P19_L0.png,1024,1024
+H1_98617_P19_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98617_P19_L1.json,건선,두피,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,두피,건선/정면/H1_98617_P19_L1.png,1024,1024
+H1_98617_P19_L2,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98617_P19_L2.json,건선,두피,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,두피,건선/정면/H1_98617_P19_L2.png,1024,1024
+H1_98621_P20_L1,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98621_P20_L1.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_98621_P20_L1.png,1024,1024
+H1_98624_P14_L0,건선,정면,D:\skin-disease-ai\data\processed\images\TL_건선_정면\H1_98624_P14_L0.json,건선,얼굴,인설이 쌓인 붉은 구진이나 판으로 나타나는 염증성 피부질환,남,얼굴,건선/정면/H1_98624_P14_L0.png,1024,1024
+H0_195762_P5_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H0_195762_P5_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H0_195762_P5_L0.png,1024,1024
+H0_201197_P1_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H0_201197_P1_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H0_201197_P1_L0.png,1024,1024
+H0_205817_P19_L1,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H0_205817_P19_L1.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H0_205817_P19_L1.png,1024,1024
+H0_226986_P3_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H0_226986_P3_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H0_226986_P3_L0.png,1024,1024
+H0_227335_P10_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H0_227335_P10_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H0_227335_P10_L0.png,1024,1024
+H0_227358_P1_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H0_227358_P1_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H0_227358_P1_L0.png,1024,1024
+H1_200859_P6_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_200859_P6_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_200859_P6_L0.png,1024,1024
+H1_254700_P3_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_254700_P3_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_254700_P3_L0.png,1024,1024
+H1_280687_P12_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_280687_P12_L0.json,아토피,머리,심한 가려움을 동반하는 만성 습진의 일종,남,머리,아토피/정면/H1_280687_P12_L0.png,1024,1024
+H1_300346_P3_L2,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_300346_P3_L2.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_300346_P3_L2.png,1024,1024
+H1_315631_P2_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_315631_P2_L0.json,아토피,머리,심한 가려움을 동반하는 만성 습진의 일종,남,머리,아토피/정면/H1_315631_P2_L0.png,1024,1024
+H1_316119_P3_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_316119_P3_L0.json,아토피,머리,심한 가려움을 동반하는 만성 습진의 일종,남,머리,아토피/정면/H1_316119_P3_L0.png,1024,1024
+H1_316564_P3_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_316564_P3_L0.json,아토피,머리,심한 가려움을 동반하는 만성 습진의 일종,남,머리,아토피/정면/H1_316564_P3_L0.png,1024,1024
+H1_322637_P1_L1,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_322637_P1_L1.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_322637_P1_L1.png,1024,1024
+H1_324707_P2_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_324707_P2_L0.json,아토피,머리,심한 가려움을 동반하는 만성 습진의 일종,남,머리,아토피/정면/H1_324707_P2_L0.png,1024,1024
+H1_328252_P2_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_328252_P2_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_328252_P2_L0.png,1024,1024
+H1_328253_P55_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_328253_P55_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_328253_P55_L0.png,1024,1024
+H1_328592_P1_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_328592_P1_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_328592_P1_L0.png,1024,1024
+H1_353550_P1_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_353550_P1_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_353550_P1_L0.png,1024,1024
+H1_353567_P1_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_353567_P1_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_353567_P1_L0.png,1024,1024
+H1_369966_P1_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_369966_P1_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_369966_P1_L0.png,1024,1024
+H1_369966_P2_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_369966_P2_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_369966_P2_L0.png,1024,1024
+H1_369973_P4_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_369973_P4_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_369973_P4_L0.png,1024,1024
+H1_369976_P11_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_369976_P11_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_369976_P11_L0.png,1024,1024
+H1_371552_P5_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_371552_P5_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_371552_P5_L0.png,1024,1024
+H1_397450_P4_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_397450_P4_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_397450_P4_L0.png,1024,1024
+H1_397486_P4_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_397486_P4_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_397486_P4_L0.png,1024,1024
+H1_397490_P4_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_397490_P4_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_397490_P4_L0.png,1024,1024
+H1_97538_P3_L3,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_97538_P3_L3.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,여,얼굴,아토피/정면/H1_97538_P3_L3.png,1024,1024
+H1_97763_P7_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_97763_P7_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_97763_P7_L0.png,1024,1024
+H1_97783_P12_L3,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_97783_P12_L3.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_97783_P12_L3.png,1024,1024
+H1_97840_P1_L2,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_97840_P1_L2.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_97840_P1_L2.png,1024,1024
+H1_97842_P3_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_97842_P3_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H1_97842_P3_L0.png,1024,1024
+H1_97877_P1_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H1_97877_P1_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,여,얼굴,아토피/정면/H1_97877_P1_L0.png,1024,1024
+H2_18830_P5_L1,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H2_18830_P5_L1.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H2_18830_P5_L1.png,1024,1024
+H3_4332_P15_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H3_4332_P15_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H3_4332_P15_L0.png,1024,1024
+H4_3315_P2_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H4_3315_P2_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H4_3315_P2_L0.png,1024,1024
+H4_6183_P5_L1,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H4_6183_P5_L1.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H4_6183_P5_L1.png,1024,1024
+H4_6979_P19_L0,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H4_6979_P19_L0.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H4_6979_P19_L0.png,1024,1024
+H4_6986_P5_L1,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H4_6986_P5_L1.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H4_6986_P5_L1.png,1024,1024
+H4_7028_P2_L1,아토피,정면,D:\skin-disease-ai\data\processed\images\TL_아토피_정면\H4_7028_P2_L1.json,아토피,얼굴,심한 가려움을 동반하는 만성 습진의 일종,남,얼굴,아토피/정면/H4_7028_P2_L1.png,1024,1024
+H0_58802_P4_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H0_58802_P4_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,얼굴,여드름/정면/H0_58802_P4_L0.png,1024,1024
+H0_59127_P1_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H0_59127_P1_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,얼굴,여드름/정면/H0_59127_P1_L0.png,1024,1024
+H0_62352_P1_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H0_62352_P1_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,얼굴,여드름/정면/H0_62352_P1_L0.png,1024,1024
+H0_64147_P1_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H0_64147_P1_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,얼굴,여드름/정면/H0_64147_P1_L0.png,1024,1024
+H0_64417_P1_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H0_64417_P1_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,얼굴,여드름/정면/H0_64417_P1_L0.png,1024,1024
+H0_64561_P2_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H0_64561_P2_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,얼굴,여드름/정면/H0_64561_P2_L0.png,1024,1024
+H0_88674_P2_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H0_88674_P2_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,얼굴,여드름/정면/H0_88674_P2_L0.png,1024,1024
+H1_100498_P2_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_100498_P2_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",남,얼굴,여드름/정면/H1_100498_P2_L0.png,1024,1024
+H1_100607_P2_L3,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_100607_P2_L3.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",남,얼굴,여드름/정면/H1_100607_P2_L3.png,1024,1024
+H1_212937_P1_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_212937_P1_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",남,얼굴,여드름/정면/H1_212937_P1_L0.png,1024,1024
+H1_218442_P1_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_218442_P1_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",남,얼굴,여드름/정면/H1_218442_P1_L0.png,1024,1024
+H1_224400_P2_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_224400_P2_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,얼굴,여드름/정면/H1_224400_P2_L0.png,1024,1024
+H1_224724_P1_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_224724_P1_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",남,얼굴,여드름/정면/H1_224724_P1_L0.png,1024,1024
+H1_228438_P1_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_228438_P1_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,얼굴,여드름/정면/H1_228438_P1_L0.png,1024,1024
+H1_232008_P3_L1,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_232008_P3_L1.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,얼굴,여드름/정면/H1_232008_P3_L1.png,1024,1024
+H1_277115_P1_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_277115_P1_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,얼굴,여드름/정면/H1_277115_P1_L0.png,1024,1024
+H1_380748_P2_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_380748_P2_L0.json,여드름,머리,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,머리,여드름/정면/H1_380748_P2_L0.png,1024,1024
+H1_93650_P5_L0,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_93650_P5_L0.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",여,얼굴,여드름/정면/H1_93650_P5_L0.png,1024,1024
+H1_96231_P7_L8,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_96231_P7_L8.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",남,얼굴,여드름/정면/H1_96231_P7_L8.png,1024,1024
+H1_96558_P10_L18,여드름,정면,D:\skin-disease-ai\data\processed\images\TL_여드름_정면\H1_96558_P10_L18.json,여드름,얼굴,"면포와 구진, 농포, 결절 등으로 나타나는 피지선과 모낭의 만성질환",남,얼굴,여드름/정면/H1_96558_P10_L18.png,1024,1024
+H1_206727_P1_L0,주사,정면,D:\skin-disease-ai\data\processed\images\TL_주사_정면\H1_206727_P1_L0.json,주사,얼굴,얼굴의 가운데 부위에 발생하는 지속적인 홍반이 특징인 염증성 피부질환,여,얼굴,주사/정면/H1_206727_P1_L0.png,1024,1024
+H1_206986_P1_L0,주사,정면,D:\skin-disease-ai\data\processed\images\TL_주사_정면\H1_206986_P1_L0.json,주사,얼굴,얼굴의 가운데 부위에 발생하는 지속적인 홍반이 특징인 염증성 피부질환,남,얼굴,주사/정면/H1_206986_P1_L0.png,1024,1024
+H1_207093_P259_L0,주사,정면,D:\skin-disease-ai\data\processed\images\TL_주사_정면\H1_207093_P259_L0.json,주사,얼굴,얼굴의 가운데 부위에 발생하는 지속적인 홍반이 특징인 염증성 피부질환,여,얼굴,주사/정면/H1_207093_P259_L0.png,1024,1024
+H1_207414_P1_L1,주사,정면,D:\skin-disease-ai\data\processed\images\TL_주사_정면\H1_207414_P1_L1.json,주사,얼굴,얼굴의 가운데 부위에 발생하는 지속적인 홍반이 특징인 염증성 피부질환,남,얼굴,주사/정면/H1_207414_P1_L1.png,1024,1024
+H1_208616_P1_L0,주사,정면,D:\skin-disease-ai\data\processed\images\TL_주사_정면\H1_208616_P1_L0.json,주사,얼굴,얼굴의 가운데 부위에 발생하는 지속적인 홍반이 특징인 염증성 피부질환,여,얼굴,주사/정면/H1_208616_P1_L0.png,1024,1024
+H0_174378_P3_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H0_174378_P3_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,머리,지루/정면/H0_174378_P3_L0.png,1024,1024
+H0_197730_P2_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H0_197730_P2_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,머리,지루/정면/H0_197730_P2_L0.png,1024,1024
+H0_205790_P1_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H0_205790_P1_L0.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,얼굴,지루/정면/H0_205790_P1_L0.png,1024,1024
+H0_205790_P9_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H0_205790_P9_L0.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,얼굴,지루/정면/H0_205790_P9_L0.png,1024,1024
+H0_205791_P8_L2,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H0_205791_P8_L2.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,얼굴,지루/정면/H0_205791_P8_L2.png,1024,1024
+H0_205795_P4_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H0_205795_P4_L0.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,얼굴,지루/정면/H0_205795_P4_L0.png,1024,1024
+H0_206062_P1_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H0_206062_P1_L0.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,얼굴,지루/정면/H0_206062_P1_L0.png,1024,1024
+H0_206336_P3_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H0_206336_P3_L0.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,얼굴,지루/정면/H0_206336_P3_L0.png,1024,1024
+H1_205469_P8_L4,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_205469_P8_L4.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,얼굴,지루/정면/H1_205469_P8_L4.png,1024,1024
+H1_242168_P1_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_242168_P1_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,머리,지루/정면/H1_242168_P1_L0.png,1024,1024
+H1_247738_P1_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_247738_P1_L0.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,얼굴,지루/정면/H1_247738_P1_L0.png,1024,1024
+H1_249465_P3_L2,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_249465_P3_L2.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,얼굴,지루/정면/H1_249465_P3_L2.png,1024,1024
+H1_251149_P4_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_251149_P4_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,머리,지루/정면/H1_251149_P4_L0.png,1024,1024
+H1_253889_P3_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_253889_P3_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,머리,지루/정면/H1_253889_P3_L0.png,1024,1024
+H1_287275_P1_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_287275_P1_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,머리,지루/정면/H1_287275_P1_L0.png,1024,1024
+H1_291295_P1_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_291295_P1_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,머리,지루/정면/H1_291295_P1_L0.png,1024,1024
+H1_300349_P8_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_300349_P8_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,머리,지루/정면/H1_300349_P8_L0.png,1024,1024
+H1_313115_P5_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_313115_P5_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,머리,지루/정면/H1_313115_P5_L0.png,1024,1024
+H1_324292_P1_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_324292_P1_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,머리,지루/정면/H1_324292_P1_L0.png,1024,1024
+H1_324357_P1_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_324357_P1_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,머리,지루/정면/H1_324357_P1_L0.png,1024,1024
+H1_324376_P3_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_324376_P3_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,머리,지루/정면/H1_324376_P3_L0.png,1024,1024
+H1_374055_P1_L2,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_374055_P1_L2.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,얼굴,지루/정면/H1_374055_P1_L2.png,1024,1024
+H1_376372_P14_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_376372_P14_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,머리,지루/정면/H1_376372_P14_L0.png,1024,1024
+H1_388615_P9_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_388615_P9_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,머리,지루/정면/H1_388615_P9_L0.png,1024,1024
+H1_469231_P1_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_469231_P1_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,머리,지루/정면/H1_469231_P1_L0.png,1024,1024
+H1_501086_P1_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_501086_P1_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,머리,지루/정면/H1_501086_P1_L0.png,1024,1024
+H1_501220_P1_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_501220_P1_L0.json,지루,머리,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,머리,지루/정면/H1_501220_P1_L0.png,1024,1024
+H1_99167_P6_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_99167_P6_L0.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,얼굴,지루/정면/H1_99167_P6_L0.png,1024,1024
+H1_99169_P1_L5,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_99169_P1_L5.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,얼굴,지루/정면/H1_99169_P1_L5.png,1024,1024
+H1_99176_P5_L4,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_99176_P5_L4.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",남,얼굴,지루/정면/H1_99176_P5_L4.png,1024,1024
+H1_99179_P5_L0,지루,정면,D:\skin-disease-ai\data\processed\images\TL_지루_정면\H1_99179_P5_L0.json,지루,얼굴,"두피, 눈썹, 코입주름 등 피지분비가 있는 곳을 따라 발생하는 염증성 피부질환",여,얼굴,지루/정면/H1_99179_P5_L0.png,1024,1024
