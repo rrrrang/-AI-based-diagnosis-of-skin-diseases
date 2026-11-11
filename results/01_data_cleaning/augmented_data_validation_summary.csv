@@ -1,0 +1,7 @@
+﻿disease,image_count,json_count,image_duplicates,duplicate_identifiers,json_errors,annotation_errors,missing_images,unmatched_images,damaged_images,identifier_mismatches,disease_mismatches,view_mismatches
+건선,2400,2400,0,0,0,0,0,0,0,0,0,0
+아토피,2400,2400,0,0,0,0,0,0,0,0,0,0
+여드름,2400,2400,0,0,0,0,0,0,0,0,0,0
+정상,2400,2400,0,0,0,0,0,0,0,0,0,0
+주사,2400,2400,0,0,0,0,0,0,0,0,0,0
+지루,2400,2400,0,0,0,0,0,0,0,0,0,0
