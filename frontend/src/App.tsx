@@ -22,7 +22,7 @@ import "./App.css";                                                       // 앱
 export default function App() {
   // 의사 화면에만 전체 페이지 스크롤과 고정 헤더 적용
   const location = useLocation();
-  const isDoctor = location.pathname.startsWith("/doctor");
+  const isDoctor: number = location.pathname.startsWith("/doctor");
 
   return (
     <div className={`app-container ${isDoctor ? "doctor-app" : ""}`}>
