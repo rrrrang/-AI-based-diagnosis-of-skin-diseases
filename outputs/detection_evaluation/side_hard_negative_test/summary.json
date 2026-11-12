@@ -1,0 +1,117 @@
+{
+  "status": "completed",
+  "split": "test_side",
+  "images": 535,
+  "normal_images": 89,
+  "weights_sha256": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
+  "test_manifest_sha256": "fab5919584759a115b9180b3f0c4e9ddc74fadeff8dba28c1042bfafc2c8e74b",
+  "imgsz": 640,
+  "batch": 8,
+  "quantize": 32,
+  "region_metrics_rect": true,
+  "mAP_confidence_floor": 0.001,
+  "nms_iou": 0.7,
+  "operating_confidence": 0.25,
+  "threshold_selected_on_test": false,
+  "annotation_scope": "provider_coarse_skin_range_not_precise_lesion_boundary",
+  "precise_lesion_boundary_verified": false,
+  "model_variant": "side_hard_negative",
+  "test_previously_observed": true,
+  "independent_clinical_test": false,
+  "backend_replaced": false,
+  "region_metrics": {
+    "precision": 0.9879998706569328,
+    "recall": 0.9810192445581993,
+    "mAP50": 0.9901639334136526,
+    "mAP50_95": 0.8977324180861147,
+    "reported_precision_recall_use_library_max_f1_point": true
+  },
+  "operating_metrics": {
+    "confidence": 0.25,
+    "threshold_selected_on_test": false,
+    "normal_images": 89,
+    "normal_images_with_false_detection": 0,
+    "normal_image_false_positive_rate": 0.0,
+    "diseased_images": 446,
+    "diseased_images_without_detection": 1,
+    "correct_disease_candidate_images": 442,
+    "image_disease_candidate_recall": 0.9910313901345291,
+    "candidate_recall_is_not_localization_recall": true,
+    "prediction_rect": false
+  },
+  "image_level_metrics": {
+    "normal_images": 89,
+    "normal_false_disease_images": 0,
+    "normal_false_positive_rate": 0.0,
+    "disease_images": 446,
+    "correct_disease_top1": 442,
+    "disease_accuracy": 0.9910313901345291,
+    "disease_abstained": 1,
+    "per_disease": {
+      "0": {
+        "images": 89,
+        "correct_top1": 87,
+        "abstained": 0
+      },
+      "1": {
+        "images": 89,
+        "correct_top1": 87,
+        "abstained": 1
+      },
+      "2": {
+        "images": 89,
+        "correct_top1": 89,
+        "abstained": 0
+      },
+      "3": {
+        "images": 90,
+        "correct_top1": 90,
+        "abstained": 0
+      },
+      "4": {
+        "images": 89,
+        "correct_top1": 89,
+        "abstained": 0
+      }
+    },
+    "normal_confirmed": false
+  },
+  "baseline_image_level_metrics": {
+    "normal_images": 89,
+    "normal_false_disease_images": 12,
+    "normal_false_positive_rate": 0.1348314606741573,
+    "disease_images": 446,
+    "correct_disease_top1": 429,
+    "disease_accuracy": 0.9618834080717489,
+    "disease_abstained": 0,
+    "per_disease": {
+      "0": {
+        "images": 89,
+        "correct_top1": 75,
+        "abstained": 0
+      },
+      "1": {
+        "images": 89,
+        "correct_top1": 88,
+        "abstained": 0
+      },
+      "2": {
+        "images": 89,
+        "correct_top1": 87,
+        "abstained": 0
+      },
+      "3": {
+        "images": 90,
+        "correct_top1": 90,
+        "abstained": 0
+      },
+      "4": {
+        "images": 89,
+        "correct_top1": 89,
+        "abstained": 0
+      }
+    },
+    "normal_confirmed": false
+  },
+  "baseline_weights_sha256": "f949d70505ae042bb8336f713b94b8e86440299665e1722a2f97145ac1a2cc3a"
+}

@@ -1,0 +1,56 @@
+{
+  "model_version": "yolo11n-side-hard-negative-20261112",
+  "weights_sha256": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
+  "files": [
+    {
+      "path": "src/backend_inference.py",
+      "sha256": "310919fcf98ba0238eb1dd67893044ac5ebafc5bf67d708db94c97226851ad77",
+      "size_bytes": 3538
+    },
+    {
+      "path": "src/disease_detection.py",
+      "sha256": "3cb9c26e3f5b5ca912bce1525cbf966dd8b092eda684d97dc57b616d69e1a3ba",
+      "size_bytes": 62790
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "401e54da28b9fa0a05f098b808c9145fa12038aa51bb6f789a63f81781214ac9",
+      "size_bytes": 962
+    },
+    {
+      "path": "models/yolo11_detect/side_hard_negative/weights/best.pt",
+      "sha256": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
+      "size_bytes": 5502746
+    },
+    {
+      "path": "outputs/detection_evaluation/side_hard_negative_test/summary.json",
+      "sha256": "7ce17a1a57770ebf41df77bca32cefb4456d4187a7bdfba2c28306e8de2a14be",
+      "size_bytes": 3163
+    },
+    {
+      "path": "outputs/detection_evaluation/side_hard_negative_test/import_verification.json",
+      "sha256": "805ae6ff00ba72e2c6806faede6253f14fbc8f54d8fd5ec91643c28146e06df4",
+      "size_bytes": 5687
+    },
+    {
+      "path": "outputs/backend_handoff/contract.json",
+      "sha256": "2102ffbf9cc56fb138d310b8c991c1e4d3ed1cdfee967e3579e78f20da53caec",
+      "size_bytes": 1230
+    },
+    {
+      "path": "outputs/backend_handoff/example_response.json",
+      "sha256": "f398fa2bc411bdaa34cfdb91322cd0a7437f9525b741345e1710434cffc920de",
+      "size_bytes": 1456
+    },
+    {
+      "path": "outputs/backend_handoff/README.md",
+      "sha256": "8fde656819e29a1cd28c2c9253334322110a59b5c952f31efea97203c7dd62ba",
+      "size_bytes": 5345
+    },
+    {
+      "path": "outputs/backend_handoff/validation.json",
+      "sha256": "2c5151179f3a835c0b61611e02e407d67c910d10be2e47ce225891fc5681cc5f",
+      "size_bytes": 3135
+    }
+  ]
+}

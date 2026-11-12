@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "supported_role": "side_closeup",
+  "unsupported_role": "front",
+  "settings": {
+    "imgsz": 640,
+    "confidence": 0.25,
+    "nms_iou": 0.7,
+    "device": "cpu"
+  },
+  "weights_sha256": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
+  "python_API": "backend_inference.DiseasePredictor.predict(image, image_id, role)",
+  "statuses": [
+    "candidates_for_review",
+    "undetermined",
+    "unsupported_input"
+  ],
+  "disease_scores": "five fixed classes; score in [0,1] or null; no sum normalization; missing is not 0% probability",
+  "normal_probability_available": false,
+  "localization_available": false,
+  "HTTP_endpoint_implemented": false,
+  "model_version": "yolo11n-side-hard-negative-20261112",
+  "weights_path": "models/yolo11_detect/side_hard_negative/weights/best.pt",
+  "calibration_applied": false,
+  "class_names": {
+    "0": "psoriasis",
+    "1": "atopic_dermatitis",
+    "2": "acne",
+    "3": "rosacea",
+    "4": "seborrheic_dermatitis"
+  },
+  "preprocessing": {
+    "mode": "full",
+    "rect": false,
+    "quantize": 32,
+    "augment": false,
+    "max_det": 300,
+    "color": "RGB",
+    "orientation": "EXIF transpose"
+  }
+}

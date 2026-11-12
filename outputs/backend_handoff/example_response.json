@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "image_id": "smoke-class-0",
+  "input_role": "side_closeup",
+  "status": "candidates_for_review",
+  "disease_scores": [
+    {
+      "class_id": 0,
+      "name": "psoriasis",
+      "label": "건선",
+      "score": 0.9593830108642578,
+      "detected": true
+    },
+    {
+      "class_id": 1,
+      "name": "atopic_dermatitis",
+      "label": "아토피",
+      "score": null,
+      "detected": false
+    },
+    {
+      "class_id": 2,
+      "name": "acne",
+      "label": "여드름",
+      "score": null,
+      "detected": false
+    },
+    {
+      "class_id": 3,
+      "name": "rosacea",
+      "label": "주사",
+      "score": null,
+      "detected": false
+    },
+    {
+      "class_id": 4,
+      "name": "seborrheic_dermatitis",
+      "label": "지루",
+      "score": null,
+      "detected": false
+    }
+  ],
+  "top_candidate": {
+    "class_id": 0,
+    "name": "psoriasis",
+    "label": "건선",
+    "score": 0.9593830108642578,
+    "detected": true
+  },
+  "score_type": "uncalibrated_detection_confidence",
+  "scores_sum_to_100": false,
+  "normal_confirmed": false,
+  "model_sha256": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
+  "model_version": "yolo11n-side-hard-negative-20261112",
+  "inference_settings": {
+    "imgsz": 640,
+    "confidence": 0.25,
+    "nms_iou": 0.7,
+    "device": "cpu"
+  },
+  "localization_available": false
+}

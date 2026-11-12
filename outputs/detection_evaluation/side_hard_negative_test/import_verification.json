@@ -1,0 +1,189 @@
+{
+  "status": "passed",
+  "prediction_rows": 535,
+  "both_model_hashes_match": true,
+  "test_manifest_sha256_matches": true,
+  "operating_and_top1_metrics_recomputed": true,
+  "region_mAP": "uploaded Colab values; not recomputed from operating-confidence predictions",
+  "disease_improved_cases": [
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_69422_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    },
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_69468_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    },
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_69784_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    },
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_69868_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    },
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_70118_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    },
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_70331_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    },
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_70363_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    },
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_70684_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    },
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_71397_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    },
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_71412_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    },
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_71436_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    },
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_71951_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    },
+    {
+      "sample_id": "Training/TL_아토피_측면/Z4_74289_P0_L0",
+      "truth_class_id": 1,
+      "truth_name": "atopic_dermatitis",
+      "baseline_class_id": 4,
+      "trial_class_id": 1,
+      "trial_name": "atopic_dermatitis"
+    },
+    {
+      "sample_id": "Training/TL_여드름_측면/Z4_89876_P0_L0",
+      "truth_class_id": 2,
+      "truth_name": "acne",
+      "baseline_class_id": 1,
+      "trial_class_id": 2,
+      "trial_name": "acne"
+    },
+    {
+      "sample_id": "Training/TL_여드름_측면/Z4_89924_P0_L0",
+      "truth_class_id": 2,
+      "truth_name": "acne",
+      "baseline_class_id": 0,
+      "trial_class_id": 2,
+      "trial_name": "acne"
+    }
+  ],
+  "disease_regressed_cases": [
+    {
+      "sample_id": "Training/TL_아토피_측면/Z4_74109_P0_L0",
+      "truth_class_id": 1,
+      "truth_name": "atopic_dermatitis",
+      "baseline_class_id": 1,
+      "trial_class_id": null,
+      "trial_name": "undetermined"
+    },
+    {
+      "sample_id": "Training/TL_아토피_측면/Z4_75998_P0_L0",
+      "truth_class_id": 1,
+      "truth_name": "atopic_dermatitis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    }
+  ],
+  "remaining_disease_errors": [
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_70572_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 1,
+      "trial_name": "atopic_dermatitis"
+    },
+    {
+      "sample_id": "Training/TL_건선_측면/Z4_71575_P0_L0",
+      "truth_class_id": 0,
+      "truth_name": "psoriasis",
+      "baseline_class_id": 1,
+      "trial_class_id": 1,
+      "trial_name": "atopic_dermatitis"
+    },
+    {
+      "sample_id": "Training/TL_아토피_측면/Z4_74109_P0_L0",
+      "truth_class_id": 1,
+      "truth_name": "atopic_dermatitis",
+      "baseline_class_id": 1,
+      "trial_class_id": null,
+      "trial_name": "undetermined"
+    },
+    {
+      "sample_id": "Training/TL_아토피_측면/Z4_75998_P0_L0",
+      "truth_class_id": 1,
+      "truth_name": "atopic_dermatitis",
+      "baseline_class_id": 1,
+      "trial_class_id": 0,
+      "trial_name": "psoriasis"
+    }
+  ],
+  "uploaded_file_sha256": {
+    "summary.json": "7ce17a1a57770ebf41df77bca32cefb4456d4187a7bdfba2c28306e8de2a14be",
+    "operating_predictions.json": "d3ec399658ed8c0fb7eb77ff2009613126c6727ea368477ca8186d0faff84ba5"
+  },
+  "training_executed": false,
+  "new_test_inference_executed": false,
+  "backend_replaced": false
+}
