@@ -53,6 +53,13 @@ export interface DoctorCase {
   // AI 분석 정보
   aiState: AIState;
   predictions: Prediction[];
+  photoIndices?: number[];
+  analysis?: {
+    candidate: string | null;
+    decision: "majority" | "single_qualified" | "normal_consensus" | "deferred" | "undetermined";
+    votes: Record<string, number>;
+    analyzedPhotoIndex: number;
+  } | null;
 
   // AI 분석 원본 및 마스킹 이미지
   analysisPhoto: File | Blob | null;

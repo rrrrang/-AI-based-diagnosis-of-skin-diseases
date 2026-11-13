@@ -1,3 +1,4 @@
+import { apiEnabled } from "../../services/api";
 
 /**
  * PatientReview.tsx
@@ -518,7 +519,20 @@ export default function PatientReview({
               </div>
 
               {/* 질환별 세로 막대그래프 */}
-              {resultAvailable &&
+              {apiEnabled ? (
+                <div className="doctor-analysis-pending">
+                  <div>
+                    <strong>{patient.analysis?.decision === "deferred" ? "판단 보류" :
+                      patient.analysis?.decision === "undetermined" ? "판단 불가" :
+                      patient.analysis?.candidate ? `검토 후보 · ${patient.analysis.candidate}` :
+                      patient.aiState === "실패" ? "분석 실패" : "AI 분석 결과 대기 중"}</strong>
+                    {patient.analysis && (
+                      <ul>{Object.entries(patient.analysis.votes).map(([code, count]) =>
+                        <li key={code}>{code} · {count}표</li>)}</ul>
+                    )}
+                  </div>
+                </div>
+              ) : resultAvailable &&
               patient.predictions.length > 0 ? (
                 <VerticalPredictionChart
                   data={patient.predictions}
@@ -545,7 +559,7 @@ export default function PatientReview({
               )}
 
               {/* AI 미연결 시 테스트 버튼 */}
-              {patient.aiState === "대기" && (
+              {!apiEnabled && patient.aiState === "대기" && (
                 <div className="doctor-demo-action">
                   <button
                     type="button"

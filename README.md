@@ -21,3 +21,15 @@ python -m unittest discover -s tests
 `GET /api/health`와 `GET /api/doctors`를 사용할 수 있습니다. SQLite 경로는 `SKINAI_DB_PATH`로 지정합니다. 의사 목록은 시연 데이터입니다.
 
 환자 접수는 `POST /api/cases`에 multipart 요청을 보내며, `photo0`은 필수입니다. 응답의 `accessToken`은 케이스 상세와 사진 조회의 Bearer 토큰입니다. 사진은 `SKINAI_PHOTO_DIR`로 지정한 비공개 폴더에 저장하며 기본 위치는 `data/private-photos`입니다. 시연에는 합성 사진을 사용합니다.
+
+## 환자·의사 앱 연동 시연
+
+API와 워커는 같은 `SKINAI_DB_PATH`와 `SKINAI_PHOTO_DIR`를 사용합니다. API 프로세스의 `SKINAI_DEMO_DOCTOR_TOKENS`에 의사 ID와 시연용 토큰을 JSON으로 설정합니다. 의사 앱에서 토큰을 입력해 배정된 접수에 접근합니다. 환자 접근 토큰은 현재 브라우저 탭의 세션에 보관합니다.
+
+```powershell
+python -m app.worker --mobilenet-root D:/models/mobile --resnet-root D:/models/resnet --yolo-root D:/models/yolo --thresholds ensemble/thresholds.example.json
+```
+
+환자와 의사 앱은 각각의 프론트 폴더에서 `npm ci` 후 `VITE_SKINAI_API=true`를 설정하고 `npm run dev`로 시작합니다. 기본 주소는 환자 5173, 의사 5174이며 개발 서버는 `/api`를 8000번 포트로 전달합니다. 다른 주소는 `SKINAI_API_TARGET`으로 지정합니다.
+
+검증한 범위는 두 앱 빌드, 백엔드 테스트, 실제 세 가중치로 합성 사진 분석 후 브라우저에서 의사 소견을 공개하고 환자 API로 조회하는 흐름입니다.

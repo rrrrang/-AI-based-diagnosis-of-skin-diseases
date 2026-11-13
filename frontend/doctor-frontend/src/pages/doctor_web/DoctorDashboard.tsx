@@ -18,6 +18,7 @@ import {
   Trash2,
 } from "lucide-react";
 
+import { apiEnabled, doctorTokenKey, readCasePhotos } from "../../services/api";
 import PatientReview from "./PatientReview";
 
 import type { DoctorCase } from "../../types/doctorCase";
@@ -83,6 +84,9 @@ export default function DoctorDashboard() {
   // 데이터 조회 상태
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+  const [token, setToken] = useState("");
+  const [loadedPhotos, setLoadedPhotos] = useState<DoctorCase | null>(null);
+  const [photoError, setPhotoError] = useState("");
 
   // 담당 의사 ID
   const [doctorId, setDoctorId] = useState<string | null>(
@@ -132,7 +136,7 @@ export default function DoctorDashboard() {
       )[0];
 
       setDoctorId(
-        remembered ?? recent?.doctorId ?? null
+        (apiEnabled ? recent?.doctorId : remembered ?? recent?.doctorId) ?? null
       );
     } catch (error) {
       setLoadError(
@@ -248,6 +252,16 @@ export default function DoctorDashboard() {
      10. 예약 날짜 변경
   ======================================== */
 
+  useEffect(() => {
+    if (!apiEnabled || !selectedPatient) return;
+    let cancelled = false;
+    void readCasePhotos(selectedPatient).then(
+      (item) => { if (!cancelled) { setLoadedPhotos(item); setPhotoError(""); } },
+      () => { if (!cancelled) setPhotoError("접수 사진을 불러오지 못했습니다."); },
+    );
+    return () => { cancelled = true; };
+  }, [selectedPatient]);
+
   const changeDate = (offset: number) => {
     const nextDate = new Date(`${date}T12:00:00`);
 
@@ -267,21 +281,21 @@ export default function DoctorDashboard() {
     setPage(1);
     setSelectedId(null);
   };
-  
+
   /* ==========================================
      시연용 예약자 명단 초기화
      - 버튼 클릭 시 확인창 표시
      - 현재 담당 의사의 기록만 삭제
      - 삭제 후 예약 목록 자동 갱신
   ========================================== */
-  
+
   const handleClearReservations = async () => {
     // 담당 의사가 정해지지 않았다면 중단
     if (!doctorId) {
       window.alert("담당 의사 정보가 없습니다.");
       return;
     }
-  
+
     // 실수로 기록을 삭제하지 않도록 확인
     const confirmed = window.confirm(
       `${doctorName ?? "현재 담당 의사"}의 시연 예약 기록을 ` +
@@ -289,28 +303,28 @@ export default function DoctorDashboard() {
       `환자 사진, 문진, AI 결과 및 의사 소견도 함께 삭제되며 ` +
       `복구할 수 없습니다.`
     );
-  
+
     if (!confirmed) {
       return;
     }
-  
+
     try {
       // 저장된 시연 접수 기록 삭제
       await clearDoctorReservations(doctorId);
-  
+
       // 선택 중인 환자와 페이지 초기화
       setSelectedId(null);
       setPage(1);
-  
+
       // 예약자 목록 다시 불러오기
       await refresh();
-  
+
       window.alert(
         "현재 담당 의사의 시연 기록이 초기화되었습니다."
       );
     } catch (error) {
       console.error("예약 기록 초기화 실패:", error);
-  
+
       window.alert(
         "기록 삭제 중 오류가 발생했습니다."
       );
@@ -324,6 +338,21 @@ export default function DoctorDashboard() {
 
   return (
     <main className="doctor-dashboard">
+      {apiEnabled && (
+        <form onSubmit={(event) => {
+          event.preventDefault();
+          sessionStorage.setItem(doctorTokenKey, token.trim());
+          setToken("");
+          setCases([]);
+          setSelectedId(null);
+          setLoadedPhotos(null);
+          void refresh();
+        }}>
+          <label>시연용 의사 토큰 <input type="password" value={token}
+            onChange={(event) => setToken(event.target.value)} /></label>
+          <button type="submit">접수 목록 연결</button>
+        </form>
+      )}
 
       {/* 상단 담당 의사 정보 */}
       <div className="doctor-heading">
@@ -458,12 +487,12 @@ export default function DoctorDashboard() {
               <RefreshCw size={17} />
             </button>
 
-            
+
             {/* ==================================
                 시연용 예약 기록 초기화 버튼
             ================================== */}
-            
-            <button
+
+            {!apiEnabled && <button
               type="button"
               className="doctor-clear-button"
               onClick={() => void handleClearReservations()}
@@ -472,7 +501,7 @@ export default function DoctorDashboard() {
             >
               <Trash2 size={16} />
               시연 기록 초기화
-            </button>
+            </button>}
 
           </div>
         </div>
@@ -619,8 +648,12 @@ export default function DoctorDashboard() {
       </section>
 
       {/* 2단계 환자 자료 및 AI 분석 연결 */}
+      {selectedPatient && photoError && <p role="alert">{photoError}</p>}
       <PatientReview
-        patient={selectedPatient}
+        patient={loadedPhotos && selectedPatient && loadedPhotos.id === selectedPatient.id
+          ? { ...selectedPatient, photos: loadedPhotos.photos,
+              analysisPhoto: loadedPhotos.photos[selectedPatient.analysis?.analyzedPhotoIndex ?? -1] ?? null }
+          : selectedPatient}
         onSaved={refresh}
       />
 

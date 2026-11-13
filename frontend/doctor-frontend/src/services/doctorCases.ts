@@ -110,7 +110,10 @@ async function transaction<T>(
    3. 환자 접수 목록 조회
 ========================================== */
 
+import { apiEnabled, listAssignedCases, saveReview } from "./api";
+
 export async function listDoctorCases(): Promise<DoctorCase[]> {
+  if (apiEnabled) return listAssignedCases();
   const entries = await transaction<DoctorCase[]>(
     "readonly",
     (store, resolve, reject) => {
@@ -136,6 +139,11 @@ export async function listDoctorCases(): Promise<DoctorCase[]> {
 ========================================== */
 
 export async function saveDoctorCase(item: DoctorCase): Promise<void> {
+  if (apiEnabled) {
+    await saveReview(item);
+    window.dispatchEvent(new Event(UPDATED_EVENT));
+    return;
+  }
   await transaction<void>(
     "readwrite",
     (store, resolve, reject) => {
