@@ -1,6 +1,6 @@
 # 피부질환 AI 진단 보조 시스템
 
-- [백엔드 통합 규칙](backend_integration_rules.md)
+- [백엔드 통합 규칙 초안](backend_integration_rules.md)
 - [기존 API 초안](backend_api_draft.md)
 - [환자 UI](frontend/patient-frontend)
 - [의사 UI](frontend/doctor-frontend)
