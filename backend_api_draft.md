@@ -9,7 +9,7 @@
 |---|---|---|---|---|
 | 1 | GET | `/api/health` | 서버 살아 있는지 확인 | CI/CD 검사 |
 | 2 | GET | `/api/doctors` | 예약 가능한 의사 목록 | 환자: 의사 예약 |
-| 3 | POST | `/api/cases` | 접수 등록 (환자 정보 + 예약 + 사진 3장) → 접수번호 발급 | 환자: 정보 입력 완료 |
+| 3 | POST | `/api/cases` | 접수 등록 (환자 정보 + 예약 + 사진 2~3장) → 접수번호 발급 | 환자: 정보 입력 완료 |
 | 4 | POST | `/api/cases/{id}/analyze` | AI 분석 실행 (부위 사진으로) | 접수 직후 자동 |
 | 5 | GET | `/api/cases/{id}` | 접수 1건 조회 (AI 결과 + 의사 소견 포함) | 환자: 결과 / 의사: 검토 |
 | 6 | GET | `/api/cases?doctorId=d1` | 담당 의사의 접수 목록 | 의사: 대시보드 |
@@ -20,12 +20,12 @@
 ## 3. 접수 등록 (POST /api/cases)
 
 - 형식: `multipart/form-data` (사진 파일 때문에)
-- 보내는 값: `doctorId`, `date`(YYYY-MM-DD), `time`(HH:mm), `patientName`, `age`, `gender`(female/male/none), `symptoms`(목록), `duration`, `description`(최대 500자), `photo0`(정면, 필수), `photo1`, `photo2`(부위, 선택)
+- 보내는 값: `doctorId`, `date`(YYYY-MM-DD), `time`(HH:mm), `patientName`, `age`, `gender`(female/male/none), `symptoms`(목록), `duration`, `description`(최대 500자), `photo0`(정면, 필수), `photo1`(근접, 필수), `photo2`(추가 근접, 선택). 사진 필드마다 1장만 보내며 최소 2장, 최대 3장입니다. 필수 사진 누락·같은 사진 필드 중복·추가 파일은 접수 전에 422로 거절합니다.
 - 받는 값: `{ "id": "REQ-...", "aiState": "대기", "reviewState": "검토 대기" }`
 
 ## 4. AI 분석 (POST /api/cases/{id}/analyze)
 
-- 모델은 **병변 확대 사진**용이라서 `photo1`(없으면 `photo2`)을 분석합니다. 정면 사진(`photo0`)은 분석하지 않습니다.
+- 신규 접수는 필수 근접 사진 `photo1`을 분석합니다. 선택 사진 `photo2`는 저장하여 의사가 확인하며, 현재 두 근접 사진을 함께 분석하는 기능은 없습니다. 정면 `photo0`은 의사 검토용입니다. 기존 접수의 `photo1`이 없는 경우에만 워커의 `photo2` 대체 처리 규칙을 유지합니다.
 - AI 상태 흐름: `대기` → `분석 중` → `완료` 또는 `실패`
 - 모델 결과 → 프론트 형식 변환
 

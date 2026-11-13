@@ -1,4 +1,4 @@
-﻿node_modules/
+node_modules/
 dist/
 *.tsbuildinfo
 .env
@@ -6,3 +6,8 @@ dist/
 !.env.example
 /frontend/patient-frontend/test-results/
 /frontend/patient-frontend/playwright-report/
+__pycache__/
+*.py[cod]
+/data/
+/verification/
+.venv/

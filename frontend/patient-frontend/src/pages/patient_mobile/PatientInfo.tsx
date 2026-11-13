@@ -90,8 +90,8 @@ function PatientInfo() {
     // 저장 중에는 같은 환자의 접수 버튼을 다시 처리하지 않음
     if (submitting) return;
     // 이미지 업로드 데이터가 없는 경우
-    if (!uploadData?.imageFile) {
-      setErrorMessage("피부 사진을 먼저 등록해 주세요.");
+    if (!uploadData?.imageFiles?.[0] || !uploadData.imageFiles[1]) {
+      setErrorMessage("정면 사진과 부위 1의 근접 사진을 먼저 등록해 주세요.");
       return;
     }
     // 이름 미입력 확인

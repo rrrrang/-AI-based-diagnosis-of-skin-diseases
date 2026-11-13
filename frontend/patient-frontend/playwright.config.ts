@@ -20,7 +20,7 @@ export default defineConfig({
 
   use: {
     browserName: "chromium",
-    baseURL: "http://127.0.0.1:18140",
+    baseURL: "http://127.0.0.1:18161",
     viewport: { width: 390, height: 844 },
 
     // 실패한 경우 확인할 화면과 실행 기록
@@ -31,9 +31,9 @@ export default defineConfig({
   webServer: {
     // 환자 UI를 빌드한 뒤 검사용 서버 실행
     command:
-      "npm run build && npm run preview -- --host 127.0.0.1 --port 18140 --strictPort",
+      "npm run build && npm run preview -- --host 127.0.0.1 --port 18161 --strictPort",
 
-    url: "http://127.0.0.1:18140",
+    url: "http://127.0.0.1:18161",
     timeout: 180_000,
 
     // 다른 서버를 잘못 검사하지 않도록 기존 서버 재사용 금지

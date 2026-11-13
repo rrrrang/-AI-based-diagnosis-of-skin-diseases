@@ -23,7 +23,8 @@ class StartupTests(unittest.TestCase):
                     result = client.post("/api/cases", data={
                         "doctorId": "d1", "date": "2026-11-13", "time": "10:00",
                         "patientName": "Demo", "age": "25", "gender": "none",
-                    }, files={"photo0": ("face.png", image.getvalue(), "image/png")})
+                    }, files={key: ("photo.png", image.getvalue(), "image/png")
+                              for key in ("photo0", "photo1")})
                     self.assertEqual(result.status_code, 201, result.text)
                     body = result.json()
                     url = f"/api/cases/{body['id']}"
@@ -32,8 +33,9 @@ class StartupTests(unittest.TestCase):
                     self.assertEqual(client.get(url, headers=headers).json()["patientName"], "Demo")
                     photo = client.get(url + "/photos/0", headers=headers)
                     self.assertEqual(photo.content, image.getvalue())
-                    self.assertEqual(client.get(url + "/photos/1", headers=headers).status_code, 404)
-                    self.assertEqual(client.post(url + "/analyze", headers=headers).status_code, 422)
+                    self.assertEqual(client.get(url + "/photos/1", headers=headers).status_code, 200)
+                    self.assertEqual(client.get(url + "/photos/2", headers=headers).status_code, 404)
+                    self.assertEqual(client.post(url + "/analyze", headers=headers).status_code, 503)
 
                     from app.jobs import claim, heartbeat
                     from app.worker import run_job
@@ -43,7 +45,7 @@ class StartupTests(unittest.TestCase):
                         "doctorId": "d1", "date": "2026-11-13", "time": "10:00",
                         "patientName": "Demo", "age": "25", "gender": "none",
                     }, files={key: ("photo.png", image.getvalue(), "image/png")
-                              for key in ("photo0", "photo2")}).json()
+                              for key in ("photo0", "photo1", "photo2")}).json()
                     url = f"/api/cases/{second['id']}"
                     headers = {"Authorization": f"Bearer {second['accessToken']}"}
                     self.assertEqual(client.post(url + "/analyze", headers=headers).status_code, 503)
@@ -52,7 +54,7 @@ class StartupTests(unittest.TestCase):
                     self.assertEqual(queued.status_code, 202)
                     self.assertEqual(client.post(url + "/analyze", headers=headers).json(), queued.json())
                     job = claim()
-                    self.assertEqual(job["photo_index"], 2)
+                    self.assertEqual(job["photo_index"], 1)
                     model = Mock()
                     model.predict.return_value = {"decision": "deferred", "candidate": None}
                     self.assertTrue(run_job(job, model, {"yolo": "mock"}))

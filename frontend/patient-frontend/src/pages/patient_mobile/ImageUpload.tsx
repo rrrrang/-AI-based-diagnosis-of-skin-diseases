@@ -1,6 +1,6 @@
 /**
  * 환자 피부 사진 등록 및 증상 선택 화면
- * - 정면 사진 1장 + 피부질환 부위 최대 2장 (총 3장)
+ * - 정면 사진 1장·근접 사진 1장 필수 + 추가 근접 사진 1장 선택 (총 2~3장)
  * - 사진 촬영 / 갤러리 등록 / 미리보기 / 삭제
  * - 증상 복수 선택 및 증상 발생 시점 입력
  * - PatientInfo로 사진과 증상 데이터 전달
@@ -116,8 +116,8 @@ export default function ImageUpload() {
       setErrorMessage("얼굴 전체가 보이는 정면 사진을 먼저 등록해 주세요.");
       return;
     }
-    if (!imageFiles[1] && !imageFiles[2]) {
-      setErrorMessage("피부질환이 발생한 부위 사진을 최소 1장 등록해 주세요.");
+    if (!imageFiles[1]) {
+      setErrorMessage("부위 1에 피부질환이 잘 보이는 근접 사진을 등록해 주세요.");
       return;
     }
     if (!selectedSymptoms.length) {
@@ -166,7 +166,7 @@ export default function ImageUpload() {
           <span className="upload-photo-count">{uploadedCount} / 3장</span>
         </div>
         <p className="upload-photo-description">
-          정면을 향하거나 피부질환 부위가 잘 보이게 촬영해 주세요.
+          얼굴 전체가 보이는 정면 사진과 부위 1의 근접 사진은 필수입니다. 부위 2는 선택이며, 총 2~3장을 등록해 주세요.
         </p>
 
         <div className="upload-photo-slots">
@@ -197,7 +197,7 @@ export default function ImageUpload() {
                 )}
               </div>
               <span className={`upload-photo-badge ${imageFiles[index] ? "is-uploaded" : ""}`}>
-                {imageFiles[index] ? "등록됨" : index === 0 ? "정면 필수" : "부위 사진"}
+                {index === 0 ? "정면 필수" : index === 1 ? "근접 필수" : "추가 근접 선택"}{imageFiles[index] ? " · 등록됨" : ""}
               </span>
             </div>
           ))}

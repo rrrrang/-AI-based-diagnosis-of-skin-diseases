@@ -10,11 +10,12 @@ from io import BytesIO
 from pathlib import Path
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, Form, HTTPException, Response, UploadFile
+from fastapi import APIRouter, Depends, Form, HTTPException, Request, Response, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from PIL import Image, UnidentifiedImageError
 from pydantic import BaseModel, Field
+from starlette.datastructures import UploadFile as MultipartUploadFile
 
 from app.db import connect
 from app.jobs import enqueue, latest
@@ -80,6 +81,19 @@ def validate_photo(upload):
     return data, media_type
 
 
+async def validate_photo_fields(request: Request):
+    # Reject duplicate/unknown file parts instead of silently dropping them.
+    # Required photo0/photo1 are also declared in the endpoint's OpenAPI schema.
+    form = await request.form()
+    allowed = {"photo0", "photo1", "photo2"}
+    files = [(name, value) for name, value in form.multi_items()
+             if isinstance(value, MultipartUploadFile)]
+    if len(files) > 3 or any(name not in allowed for name, _ in files):
+        raise HTTPException(422, "Use photo0 (front), photo1 (close-up), and optional photo2 only")
+    if any(len(form.getlist(name)) > 1 for name in allowed):
+        raise HTTPException(422, "Only one file per photo field is allowed")
+
+
 @router.post("", status_code=201)
 def create_case(
     doctorId: Annotated[str, Form()],
@@ -89,7 +103,8 @@ def create_case(
     age: Annotated[int, Form(ge=0, le=130)],
     gender: Annotated[Literal["female", "male", "none"], Form()],
     photo0: UploadFile,
-    photo1: UploadFile | None = None,
+    photo1: UploadFile,
+    photo_contract: Annotated[None, Depends(validate_photo_fields)],
     photo2: UploadFile | None = None,
     symptoms: Annotated[list[str] | None, Form()] = None,
     duration: Annotated[str, Form(max_length=100)] = "",

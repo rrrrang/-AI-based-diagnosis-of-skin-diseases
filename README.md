@@ -20,7 +20,7 @@ python -m unittest discover -s tests
 
 `GET /api/health`와 `GET /api/doctors`를 사용할 수 있습니다. SQLite 경로는 `SKINAI_DB_PATH`로 지정합니다. 의사 목록은 시연 데이터입니다.
 
-환자 접수는 `POST /api/cases`에 multipart 요청을 보내며, `photo0`은 필수입니다. 응답의 `accessToken`은 케이스 상세와 사진 조회의 Bearer 토큰입니다. 사진은 `SKINAI_PHOTO_DIR`로 지정한 비공개 폴더에 저장하며 기본 위치는 `data/private-photos`입니다. 시연에는 합성 사진을 사용합니다.
+환자 접수는 `POST /api/cases`에 multipart 요청을 보내며, 정면 `photo0`과 첫 번째 근접 사진 `photo1`은 필수이고, 추가 근접 사진 `photo2`는 선택입니다. 최소 2장, 최대 3장을 접수하며 필수 사진 누락·중복 사진 필드·추가 파일은 422로 거절합니다. 응답의 `accessToken`은 케이스 상세와 사진 조회의 Bearer 토큰입니다. 사진은 `SKINAI_PHOTO_DIR`로 지정한 비공개 폴더에 저장하며 기본 위치는 `data/private-photos`입니다. 시연에는 합성 사진을 사용합니다.
 
 ## 환자·의사 앱 연동 시연
 

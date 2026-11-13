@@ -11,7 +11,7 @@ const missingCases = [
   {
     name: "부위 사진이 없으면 다음 단계로 넘어가지 않는다",
     missing: "lesion",
-    message: "피부질환이 발생한 부위 사진을 최소 1장 등록해 주세요.",
+    message: "부위 1에 피부질환이 잘 보이는 근접 사진을 등록해 주세요.",
   },
   {
     name: "증상을 선택하지 않으면 다음 단계로 넘어가지 않는다",
@@ -58,7 +58,7 @@ test.describe("환자 사진·증상 필수 입력 검사", () => {
   }
 
   // 정상 입력도 확인해야 항상 막히는 화면을 걸러낼 수 있음
-  test("필수값을 모두 입력하면 환자 정보 화면으로 이동한다", async ({ page }) => {
+  test("정면과 근접 사진 2장만 입력해도 환자 정보 화면으로 이동한다", async ({ page }) => {
     const upload = new PatientUploadPage(page);
 
     await upload.open();
@@ -70,5 +70,52 @@ test.describe("환자 사진·증상 필수 입력 검사", () => {
     await upload.clickNext();
 
     await upload.expectPatientInfo();
+    await upload.expectPhotoCount(2);
+  });
+
+  test("선택 근접 사진까지 3장을 등록하면 모두 다음 화면에 전달된다", async ({ page }) => {
+    const upload = new PatientUploadPage(page);
+    await upload.open();
+    await upload.addFrontPhoto();
+    await upload.addLesionPhoto();
+    await upload.addExtraLesionPhoto();
+    await upload.selectSymptom();
+    await upload.selectDuration();
+    await upload.clickNext();
+    await upload.expectPatientInfo();
+    await upload.expectPhotoCount(3);
+    await upload.returnToUpload();
+    await upload.removePhoto("부위 2");
+    await upload.clickNext();
+    await upload.expectPatientInfo();
+    await upload.expectPhotoCount(2);
+  });
+
+  test("선택 사진만으로 필수 근접 사진을 대신할 수 없다", async ({ page }) => {
+    const upload = new PatientUploadPage(page);
+    await upload.open();
+    await upload.addFrontPhoto();
+    await upload.addExtraLesionPhoto();
+    await upload.selectSymptom();
+    await upload.selectDuration();
+    await upload.clickNext();
+    await upload.expectBlocked("부위 1에 피부질환이 잘 보이는 근접 사진을 등록해 주세요.");
+  });
+
+  test("3장 중 필수 근접 사진을 지우면 진행이 차단되고 다시 넣으면 복구된다", async ({ page }) => {
+    const upload = new PatientUploadPage(page);
+    await upload.open();
+    await upload.addFrontPhoto();
+    await upload.addLesionPhoto();
+    await upload.addExtraLesionPhoto();
+    await upload.selectSymptom();
+    await upload.selectDuration();
+    await upload.removePhoto("부위 1");
+    await upload.clickNext();
+    await upload.expectBlocked("부위 1에 피부질환이 잘 보이는 근접 사진을 등록해 주세요.");
+    await upload.addLesionPhoto();
+    await upload.clickNext();
+    await upload.expectPatientInfo();
+    await upload.expectPhotoCount(3);
   });
 });
