@@ -79,19 +79,19 @@ set "TEMP=%CD%\\temp"
 set "TMP=%TEMP%"
 "%BASE_PYTHON%" -c "import sys; print(sys.version); assert sys.version_info[:2] == (3, 14), 'Use verified Python 3.14 for these checks'" > "logs/python.log" 2>&1
 set "CHECK_EXIT=%ERRORLEVEL%"
-type "logs/python.log"
+type "logs\\python.log"
 if not "%CHECK_EXIT%"=="0" exit /b %CHECK_EXIT%
 "%BASE_PYTHON%" -m venv "venv" > "logs/venv.log" 2>&1
 set "CHECK_EXIT=%ERRORLEVEL%"
-type "logs/venv.log"
+type "logs\\venv.log"
 if not "%CHECK_EXIT%"=="0" exit /b %CHECK_EXIT%
 "%TEST_PYTHON%" -m pip install --retries 2 --timeout 30 -r "%CHECKS_DIR%/requirements-ci.txt" > "logs/install.log" 2>&1
 set "CHECK_EXIT=%ERRORLEVEL%"
-type "logs/install.log"
+type "logs\\install.log"
 if not "%CHECK_EXIT%"=="0" exit /b %CHECK_EXIT%
 "%TEST_PYTHON%" -m pip check > "logs/dependencies.log" 2>&1
 set "CHECK_EXIT=%ERRORLEVEL%"
-type "logs/dependencies.log"
+type "logs\\dependencies.log"
 exit /b %CHECK_EXIT%
 '''
                 }
@@ -108,7 +108,7 @@ set "TEMP=%CD%\\temp"
 set "TMP=%TEMP%"
 "%TEST_PYTHON%" -B -X utf8 "%CHECKS_DIR%/test_runner.py" > "logs/runner-tests.log" 2>&1
 set "CHECK_EXIT=%ERRORLEVEL%"
-type "logs/runner-tests.log"
+type "logs\\runner-tests.log"
 exit /b %CHECK_EXIT%
 '''
                 }
@@ -125,7 +125,7 @@ set "TEMP=%CD%\\temp"
 set "TMP=%TEMP%"
 "%TEST_PYTHON%" -B -X utf8 "%CHECKS_DIR%/run_checks.py" --source-root "%BACKEND_DIR%" --output-root "%CD%/reports" > "logs/backend-checks.log" 2>&1
 set "CHECK_EXIT=%ERRORLEVEL%"
-type "logs/backend-checks.log"
+type "logs\\backend-checks.log"
 exit /b %CHECK_EXIT%
 '''
                 }
