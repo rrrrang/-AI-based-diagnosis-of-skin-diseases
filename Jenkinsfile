@@ -4,7 +4,7 @@ pipeline {
     options {
         disableConcurrentBuilds()
         skipDefaultCheckout(true)
-        timeout(time: 15, unit: 'MINUTES')
+        timeout(time: 30, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
@@ -24,16 +24,16 @@ pipeline {
                 }
 
                 dir('source') {
-                    // Jenkins 작업용 복사본을 정리하고 다시 받습니다.
+                    // Jenkins 작업용 복사본만 정리하고 다시 받습니다.
                     deleteDir()
                     checkout scm
                 }
             }
         }
 
-        stage('2. 필요한 패키지 설치') {
+        stage('2. 환자 UI 패키지 설치') {
             steps {
-                dir('source/frontend') {
+                dir('source/frontend/patient-frontend') {
                     bat encoding: 'UTF-8', script: '''
 @echo off
 set "PATH=%UI_NODE_DIR%;%PATH%"
@@ -44,9 +44,9 @@ exit /b %ERRORLEVEL%
             }
         }
 
-        stage('3. UI 빌드') {
+        stage('3. 환자 UI 빌드') {
             steps {
-                dir('source/frontend') {
+                dir('source/frontend/patient-frontend') {
                     bat encoding: 'UTF-8', script: '''
 @echo off
 set "PATH=%UI_NODE_DIR%;%PATH%"
@@ -57,22 +57,52 @@ exit /b %ERRORLEVEL%
             }
         }
 
-        stage('4. 빌드 결과 보관') {
+        stage('4. 의사 UI 패키지 설치') {
+            steps {
+                dir('source/frontend/doctor-frontend') {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+set "PATH=%UI_NODE_DIR%;%PATH%"
+call "%UI_NODE_DIR%/npm.cmd" ci --include=dev
+exit /b %ERRORLEVEL%
+'''
+                }
+            }
+        }
+
+        stage('5. 의사 UI 빌드') {
+            steps {
+                dir('source/frontend/doctor-frontend') {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+set "PATH=%UI_NODE_DIR%;%PATH%"
+call "%UI_NODE_DIR%/npm.cmd" run build
+exit /b %ERRORLEVEL%
+'''
+                }
+            }
+        }
+
+        stage('6. 두 UI 빌드 결과 보관') {
             steps {
                 dir('source/frontend') {
                     script {
-                        if (!fileExists('dist/index.html')) {
-                            error('UI 빌드 결과인 dist/index.html이 없습니다.')
+                        if (!fileExists('patient-frontend/dist/index.html')) {
+                            error('환자 UI의 빌드 결과가 없습니다.')
+                        }
+
+                        if (!fileExists('doctor-frontend/dist/index.html')) {
+                            error('의사 UI의 빌드 결과가 없습니다.')
                         }
                     }
 
                     archiveArtifacts(
-                        artifacts: 'dist/**',
+                        artifacts: 'patient-frontend/dist/**,doctor-frontend/dist/**',
                         fingerprint: true,
                         onlyIfSuccessful: true
                     )
 
-                    echo 'UI 빌드 성공: 결과 파일을 Jenkins에 보관했습니다.'
+                    echo '환자 UI와 의사 UI 빌드 성공: 두 결과를 보관했습니다.'
                 }
             }
         }
