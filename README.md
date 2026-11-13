@@ -40,3 +40,9 @@ python -m app.worker --mobilenet-root D:/models/mobile --resnet-root D:/models/r
 - 접수 응답의 `id`와 `accessToken`으로 `POST /api/cases/{id}/analyze`를 호출합니다. 신규 작업은 202, 기존 작업 조회는 200이며 예시 본문은 `{"jobId":"...","state":"pending"}`입니다. 실패 작업 재요청에는 `?retry=true`를 사용합니다.
 - 작업 임대는 60초, 워커 갱신은 15초, 선점 상한은 총 3회입니다. 임대 만료 복구, 이전 임대의 결과 쓰기 차단, 선점 상한 이후 실패 처리를 격리 SQLite로 검증했습니다.
 - 담당 의사 응답의 `analysis`에 `candidate`, `decision`, 질환별 `votes`, 모델별 `models`, 체크포인트 해시 `modelVersions`, `thresholds`, `analyzedPhotoIndex`를 제공합니다. 시연용 토큰은 서버 환경변수로만 설정합니다.
+
+### 자동 테스트
+
+저장소 루트에서 `python -m unittest discover -s tests -v`로 실행합니다. 임시 SQLite와 합성 PNG를 사용하므로 모델 가중치나 실행 중인 서버가 필요하지 않습니다. API 접근 권한·소견 공개와 함께 동시 요청 중복 방지, 작업 임대 갱신·복구, 이전 워커의 결과 쓰기 차단, 복구 상한, 모델 오류와 명시적 재시도를 검사합니다.
+
+앙상블 투표 규칙은 `python -m unittest ensemble.test_policy -v`로 검사합니다. 실제 가중치를 사용한 브라우저 시연 검증은 위 실행 절차로 재현합니다.
