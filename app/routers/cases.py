@@ -1,4 +1,5 @@
 import hashlib
+import hmac
 import json
 import os
 import secrets
@@ -13,6 +14,7 @@ from fastapi import APIRouter, Depends, Form, HTTPException, Response, UploadFil
 from fastapi.responses import FileResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from PIL import Image, UnidentifiedImageError
+from pydantic import BaseModel, Field
 
 from app.db import connect
 from app.jobs import enqueue, latest
@@ -29,6 +31,23 @@ def photo_root():
 
 def token_digest(token):
     return hashlib.sha256(token.encode()).hexdigest()
+
+
+def doctor_identity(credentials):
+    if credentials is None:
+        return None
+    configured = json.loads(os.environ.get("SKINAI_DEMO_DOCTOR_TOKENS", "{}"))
+    matches = [doctor for doctor, token in configured.items()
+               if token and hmac.compare_digest(token.encode(), credentials.credentials.encode())]
+    return matches[0] if len(matches) == 1 else None
+
+
+class Review(BaseModel):
+    diagnosis: str = Field(max_length=500)
+    opinion: str = Field(max_length=4000)
+    visitRequired: bool
+    visitMessage: str = Field(max_length=1000)
+    reviewState: Literal["임시 저장", "결과 전달 완료"]
 
 
 def patient_case(case_id: str, credentials: Annotated[
@@ -108,16 +127,74 @@ def create_case(
     return {"id": case_id, "accessToken": token, "aiState": "대기", "reviewState": "검토 대기"}
 
 
-@router.get("/{case_id}")
-def get_case(case: Annotated[object, Depends(patient_case)]):
+def case_for_view(case_id, credentials):
+    doctor = doctor_identity(credentials)
+    if doctor is None:
+        return patient_case(case_id, credentials), False
     with closing(connect()) as connection:
-        job = latest(connection, case["id"])
+        case = connection.execute(
+            "SELECT * FROM cases WHERE id = ? AND doctor_id = ?", (case_id, doctor)
+        ).fetchone()
+    if case is None:
+        raise HTTPException(404, "Case not found")
+    return case, True
+
+
+def case_detail(connection, case, doctor=False):
+    job = latest(connection, case["id"])
+    review = connection.execute(
+        "SELECT draft, published FROM reviews WHERE case_id = ?", (case["id"],)
+    ).fetchone()
     state = job["state"] if job else "pending"
-    return {
+    review_json = review["draft" if doctor else "published"] if review else None
+    data = {
         "id": case["id"], **json.loads(case["intake"]), "submittedAt": case["created_at"],
         "aiState": {"pending": "대기", "processing": "분석 중", "completed": "완료", "failed": "실패"}[state],
         "reviewState": "검토 대기",
     }
+    if review_json:
+        data.update(json.loads(review_json))
+    if doctor:
+        data["analysis"] = json.loads(job["result"]) if job and job["result"] else None
+        data["photoIndices"] = [row[0] for row in connection.execute(
+            "SELECT photo_index FROM photos WHERE case_id = ? ORDER BY photo_index", (case["id"],)
+        )]
+    return data
+
+
+@router.get("")
+def list_cases(credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)],
+               doctorId: str | None = None):
+    doctor = doctor_identity(credentials)
+    if doctor is None or (doctorId is not None and doctor != doctorId):
+        raise HTTPException(403, "Assigned doctor access required")
+    with closing(connect()) as connection:
+        rows = connection.execute("SELECT * FROM cases WHERE doctor_id = ? ORDER BY rowid DESC", (doctor,))
+        return [case_detail(connection, row, doctor=True) for row in rows]
+
+
+@router.get("/{case_id}")
+def get_case(case_id: str, credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)]):
+    case, doctor = case_for_view(case_id, credentials)
+    with closing(connect()) as connection:
+        return case_detail(connection, case, doctor)
+
+
+@router.patch("/{case_id}/review")
+def save_review(case_id: str, review: Review,
+                credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)]):
+    if doctor_identity(credentials) is None:
+        raise HTTPException(403, "Assigned doctor access required")
+    case, _ = case_for_view(case_id, credentials)
+    draft = review.model_dump_json()
+    published = draft if review.reviewState == "결과 전달 완료" else None
+    with closing(connect()) as connection, connection:
+        connection.execute("""
+            INSERT INTO reviews (case_id, draft, published) VALUES (?, ?, ?)
+            ON CONFLICT(case_id) DO UPDATE SET draft = excluded.draft,
+                published = COALESCE(excluded.published, reviews.published)
+        """, (case["id"], draft, published))
+        return case_detail(connection, case, doctor=True)
 
 
 @router.post("/{case_id}/analyze")
@@ -130,7 +207,9 @@ def analyze(case: Annotated[object, Depends(patient_case)], response: Response, 
 
 
 @router.get("/{case_id}/photos/{index}")
-def get_photo(index: Literal["0", "1", "2"], case: Annotated[object, Depends(patient_case)]):
+def get_photo(case_id: str, index: Literal["0", "1", "2"],
+              credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)]):
+    case, _ = case_for_view(case_id, credentials)
     with closing(connect()) as connection:
         row = connection.execute(
             "SELECT media_type FROM photos WHERE case_id = ? AND photo_index = ?", (case["id"], int(index))

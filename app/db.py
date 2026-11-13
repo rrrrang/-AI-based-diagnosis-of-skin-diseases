@@ -41,4 +41,11 @@ def init_db():
                 PRIMARY KEY (case_id, photo_index)
             )
         """)
+        connection.execute("""
+            CREATE TABLE IF NOT EXISTS reviews (
+                case_id TEXT PRIMARY KEY REFERENCES cases(id),
+                draft TEXT NOT NULL,
+                published TEXT
+            )
+        """)
         init_jobs(connection)

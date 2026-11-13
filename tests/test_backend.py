@@ -57,6 +57,22 @@ class StartupTests(unittest.TestCase):
                     model.predict.return_value = {"decision": "deferred", "candidate": None}
                     self.assertTrue(run_job(job, model, {"yolo": "mock"}))
                     self.assertEqual(client.get(url, headers=headers).json()["aiState"], "완료")
+                    with patch.dict(os.environ, {"SKINAI_DEMO_DOCTOR_TOKENS": '{"d1":"test-one","d2":"test-two"}'}):
+                        doctor = {"Authorization": "Bearer test-one"}
+                        other = {"Authorization": "Bearer test-two"}
+                        self.assertEqual(client.get(url, headers=doctor).json()["analysis"]["decision"], "deferred")
+                        self.assertNotIn("analysis", client.get(url, headers=headers).json())
+                        self.assertEqual(client.get(url + "/photos/2", headers=other).status_code, 404)
+                        self.assertEqual(len(client.get("/api/cases", headers=doctor).json()), 2)
+                        self.assertEqual(client.get("/api/cases?doctorId=d1", headers=other).status_code, 403)
+                        review = {"diagnosis": "", "opinion": "Demo opinion", "visitRequired": False,
+                                  "visitMessage": "", "reviewState": "임시 저장"}
+                        self.assertEqual(client.patch(url + "/review", headers=other, json=review).status_code, 404)
+                        self.assertEqual(client.patch(url + "/review", headers=doctor, json=review).status_code, 200)
+                        self.assertNotIn("opinion", client.get(url, headers=headers).json())
+                        review["reviewState"] = "결과 전달 완료"
+                        self.assertEqual(client.patch(url + "/review", headers=doctor, json=review).status_code, 200)
+                        self.assertEqual(client.get(url, headers=headers).json()["opinion"], "Demo opinion")
 
     def test_startup_and_doctors(self):
         with tempfile.TemporaryDirectory() as directory:
