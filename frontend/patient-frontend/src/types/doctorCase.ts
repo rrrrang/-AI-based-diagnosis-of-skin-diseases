@@ -49,6 +49,7 @@ export interface DoctorCase {
   // 환자 등록 사진
   // 0: 정면 / 1: 증상 부위 1 / 2: 증상 부위 2
   photos: (File | null)[];
+  photoCount?: number;
 
   // AI 분석 정보
   aiState: AIState;

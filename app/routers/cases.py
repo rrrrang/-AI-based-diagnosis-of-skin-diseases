@@ -152,6 +152,9 @@ def case_detail(connection, case, doctor=False):
         "aiState": {"pending": "대기", "processing": "분석 중", "completed": "완료", "failed": "실패"}[state],
         "reviewState": "검토 대기",
     }
+    data["photoCount"] = connection.execute(
+        "SELECT COUNT(*) FROM photos WHERE case_id = ?", (case["id"],)
+    ).fetchone()[0]
     if review_json:
         data.update(json.loads(review_json))
     if doctor:

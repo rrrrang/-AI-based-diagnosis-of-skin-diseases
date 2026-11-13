@@ -577,7 +577,7 @@ function PatientResult() {
               <strong className="result-image-count">
                 <ImageIcon size={17} />
                 {doctorResult
-                  ? doctorResult.photos.filter(Boolean).length
+                  ? (doctorResult.photoCount ?? doctorResult.photos.filter(Boolean).length)
                   : requestData?.imageFiles?.filter(Boolean).length ?? 1}
                 장
               </strong>
@@ -653,11 +653,11 @@ function PatientResult() {
         <div className="result-information-box">
           <div className="result-information-box-top">
             <Info size={18} />
-            <strong>분석 서버 연결 준비 중</strong>
+            <strong>{apiEnabled ? "분석 및 의사 검토 안내" : "분석 서버 연결 준비 중"}</strong>
           </div>
         
           <p>
-            현재는 프론트엔드 시연 단계입니다. 실제 AI 이미지 분석이나 의료 진단은 수행되지 않았습니다.
+            {apiEnabled ? "AI 분석은 의사 검토를 보조합니다. 공개된 소견은 위에서 확인할 수 있습니다." : "현재는 프론트엔드 시연 단계입니다. 실제 AI 이미지 분석이나 의료 진단은 수행되지 않았습니다."}
           </p>
           
         </div>
