@@ -1,0 +1,184 @@
+{
+  "thresholds": {
+    "mobilenet": 0.82,
+    "resnet50": 0.85,
+    "yolo": 0.7
+  },
+  "decisions": {
+    "majority": 496,
+    "single_qualified": 3,
+    "normal_consensus": 95,
+    "undetermined": 5,
+    "deferred": 1
+  },
+  "ensemble": {
+    "images": 600,
+    "correct": 592,
+    "abstained": 6,
+    "accuracy_all": 0.9866666666666667,
+    "accuracy_when_returned": 0.9966329966329966,
+    "abstention_rate": 0.01,
+    "normal_false_positive_rate": 0.0,
+    "disease_predicted_normal_rate": 0.0,
+    "per_class_recall": {
+      "psoriasis": 1.0,
+      "atopic_dermatitis": 0.98,
+      "acne": 1.0,
+      "normal": 0.95,
+      "rosacea": 1.0,
+      "seborrheic_dermatitis": 0.99
+    },
+    "confusion_counts": {
+      "psoriasis": {
+        "psoriasis": 100
+      },
+      "atopic_dermatitis": {
+        "atopic_dermatitis": 98,
+        "psoriasis": 2
+      },
+      "acne": {
+        "acne": 100
+      },
+      "normal": {
+        "normal": 95,
+        "abstain": 5
+      },
+      "rosacea": {
+        "rosacea": 100
+      },
+      "seborrheic_dermatitis": {
+        "seborrheic_dermatitis": 99,
+        "abstain": 1
+      }
+    }
+  },
+  "standalone": {
+    "mobilenet": {
+      "images": 600,
+      "correct": 571,
+      "abstained": 29,
+      "accuracy_all": 0.9516666666666667,
+      "accuracy_when_returned": 1.0,
+      "abstention_rate": 0.04833333333333333,
+      "normal_false_positive_rate": 0.0,
+      "disease_predicted_normal_rate": 0.0,
+      "per_class_recall": {
+        "psoriasis": 0.94,
+        "atopic_dermatitis": 0.85,
+        "acne": 0.99,
+        "normal": 0.98,
+        "rosacea": 0.97,
+        "seborrheic_dermatitis": 0.98
+      },
+      "confusion_counts": {
+        "psoriasis": {
+          "psoriasis": 94,
+          "abstain": 6
+        },
+        "atopic_dermatitis": {
+          "atopic_dermatitis": 85,
+          "abstain": 15
+        },
+        "acne": {
+          "acne": 99,
+          "abstain": 1
+        },
+        "normal": {
+          "normal": 98,
+          "abstain": 2
+        },
+        "rosacea": {
+          "rosacea": 97,
+          "abstain": 3
+        },
+        "seborrheic_dermatitis": {
+          "seborrheic_dermatitis": 98,
+          "abstain": 2
+        }
+      }
+    },
+    "resnet50": {
+      "images": 600,
+      "correct": 590,
+      "abstained": 10,
+      "accuracy_all": 0.9833333333333333,
+      "accuracy_when_returned": 1.0,
+      "abstention_rate": 0.016666666666666666,
+      "normal_false_positive_rate": 0.0,
+      "disease_predicted_normal_rate": 0.0,
+      "per_class_recall": {
+        "psoriasis": 0.99,
+        "atopic_dermatitis": 0.95,
+        "acne": 0.99,
+        "normal": 0.97,
+        "rosacea": 1.0,
+        "seborrheic_dermatitis": 1.0
+      },
+      "confusion_counts": {
+        "psoriasis": {
+          "psoriasis": 99,
+          "abstain": 1
+        },
+        "atopic_dermatitis": {
+          "atopic_dermatitis": 95,
+          "abstain": 5
+        },
+        "acne": {
+          "acne": 99,
+          "abstain": 1
+        },
+        "normal": {
+          "normal": 97,
+          "abstain": 3
+        },
+        "rosacea": {
+          "rosacea": 100
+        },
+        "seborrheic_dermatitis": {
+          "seborrheic_dermatitis": 100
+        }
+      }
+    },
+    "yolo": {
+      "images": 600,
+      "correct": 495,
+      "abstained": 101,
+      "accuracy_all": 0.825,
+      "accuracy_when_returned": 0.9919839679358717,
+      "abstention_rate": 0.16833333333333333,
+      "normal_false_positive_rate": 0.0,
+      "disease_predicted_normal_rate": 0.0,
+      "per_class_recall": {
+        "psoriasis": 0.99,
+        "atopic_dermatitis": 0.97,
+        "acne": 1.0,
+        "normal": 0.0,
+        "rosacea": 1.0,
+        "seborrheic_dermatitis": 0.99
+      },
+      "confusion_counts": {
+        "psoriasis": {
+          "psoriasis": 99,
+          "abstain": 1
+        },
+        "atopic_dermatitis": {
+          "atopic_dermatitis": 97,
+          "psoriasis": 3
+        },
+        "acne": {
+          "acne": 100
+        },
+        "normal": {
+          "abstain": 100
+        },
+        "rosacea": {
+          "rosacea": 100
+        },
+        "seborrheic_dermatitis": {
+          "seborrheic_dermatitis": 99,
+          "atopic_dermatitis": 1
+        }
+      }
+    }
+  }
+}

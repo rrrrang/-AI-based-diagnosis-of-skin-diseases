@@ -1,49 +1,10 @@
-# 백엔드 (FastAPI)
+# 피부질환 AI 진단 보조 시스템
 
-API 설계는 `../docs/backend-api-v1.md`를 봐 주세요.
+- [백엔드 통합 규칙](backend_integration_rules.md)
+- [기존 API 초안](backend_api_draft.md)
+- [환자 UI](frontend/patient-frontend)
+- [의사 UI](frontend/doctor-frontend)
+- [3모델 앙상블 실행 방법](ensemble/README.md)
+- [600장 추론 결과와 검증 범위](ensemble/RESULTS.md)
 
-## 처음 한 번 준비
-
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate        # 윈도우: .venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-## 서버 켜기
-
-```bash
-uvicorn app.main:app --reload --port 8000
-```
-
-- 브라우저에서 http://localhost:8000/docs 를 열면 API를 눌러 볼 수 있어요.
-
-## 테스트
-
-```bash
-python -m pytest
-```
-
-## 지금 되는 것
-
-| 주소 | 설명 |
-| --- | --- |
-| `GET /health/live` | 서버가 살아 있는지 |
-| `GET /health/ready` | DB가 준비됐는지 (안 되면 503) |
-| `GET /api/v1/doctors` | 의사 목록 3명 |
-
-## 폴더 구조
-
-```
-backend/
-├── app/
-│   ├── main.py      # 서버 시작점, request_id 붙이기
-│   ├── config.py    # 환경변수 읽기
-│   ├── db.py        # SQLite 연결, 테이블 만들기
-│   ├── errors.py    # 팀 공통 오류 모양
-│   └── routers/     # API 주소별 파일
-│       ├── health.py
-│       └── doctors.py
-└── tests/           # 테스트
-```
+FastAPI 진입점 초안은 저장소 루트의 [main.py](main.py)에 있습니다. 이 체크아웃에서 참조하는 `app/` 패키지를 추가하거나 팀의 기존 구현을 가져온 뒤 서버 실행을 검증해야 합니다. 기존 README에 제시된 `backend/`와 `docs/backend-api-v1.md`는 이 체크아웃에 없습니다.
