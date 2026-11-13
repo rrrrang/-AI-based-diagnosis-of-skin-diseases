@@ -33,6 +33,30 @@ class StartupTests(unittest.TestCase):
                     photo = client.get(url + "/photos/0", headers=headers)
                     self.assertEqual(photo.content, image.getvalue())
                     self.assertEqual(client.get(url + "/photos/1", headers=headers).status_code, 404)
+                    self.assertEqual(client.post(url + "/analyze", headers=headers).status_code, 422)
+
+                    from app.jobs import claim, heartbeat
+                    from app.worker import run_job
+                    from unittest.mock import Mock
+
+                    second = client.post("/api/cases", data={
+                        "doctorId": "d1", "date": "2026-11-13", "time": "10:00",
+                        "patientName": "Demo", "age": "25", "gender": "none",
+                    }, files={key: ("photo.png", image.getvalue(), "image/png")
+                              for key in ("photo0", "photo2")}).json()
+                    url = f"/api/cases/{second['id']}"
+                    headers = {"Authorization": f"Bearer {second['accessToken']}"}
+                    self.assertEqual(client.post(url + "/analyze", headers=headers).status_code, 503)
+                    heartbeat("test-worker")
+                    queued = client.post(url + "/analyze", headers=headers)
+                    self.assertEqual(queued.status_code, 202)
+                    self.assertEqual(client.post(url + "/analyze", headers=headers).json(), queued.json())
+                    job = claim()
+                    self.assertEqual(job["photo_index"], 2)
+                    model = Mock()
+                    model.predict.return_value = {"decision": "deferred", "candidate": None}
+                    self.assertTrue(run_job(job, model, {"yolo": "mock"}))
+                    self.assertEqual(client.get(url, headers=headers).json()["aiState"], "완료")
 
     def test_startup_and_doctors(self):
         with tempfile.TemporaryDirectory() as directory:

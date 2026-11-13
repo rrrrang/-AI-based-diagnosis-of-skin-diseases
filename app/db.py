@@ -14,6 +14,8 @@ def connect():
 
 
 def init_db():
+    from app.jobs import init_jobs
+
     with closing(connect()) as connection, connection:
         connection.execute(
             "CREATE TABLE IF NOT EXISTS doctors (id TEXT PRIMARY KEY, name TEXT NOT NULL, hospital TEXT NOT NULL)"
@@ -39,3 +41,4 @@ def init_db():
                 PRIMARY KEY (case_id, photo_index)
             )
         """)
+        init_jobs(connection)

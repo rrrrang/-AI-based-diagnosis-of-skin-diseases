@@ -9,12 +9,13 @@ from io import BytesIO
 from pathlib import Path
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, Form, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from PIL import Image, UnidentifiedImageError
 
 from app.db import connect
+from app.jobs import enqueue, latest
 
 router = APIRouter(prefix="/api/cases")
 bearer = HTTPBearer(auto_error=False)
@@ -109,10 +110,23 @@ def create_case(
 
 @router.get("/{case_id}")
 def get_case(case: Annotated[object, Depends(patient_case)]):
+    with closing(connect()) as connection:
+        job = latest(connection, case["id"])
+    state = job["state"] if job else "pending"
     return {
         "id": case["id"], **json.loads(case["intake"]), "submittedAt": case["created_at"],
-        "aiState": "대기", "reviewState": "검토 대기",
+        "aiState": {"pending": "대기", "processing": "분석 중", "completed": "완료", "failed": "실패"}[state],
+        "reviewState": "검토 대기",
     }
+
+
+@router.post("/{case_id}/analyze")
+def analyze(case: Annotated[object, Depends(patient_case)], response: Response, retry: bool = False):
+    job, created = enqueue(case["id"], retry)
+    if job is None:
+        raise HTTPException(422, "A close-up photo is required")
+    response.status_code = 202 if created else 200
+    return {"jobId": job["id"], "state": job["state"]}
 
 
 @router.get("/{case_id}/photos/{index}")
