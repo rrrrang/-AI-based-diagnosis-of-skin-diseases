@@ -21,6 +21,7 @@ run_checks.py: 백엔드 → 정책 → HTTP 순서로 실행, 실패하면 중�
 check_http.py: 별도 DB·사진·토큰과 임시 API 서버로 요청/응답 검사
 test_runner.py: 0개 검사, 건너뛴 검사, 실패 결과가 통과하지 못하는지 검사
 requirements-ci.txt: 이번에 검증한 Python 패키지 버전 고정
+Jenkinsfile: 별도 Jenkins 작업에서 코드 받기 → 환경 설치 → 실패 차단 검사 → 백엔드 검사
 README_검사안내.txt: 실행 방법과 남은 작업
 
 3. 현재 PC에서 실행 (PowerShell)
@@ -66,9 +67,21 @@ HTTP 상세 결과는 http/http-results.json, 서버 기록은 http/server.log�
 검사 파일 해시와 백엔드 커밋을 결과에 기록합니다.
 Jenkins 보관 대상도 위 JSON·로그만 사용하며 DB·사진·가상환경은 제외합니다.
 
-6. 아직 적용하지 않은 부분
-- 새 백엔드 검사를 Jenkins의 별도 작업에 연결하는 것은 다음 단계입니다.
-  이 브랜치에 파일을 올렸다고 기존 서버 작업이 새 검사를 자동 실행하는 것은 아닙니다.
+6. Jenkins 연결
+- 작업 이름: SkinAI-Backend-CI (Pipeline)
+- Definition: Pipeline script from SCM / SCM: Git
+- Repository URL: https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases.git
+- Branch: */ci/two-server-lab
+- Script Path: ci/backend_contract/Jenkinsfile
+- 처음에는 지금 빌드로 실행합니다. 이후 약 5분 간격으로 CI 브랜치와 main 변경을 확인합니다.
+- D드라이브의 Windows 작업 폴더와 Python 3.14를 사용합니다.
+  기본 Python은 D:/miniconda3/python.exe이며, 다른 PC에서는 CI_PYTHON_EXE 환경변수로 지정합니다.
+- 빌드마다 별도 가상환경을 만들고 실패 차단 9개 + 백엔드 25개를 실행합니다.
+- SUCCESS는 34개 검사가 모두 통과했다는 뜻입니다. 실패하면 다음 단계로 진행하지 않습니다.
+- 결과는 Jenkins의 Artifacts에서 확인합니다. revisions.txt에 두 브랜치의 실제 커밋을 남깁니다.
+- 검사 실패 시에도 생성된 JSON·로그를 보관합니다. 실제 모델 성능을 평가하는 작업은 아닙니다.
+
+7. 적용 범위와 남은 작업
 - 기존 서버 CI 작업은 이 브랜치의 변경을 감지해 원래 검사를 실행할 수 있습니다.
   기존 Docker 업로드와 CD 연결 설정을 이 패키지에서 바꾸지 않습니다.
 - 새 검사는 Docker 이미지, release.json을 생성하거나 배포하지 않습니다.

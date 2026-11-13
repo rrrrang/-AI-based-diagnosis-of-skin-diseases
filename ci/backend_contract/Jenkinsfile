@@ -1,0 +1,157 @@
+pipeline {
+    agent any
+
+    options {
+        disableConcurrentBuilds()
+        skipDefaultCheckout(true)
+        timeout(time: 20, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
+
+    environment {
+        PYTHONUTF8 = '1'
+        PYTHONIOENCODING = 'utf-8'
+        PYTHONDONTWRITEBYTECODE = '1'
+        PIP_DISABLE_PIP_VERSION_CHECK = '1'
+        PIP_CACHE_DIR = 'D:/SkinAI_DevOps/pip-cache'
+    }
+
+    stages {
+        stage('1. 검사 코드와 백엔드 가져오기') {
+            steps {
+                script {
+                    if (isUnix() || !pwd().toLowerCase().startsWith('d:')) {
+                        error('D드라이브 작업 폴더를 사용하는 Windows Jenkins에서 실행하세요.')
+                    }
+                    env.BASE_PYTHON = env.CI_PYTHON_EXE ?: 'D:/miniconda3/python.exe'
+                    env.RUN_DIR = "${pwd()}/runs/${env.BUILD_NUMBER}"
+                    env.CHECKS_DIR = "${env.RUN_DIR}/checks/ci/backend_contract"
+                    env.BACKEND_DIR = "${env.RUN_DIR}/backend"
+                    env.TEST_PYTHON = "${env.RUN_DIR}/venv/Scripts/python.exe"
+                }
+                dir("${env.RUN_DIR}/checks") {
+                    script {
+                        def revision = checkout scm
+                        env.CHECKS_COMMIT = revision.GIT_COMMIT
+                    }
+                }
+                dir("${env.BACKEND_DIR}") {
+                    script {
+                        def revision = checkout(
+                            changelog: true,
+                            poll: true,
+                            scm: [
+                                $class: 'GitSCM',
+                                branches: [[name: '*/main']],
+                                extensions: [[$class: 'ScmName', name: 'backend-main']],
+                                userRemoteConfigs: [[
+                                    url: 'https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases.git'
+                                ]]
+                            ]
+                        )
+                        env.BACKEND_COMMIT = revision.GIT_COMMIT
+                    }
+                }
+                script {
+                    currentBuild.description = "Backend ${env.BACKEND_COMMIT.take(7)} / CI ${env.CHECKS_COMMIT.take(7)}"
+                    writeFile(
+                        file: "runs/${env.BUILD_NUMBER}/logs/revisions.txt",
+                        encoding: 'UTF-8',
+                        text: "checks_branch=ci/two-server-lab\nchecks_commit=${env.CHECKS_COMMIT}\nbackend_branch=main\nbackend_commit=${env.BACKEND_COMMIT}\n"
+                    )
+                }
+                echo "검사 코드: ${env.CHECKS_COMMIT} / 백엔드: ${env.BACKEND_COMMIT}"
+            }
+        }
+
+        stage('2. 별도 Python 환경 준비') {
+            steps {
+                dir("${env.RUN_DIR}") {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+if not exist "temp" mkdir "temp"
+set "TEMP=%CD%\\temp"
+set "TMP=%TEMP%"
+"%BASE_PYTHON%" -c "import sys; print(sys.version); assert sys.version_info[:2] == (3, 14), 'Use verified Python 3.14 for these checks'" > "logs/python.log" 2>&1
+set "CHECK_EXIT=%ERRORLEVEL%"
+type "logs/python.log"
+if not "%CHECK_EXIT%"=="0" exit /b %CHECK_EXIT%
+"%BASE_PYTHON%" -m venv "venv" > "logs/venv.log" 2>&1
+set "CHECK_EXIT=%ERRORLEVEL%"
+type "logs/venv.log"
+if not "%CHECK_EXIT%"=="0" exit /b %CHECK_EXIT%
+"%TEST_PYTHON%" -m pip install --retries 2 --timeout 30 -r "%CHECKS_DIR%/requirements-ci.txt" > "logs/install.log" 2>&1
+set "CHECK_EXIT=%ERRORLEVEL%"
+type "logs/install.log"
+if not "%CHECK_EXIT%"=="0" exit /b %CHECK_EXIT%
+"%TEST_PYTHON%" -m pip check > "logs/dependencies.log" 2>&1
+set "CHECK_EXIT=%ERRORLEVEL%"
+type "logs/dependencies.log"
+exit /b %CHECK_EXIT%
+'''
+                }
+            }
+        }
+
+        stage('3. 검사 실패 차단 확인') {
+            steps {
+                dir("${env.RUN_DIR}") {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+set "TEMP=%CD%\\temp"
+set "TMP=%TEMP%"
+"%TEST_PYTHON%" -B -X utf8 "%CHECKS_DIR%/test_runner.py" > "logs/runner-tests.log" 2>&1
+set "CHECK_EXIT=%ERRORLEVEL%"
+type "logs/runner-tests.log"
+exit /b %CHECK_EXIT%
+'''
+                }
+            }
+        }
+
+        stage('4. 백엔드 접수·권한·공개 검사') {
+            steps {
+                dir("${env.RUN_DIR}") {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+set "TEMP=%CD%\\temp"
+set "TMP=%TEMP%"
+"%TEST_PYTHON%" -B -X utf8 "%CHECKS_DIR%/run_checks.py" --source-root "%BACKEND_DIR%" --output-root "%CD%/reports" > "logs/backend-checks.log" 2>&1
+set "CHECK_EXIT=%ERRORLEVEL%"
+type "logs/backend-checks.log"
+exit /b %CHECK_EXIT%
+'''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                if (env.RUN_DIR) {
+                    dir("${env.RUN_DIR}") {
+                        archiveArtifacts(
+                            artifacts: 'logs/*.log,logs/revisions.txt,reports/*/summary.json,reports/*/*.log,reports/*/http/http-results.json,reports/*/http/server.log',
+                            allowEmptyArchive: true,
+                            fingerprint: true
+                        )
+                    }
+                }
+            }
+        }
+        success {
+            echo '백엔드 검사 통과. 검사 기록을 보관했습니다. 이미지 업로드·배포는 수행하지 않습니다.'
+        }
+        failure {
+            echo '검사 실패. 보관된 로그와 summary.json을 확인하세요.'
+        }
+    }
+}
