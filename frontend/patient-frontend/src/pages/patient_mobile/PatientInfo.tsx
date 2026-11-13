@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 // 기존 예약 정보 확인 및 의사 접수 저장소 연결
+import { apiEnabled, requestAnalysis, submitCase } from "../../services/api";
 import { demoFlow } from "../../services/demoFlow";
 import {
   createPatientCase,
@@ -156,15 +157,25 @@ function PatientInfo() {
         photos: requestData.imageFiles,
       });
 
-      await saveDoctorCase(item);
+      const caseId = apiEnabled ? await submitCase(item) : item.id;
+      if (!apiEnabled) await saveDoctorCase(item);
+      let analysisError = "";
+      if (apiEnabled) {
+        try {
+          await requestAnalysis(caseId);
+        } catch (error) {
+          analysisError = error instanceof Error ? error.message : "분석을 요청하지 못했습니다.";
+        }
+      }
       
       // 제출한 접수번호를 환자 진료 기록에 누적
-      rememberPatientCaseId(item.id);
+      rememberPatientCaseId(caseId);
 
       navigate("/patient/result", {
         state: {
           requestData,
-          caseId: item.id,
+          caseId,
+          analysisError,
         },
       });
     } catch (error) {

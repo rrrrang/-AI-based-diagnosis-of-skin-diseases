@@ -1,3 +1,4 @@
+import { apiEnabled, forgetCase, readCase } from "./api";
 /**
  * doctorCases.ts — 교육용 환자 접수 저장소
  *
@@ -111,6 +112,10 @@ async function transaction<T>(
 ========================================== */
 
 export async function listDoctorCases(): Promise<DoctorCase[]> {
+  if (apiEnabled) {
+    const cases = await Promise.all(listPatientCaseIds().map(readCase));
+    return cases.filter((item): item is DoctorCase => item !== null);
+  }
   const entries = await transaction<DoctorCase[]>(
     "readonly",
     (store, resolve, reject) => {
@@ -166,7 +171,8 @@ export async function saveDoctorCase(item: DoctorCase): Promise<void> {
 export async function deletePatientCase(
   caseId: string
 ): Promise<void> {
-  // 1. IndexedDB에서 해당 접수 기록 삭제
+  if (apiEnabled) forgetCase(caseId);
+  else
   await transaction<void>(
     "readwrite",
     (store, resolve, reject) => {
@@ -273,10 +279,12 @@ export async function clearDoctorReservations(
 export function subscribeDoctorCases(listener: () => void): () => void {
   window.addEventListener(UPDATED_EVENT, listener);
   window.addEventListener("focus", listener);
+  const polling = apiEnabled ? window.setInterval(listener, 5000) : undefined;
 
   return () => {
     window.removeEventListener(UPDATED_EVENT, listener);
     window.removeEventListener("focus", listener);
+    if (polling !== undefined) window.clearInterval(polling);
   };
 }
 

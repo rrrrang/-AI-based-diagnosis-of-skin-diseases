@@ -1,3 +1,4 @@
+import { apiEnabled, requestAnalysis } from "../../services/api";
 
 /* 환자 AI 이미지 분석 진행 상태 및 결과 확인
  *
@@ -74,6 +75,7 @@ interface AnalysisRequestData {
 
 // React Router로 전달받는 페이지 상태
 interface ResultPageState {
+  analysisError?: string;
   requestData: AnalysisRequestData;
   caseId?: string;
 }
@@ -111,6 +113,7 @@ function PatientResult() {
   const location = useLocation();              // 이전 화면에서 전달한 데이터 조회
   const pageState = location.state as ResultPageState | null;
   const routeCaseId = pageState?.caseId;
+  const [analysisError, setAnalysisError] = useState(pageState?.analysisError ?? '');
 
   // 페이지 이동 state가 있으면 해당 접수 건의 임시 정보에만 사용
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(
@@ -399,6 +402,20 @@ function PatientResult() {
 
           <h1>AI 피부 분석 결과</h1>
         </header>
+        {apiEnabled && (analysisError || status === "failed") && selectedCaseId && (
+          <div>
+            {analysisError && <p role="alert">{analysisError}</p>}
+            <button type="button" onClick={async () => {
+              try {
+                await requestAnalysis(selectedCaseId, status === "failed");
+                setAnalysisError("");
+                await refreshResult();
+              } catch (error) {
+                setAnalysisError(error instanceof Error ? error.message : "분석 요청 실패");
+              }
+            }}>분석 다시 요청</button>
+          </div>
+        )}
 
         {/* ==================================
             이전 접수 / 진료 기록 목록
