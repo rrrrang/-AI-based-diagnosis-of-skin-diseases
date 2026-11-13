@@ -1,0 +1,1667 @@
+/* 환자 모바일 앱 UI 디자인 */
+
+/* 환자 시작 화면 전체 영역 */
+.patient-home {
+  /* 모바일 앱 화면 크기 */
+  width: 100%;
+  max-width: 390px;
+  min-height: 870px;
+
+  /* 화면 중앙 배치 */
+  margin: 0 auto;
+
+  /* 내부 요소 세로 정렬 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* 내부 여백 */
+  padding: 70px 30px 24px;
+
+  /* 배경 및 테두리 */
+  background-color: #ffffff;
+  border: 1px solid #c4d9d0;
+  border-radius: 24px;
+
+  /* 텍스트 중앙 정렬 */
+  text-align: center;
+
+  /* 카드 그림자 */
+  box-shadow: 0 5px 20px rgba(40, 80, 65, 0.04);
+}
+
+
+/* 서비스 로고 및 제목 */
+.patient-home-logo {
+  /* 로고, 제목, 설명 세로 정렬 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+}
+
+/* 기존 PNG 로고 이미지 */
+.patient-logo {
+  width: 120px;
+  height: 120px;
+
+  /* 이미지 비율 유지 */
+  object-fit: contain;
+}
+
+/* 서비스 제목: 피부진단 AI */
+.patient-home-logo h1 {
+  margin: 0;
+
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -2px;
+
+  color: #163f39;
+}
+
+/* 공식 프로젝트명 */
+.patient-home-logo p {
+  margin: 10px 0 0;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #426660;
+}
+
+/* 서비스 소개 문구 */
+.patient-home-description {
+  margin: 60px 0 0;
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+
+  color: #7d8583;
+}
+
+/* AI 피부 분석 시작 버튼 */
+.patient-start-button {
+  /* 버튼 크기 */
+  width: 100%;
+  min-height: 70px;
+
+  /* 위쪽 간격 */
+  margin-top: 15px;
+  padding: 15px 20px;
+
+  /* 내부 글씨와 아이콘 정렬 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  /* 버튼 디자인 */
+  background-color: #648f85;
+  border: none;
+  border-radius: 12px;
+
+  /* 글씨 스타일 */
+  color: #ffffff;
+  font-size: 21px;
+  font-weight: 700;
+
+  /* 마우스 커서 */
+  cursor: pointer;
+
+  /* 부드러운 색상 전환 */
+  transition: background-color 0.2s;
+}
+
+/* 버튼에 마우스를 올렸을 때 */
+.patient-start-button:hover {
+  background-color: #4e796e;
+}
+
+/* 키보드로 버튼을 선택했을 때 */
+.patient-start-button:focus-visible {
+  outline: 3px solid #a8c9b7;
+  outline-offset: 3px;
+}
+
+
+/* 빠른 기능 메뉴 */
+
+.patient-quick-menu {
+  /* 전체 너비 */
+  width: 100%;
+
+  /* 카드 3개를 가로로 배치 */
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  /* 카드 간격 */
+  gap: 16px;
+
+  /* 시작 버튼과의 간격 */
+  margin-top: 32px;
+}
+
+/* 개별 기능 카드 */
+.patient-quick-item {
+  min-width: 0;
+  min-height: 116px;
+
+  /* 내부 여백 */
+  padding: 18px 6px;
+
+  /* 아이콘과 텍스트 세로 배치 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+
+  /* 카드 배경 */
+  background-color: #edf5f0;
+  border: none;
+  border-radius: 15px;
+
+  /* 아이콘 및 텍스트 색상 */
+  color: #164b43;
+
+  /* 클릭 가능 표시 */
+  cursor: pointer;
+
+  transition: background-color 0.2s;
+}
+
+/* 카드에 마우스를 올렸을 때 */
+.patient-quick-item:hover {
+  background-color: #dcece3;
+}
+
+/* 기능 카드의 아이콘 크기 */
+.patient-quick-item svg {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+/* 카드 텍스트 */
+.patient-quick-item span {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+
+/* 하단 안내 문구 */
+
+.patient-home-footer {
+  /* 남은 공간을 활용하여 하단으로 이동 */
+  margin-top: auto;
+
+  /* 위쪽 요소와 최소 간격 */
+  padding-top: 35px;
+
+  /* 텍스트 디자인 */
+  color: #889791;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* 안내 문구의 기본 여백 제거 */
+.patient-home-footer p {
+  margin: 0;
+}
+
+/* ----------------------------------------------------------------------------------------- */
+/* ==========================================
+   이미지 업로드 및 증상 입력 화면 ImageUpload.tsx 전용 스타일
+========================================== */
+
+/* 모바일 앱 카드의 바깥 영역 */
+.patient-upload-page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* 이미지 업로드 전체 카드 */
+.patient-upload-card {
+  width: 100%;
+  max-width: 390px;
+  min-height: 850px;
+  padding: 24px 22px 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #ffffff;
+  border: 1px solid #c4d9d0;
+  border-radius: 24px;
+  color: #163f39;
+}
+
+/* 상단 단계 표시 */
+.upload-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.upload-back-button {
+  background: transparent;
+  border: none;
+  color: #334f49;
+  padding: 2px;
+}
+
+.upload-progress {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  color: #8a9b95;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.progress-dot {
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid #91afa5;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.progress-step.active {
+  color: #267364;
+  font-weight: 700;
+}
+
+.progress-step.active .progress-dot {
+  background: #438b76;
+  border-color: #438b76;
+}
+
+.upload-step-count {
+  font-size: 14px;
+  color: #334f49;
+  white-space: nowrap;
+}
+
+/* 화면 제목 */
+.upload-title {
+  margin: 24px 0 14px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+}
+
+/* 피부 이미지 등록 */
+.upload-image-section {
+  width: 100%;
+}
+
+/* 이미지 등록 전 영역 */
+.upload-image-placeholder {
+  width: 100%;
+  height: 180px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+
+  background: #edf5f0;
+  color: #164b43;
+  border-radius: 15px;
+}
+
+.upload-image-placeholder p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* 이미지 미리보기 */
+.upload-image-preview {
+  position: relative;
+  width: 100%;
+  height: 170px;
+  overflow: hidden;
+  border-radius: 15px;
+  background: #edf5f0;
+}
+
+.upload-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 이미지 삭제 버튼 */
+.upload-remove-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+  border: 1px solid #c4d9d0;
+  border-radius: 50%;
+  color: #163f39;
+}
+
+/* 카메라·갤러리 버튼 영역 */
+.upload-image-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.upload-image-buttons button {
+  min-height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  background: #ffffff;
+  border: 1px solid #91b6a9;
+  border-radius: 11px;
+
+  color: #164b43;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.upload-image-buttons button:hover {
+  background: #edf5f0;
+}
+
+/* 사진 촬영 가이드 */
+.upload-image-guide {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin: 12px 10px 0;
+  color: #748781;
+  font-size: 12px;
+}
+
+/* 피부 증상 선택 */
+.upload-symptom-section {
+  margin-top: 28px;
+}
+
+.upload-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.upload-section-heading h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.upload-section-heading span {
+  font-size: 12px;
+  color: #748781;
+  white-space: nowrap;
+}
+
+/* 증상 카드 3열 배치 */
+.upload-symptom-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* 기본 증상 카드 */
+.upload-symptom-item {
+  position: relative;
+  min-width: 0;
+  height: 80px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  background: #edf5f0;
+  border: 1px solid transparent;
+  border-radius: 13px;
+
+  color: #164b43;
+  cursor: pointer;
+}
+
+/* 증상 카드 텍스트 */
+.upload-symptom-item span {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 선택된 증상 카드 */
+.upload-symptom-item.selected {
+  background: #648f85;
+  border-color: #648f85;
+  color: #ffffff;
+}
+
+/* 선택 체크 아이콘 */
+.symptom-check-icon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+/* 증상 발생 시점 */
+.upload-duration-section {
+  margin-top: 22px;
+}
+
+.upload-duration-section label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.upload-duration-section select {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+
+  background: #ffffff;
+  border: 1px solid #d0ddd8;
+  border-radius: 10px;
+
+  color: #334f49;
+  font-size: 14px;
+}
+
+/* 입력 오류 메시지 */
+.upload-error {
+  margin: 12px 0 0;
+  color: #b42318;
+  font-size: 13px;
+}
+
+/* 다음 단계 버튼 및 하단 안내 */
+.upload-next-button {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  background: #648f85;
+  border: none;
+  border-radius: 11px;
+
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.upload-next-button:hover {
+  background: #4e796e;
+}
+
+/* 교육용 서비스 안내 문구 */
+.upload-footer {
+  margin-top: auto;
+  padding-top: 18px;
+
+  text-align: center;
+  color: #8a9994;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.upload-footer p {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------- */
+/* ==========================================
+  환자 정보 입력 화면
+========================================== */
+
+/* 환자 정보 페이지 전체 영역 */
+.patient-info-page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* 모바일 앱 카드 */
+.patient-info-card {
+  width: 100%;
+  max-width: 390px;
+  min-height: 872px;
+  padding: 24px 22px 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  background-color: #ffffff;
+  border: 1px solid #c4d9d0;
+  border-radius: 24px;
+  color: #163f39;
+}
+
+/* 상단 진행 단계 */
+.info-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* 뒤로 가기 버튼 */
+.info-back-button {
+  padding: 2px;
+  border: none;
+  background: transparent;
+  color: #334f49;
+  cursor: pointer;
+}
+
+/* 단계 표시 영역 */
+.info-progress {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+}
+
+.info-progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+
+  font-size: 12px;
+  color: #8a9b95;
+  white-space: nowrap;
+}
+
+/* 단계별 원형 표시 */
+.info-progress-dot {
+  width: 13px;
+  height: 13px;
+
+  background: #ffffff;
+  border: 1.5px solid #91afa5;
+  border-radius: 50%;
+}
+
+/* 현재 진행 중인 단계 */
+.info-progress-step.active {
+  color: #267364;
+  font-weight: 700;
+}
+
+.info-progress-step.active .info-progress-dot {
+  background: #438b76;
+  border-color: #438b76;
+}
+
+/* 우측 단계 숫자 */
+.info-step-count {
+  color: #334f49;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* 환자 정보 입력 제목 */
+.info-title {
+  margin: 26px 0 14px;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+/* 기본 정보 입력 */
+.info-basic-section h2,
+.info-description-section h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+/* 이름 및 나이 입력창 */
+.info-input {
+  width: 100%;
+  height: 49px;
+  margin-bottom: 12px;
+  padding: 0 15px;
+
+  background-color: #ffffff;
+  border: 1px solid #d0ddd8;
+  border-radius: 11px;
+
+  color: #163f39;
+  font-size: 15px;
+  outline: none;
+}
+
+/* 입력창 선택 시 강조 */
+.info-input:focus,
+.info-textarea:focus {
+  border-color: #648f85;
+  box-shadow: 0 0 0 2px rgba(100, 143, 133, 0.12);
+}
+
+/* 입력창 안내 문자 */
+.info-input::placeholder,
+.info-textarea::placeholder {
+  color: #8b9ba4;
+}
+
+/* 성별 버튼 3열 */
+.info-gender-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 2px;
+}
+
+/* 성별 버튼 기본 디자인 */
+.info-gender-button {
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 4px;
+
+  background-color: #f5f8f6;
+  border: 1px solid #d0ddd8;
+  border-radius: 11px;
+
+  color: #163f39;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* 선택된 성별 버튼 */
+.info-gender-button.selected {
+  background-color: #648f85;
+  border-color: #648f85;
+  color: #ffffff;
+}
+
+/* 상세 증상 입력 */
+.info-description-section {
+  margin-top: 30px;
+}
+
+/* 상세 증상 작성 안내 */
+.info-description-section p {
+  margin: 0 0 10px;
+  color: #748781;
+  font-size: 13px;
+}
+
+/* 상세 증상 텍스트 입력창 */
+.info-textarea {
+  width: 100%;
+  height: 140px;
+  padding: 14px 15px;
+
+  resize: vertical;
+
+  background-color: #ffffff;
+  border: 1px solid #d0ddd8;
+  border-radius: 11px;
+  outline: none;
+
+  color: #163f39;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 글자 수 표시 */
+.info-character-count {
+  margin-top: 4px;
+  text-align: right;
+  color: #8a9b95;
+  font-size: 12px;
+}
+
+/* 사진 및 증상 선택 요약 */
+.info-upload-summary {
+  min-height: 52px;
+  margin-top: 20px;
+  padding: 12px 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  background-color: #edf5f0;
+  border-radius: 12px;
+
+  color: #164b43;
+  font-size: 14px;
+}
+
+/* 서비스 안내 및 정보 이용 동의 */
+.info-agreement {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 40px;
+
+  color: #334f49;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* 동의 체크박스 */
+.info-agreement input {
+  width: 23px;
+  height: 23px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: #648f85;
+}
+
+/* 동의 안내 문구 */
+.info-agreement small {
+  display: block;
+  margin-top: 5px;
+  color: #8a9b95;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* 입력 오류 */
+.info-error {
+  margin: 12px 0 0;
+  color: #b42318;
+  font-size: 13px;
+}
+
+/* 테스트용 분석 요청 안내 */
+.info-submit-message {
+  margin-top: 12px;
+  padding: 12px;
+
+  background-color: #edf5f0;
+  border-radius: 10px;
+  color: #334f49;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* 이전 / AI 분석 요청 버튼 */
+.info-action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* 이전 버튼 */
+.info-previous-button {
+  min-height: 54px;
+
+  background-color: #ffffff;
+  border: 1px solid #648f85;
+  border-radius: 11px;
+
+  color: #163f39;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* AI 분석 요청 버튼 */
+.info-submit-button {
+  min-height: 54px;
+
+  background-color: #648f85;
+  border: 1px solid #648f85;
+  border-radius: 11px;
+
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.info-submit-button:hover {
+  background-color: #4e796e;
+}
+
+/* ------------------------------------------------------------- */
+/* ==========================================
+  AI 분석 결과 화면 및 결과 확인
+========================================== */
+
+/* 결과 화면 전체 영역 */
+.patient-result-page {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 12px 20px;
+
+  overflow: hidden;
+}
+
+/* 모바일 결과 카드 */
+.patient-result-card {
+  width: 100%;
+  max-width: 390px;
+
+  /* 모바일 카드 고정 높이 */
+  height: min(870px, calc(100dvh - 90px));
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 22px;
+
+  background-color: #ffffff;
+  border: 1px solid #c4d9d0;
+  border-radius: 24px;
+
+  color: #163f39;
+
+  /* 카드 내부 스크롤 */
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* 모바일 터치 스크롤 */
+  -webkit-overflow-scrolling: touch;
+
+  /* 스크롤 시 레이아웃 흔들림 방지 */
+  overscroll-behavior: contain;
+
+  /* Firefox 스크롤바 */
+  scrollbar-width: thin;
+  scrollbar-color: #b8d2c5 transparent;
+}
+
+/* 결과 화면 상단 헤더 */
+.result-header {
+  display: grid; /* Grid 레이아웃 사용 */
+  grid-template-columns: 32px 1fr 32px; /* 좌우 동일한 공간 확보 */
+  align-items: center; /* 세로 가운데 정렬 */
+  gap: 10px;
+}
+
+/* 뒤로 가기 버튼 */
+.result-back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+
+  background: transparent;
+  border: none;
+  color: #334f49;
+  cursor: pointer;
+}
+
+/* 결과 화면 제목 */
+.result-header h1 {
+  grid-column: 2; /* 가운데 열에 배치 */
+  margin: 0;
+  text-align: center; /* 제목 가운데 정렬 */
+  font-size: 20px;
+  font-weight: 800;
+}
+
+/* 분석 상태 안내 */
+.result-status-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* 상태 아이콘 배경 */
+.result-status-icon {
+  width: 60px;
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background-color: #edf5f0;
+  color: #648f85;
+}
+
+/* 현재 분석 상태 제목 */
+.result-status-section h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+/* 분석 상태 설명 */
+.result-status-section p {
+  margin: 0;
+  max-width: 310px;
+
+  font-size: 12px;
+  line-height: 1.6;
+  color: #748781;
+}
+
+/* 진행 상태 목록 */
+.result-progress-section {
+  padding: 20px;
+  background-color: #f2f7f4;
+  border-radius: 15px;
+}
+
+/* 진행 상태 영역 제목 */
+.result-progress-section h3 {
+  margin: 0 0 20px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* 진행 단계 세로 배치 */
+.result-progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 개별 진행 단계 */
+.result-progress-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #a8c9b7;
+}
+
+/* 단계별 제목과 상태 */
+.result-progress-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* 단계 제목 */
+.result-progress-text strong {
+  color: #334f49;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 단계 상태 */
+.result-progress-text span {
+  font-size: 10px;
+  color: #8a9994;
+}
+
+/* 완료된 단계 */
+.result-progress-item.done {
+  color: #648f85;
+}
+
+/* 현재 진행 중인 단계 */
+.result-progress-item.current {
+  color: #438b76;
+}
+
+/* 대기 중인 단계 */
+.result-progress-item.waiting {
+  opacity: 0.65;
+}
+
+/* 환자 등록 정보 요약 */
+.result-patient-summary {
+  margin-top: 20px;
+  padding: 18px;
+
+  background-color: #ffffff;
+  border: 1px solid #d9e7df;
+  border-radius: 14px;
+}
+
+/* 등록 정보 제목 */
+.result-patient-summary h3 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* 개별 정보 가로 정렬 */
+.result-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+/* 마지막 정보 아래 여백 제거 */
+.result-summary-row:last-child {
+  margin-bottom: 0;
+}
+
+/* 왼쪽 항목명 */
+.result-summary-row > span {
+  flex-shrink: 0;
+  color: #748781;
+  font-size: 13px;
+}
+
+/* 오른쪽 입력값 */
+.result-summary-row strong {
+  color: #163f39;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* 등록 사진 개수 */
+.result-image-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* AI 서버 미연결 안내 */
+.result-information-box {
+
+  margin-top: 16px;
+  padding: 14px;
+
+  background-color: #edf5f0;
+  border-radius: 13px;
+  color: #164b43;
+}
+.result-information-box-top{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 안내 아이콘 크기 유지 */
+.result-information-box > svg {
+  flex-shrink: 0;
+}
+
+/* 안내 제목 */
+.result-information-box strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 안내 설명 */
+.result-information-box p {
+  margin: 6px 0 0;
+  color: #64756f;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* 데이터 누락 오류 */
+.result-error {
+  margin-top: 14px;
+  color: #b42318;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* 홈으로 돌아가기 버튼 */
+.result-home-button {
+  width: 100%;
+  min-height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  margin-top: 16px;
+
+  background-color: #648f85;
+  color: #ffffff;
+  border: none;
+  border-radius: 11px;
+
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* 마우스 hover */
+.result-home-button:hover {
+  background-color: #4e796e;
+}
+
+/* ==========================================
+   ImageUpload: 정면 1장 + 문제 부위 2장 업로드 UI
+   기존 증상 선택/발생 시점/공통 헤더 스타일은 유지
+========================================== */
+.upload-photo-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 19px;
+}
+.upload-photo-heading h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #163f39;
+}
+.upload-photo-count {
+  flex-shrink: 0;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #e0f1e5;
+  font-size: 12px;
+  font-weight: 700;
+  color: #14532d;
+}
+.upload-photo-description {
+  margin: 5px 0 15px;
+  color: #334f49;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.upload-photo-slots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+.upload-photo-slot {
+  min-width: 0;
+  text-align: center;
+}
+.upload-photo-slot > strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12px;
+  color: #163f39;
+}
+.upload-photo-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #edf5f0;
+}
+.upload-photo-frame img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+.upload-photo-frame.is-empty {
+  border: 1.5px dashed #a9c8bc;
+}
+.upload-photo-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #236855;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.upload-photo-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,.95);
+  color: #163f39;
+  cursor: pointer;
+}
+.upload-photo-badge {
+  display: inline-block;
+  max-width: 100%;
+  margin-top: 6px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: #667d74;
+  background: #eef4ef;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.upload-photo-badge.is-uploaded {
+  color: #14532d;
+  background: #d6eddc;
+}
+.upload-camera-button {
+  background: #236855 !important;
+  color: #fff !important;
+  border-color: #236855 !important;
+}
+.upload-photo-warning {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 11px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  color: #b74213;
+  background: #fff1e5;
+  font-size: 12px;
+  font-weight: 600;
+}
+.upload-photo-warning svg,
+.upload-image-guide svg { 
+  flex-shrink: 0; 
+}
+/* 새 업로드 영역에 맞게 기존 카드의 위 여백만 조정 */
+.patient-upload-card .upload-symptom-section { 
+  margin-top: 22px; 
+}
+
+
+/* ==========================================
+   환자 결과 화면: 의사 최종 소견
+   기존 결과 화면 스타일은 유지하고 완료 결과만 추가
+========================================== */
+
+.patient-doctor-result {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #d9e8df;
+  border-radius: 10px;
+  background: #f3f8f5;
+}
+
+.patient-doctor-result h3 {
+  margin: 0 0 12px;
+  color: var(--primary-dark);
+  font-size: 15px;
+}
+
+.patient-doctor-result p {
+  margin: 8px 0;
+  color: var(--text-main);
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+
+/* ==========================================
+   환자 진료 기록 목록 (기존 결과 UI 디자인 유지)
+   - 결과 확인 페이지에 접수별 기록을 표시
+   - 의사 확정 결과가 있는 기록은 다시 선택해 조회
+========================================== */
+
+.result-history-section {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid #e0eae3;
+  border-radius: 12px;
+  background: #f8fbf9;
+}
+
+.result-history-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.result-history-heading h3 {
+  margin: 0;
+  font-size: 15px;
+  color: var(--primary-dark);
+}
+
+.result-history-refresh {
+  padding: 7px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--primary-dark);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.result-history-refresh:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.result-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-history-item {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dfe9e2;
+  border-radius: 9px;
+  background: #ffffff;
+  text-align: left;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.result-history-item.is-selected {
+  border-color: var(--primary);
+  background: #eaf5ed;
+}
+
+.result-history-date {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.result-history-item strong {
+  font-size: 13px;
+}
+
+
+/* ==========================================
+   내 진료 기록 개별 삭제 버튼
+   - 진료 기록과 휴지통 버튼 가로 배치
+   - 기존 모바일 카드 크기와 내부 스크롤 유지
+========================================== */
+
+/* 진료 기록 한 줄 */
+.result-history-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+
+  width: 100%;
+}
+
+/* 진료 기록 선택 버튼 */
+.result-history-row .result-history-item {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 휴지통 삭제 버튼 */
+.result-history-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 38px;
+
+  border: 1px solid #e8baba;
+  border-radius: 9px;
+
+  background: #fff7f7;
+  color: #bb5555;
+
+  cursor: pointer;
+}
+
+/* 휴지통에 마우스를 올렸을 때 */
+.result-history-delete:hover:not(:disabled) {
+  background: #ffebeb;
+  border-color: #d88d8d;
+}
+
+/* 삭제 버튼 비활성화 */
+.result-history-delete:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.result-history-state {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.result-history-empty {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+
+/* 모바일 화면 대응 */
+@media (max-width: 480px) {
+
+  /* ===================================
+    모바일 시작 화면 
+  ======================================*/
+  .patient-home {
+    width: calc(100% - 20px);
+    max-width: none;
+
+    min-height: calc(100dvh - 100px);
+
+    margin: 12px auto 20px;
+    padding: 55px 18px 20px;
+  }
+
+  /* 모바일 로고 크기 */
+  .patient-logo-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .patient-logo-symbol {
+    font-size: 80px;
+  }
+
+  /* 모바일 서비스 제목 */
+  .patient-home-logo h1 {
+    font-size: 34px;
+  }
+
+  /* 모바일 프로젝트 설명 */
+  .patient-home-logo p {
+    font-size: 16px;
+    margin-top: 20px;
+  }
+
+  /* 모바일 소개 문구 */
+  .patient-home-description {
+    font-size: 14px;
+    margin-top: 26px;
+  }
+
+  /* 모바일 분석 시작 버튼 */
+  .patient-start-button {
+    min-height: 64px;
+    margin-top: 28px;
+    font-size: 17px;
+  }
+
+  /* 모바일 기능 카드 간격 */
+  .patient-quick-menu {
+    gap: 10px;
+    margin-top: 26px;
+  }
+
+  /* 모바일 기능 카드 크기 */
+  .patient-quick-item {
+    min-height: 100px;
+    padding: 12px 4px;
+    gap: 12px;
+  }
+
+  /* 모바일 카드 텍스트 */
+  .patient-quick-item span {
+    font-size: 12px;
+  }
+
+  /* 모바일 하단 안내 */
+  .patient-home-footer {
+    font-size: 12px;
+  }
+
+  /* ===================================
+    모바일 이미지 업로드 화면 
+  ======================================*/
+
+  .patient-upload-page {
+    padding: 12px 10px 20px;
+  }
+
+  .patient-upload-card {
+    max-width: none;
+    min-height: calc(100dvh - 100px);
+    padding: 20px 16px;
+  }
+
+  .upload-title {
+    font-size: 23px;
+  }
+
+  .upload-image-placeholder,
+  .upload-image-preview {
+    height: 170px;
+  }
+
+  .upload-symptom-grid {
+    gap: 9px;
+  }
+
+  .upload-symptom-item {
+    height: 82px;
+  }
+
+  /* ===================================
+    모바일 환자 정보 입력 화면 
+  ======================================*/
+  .patient-info-page {
+    padding: 10px 10px 20px;
+  }
+
+  .patient-info-card {
+    max-width: none;
+    min-height: calc(100dvh - 30px);
+    padding: 20px 16px;
+  }
+
+  .info-title {
+    font-size: 23px;
+  }
+
+  .info-description-section {
+    margin-top: 26px;
+  }
+
+  .info-textarea {
+    height: 125px;
+  }
+
+  .info-gender-grid {
+    gap: 8px;
+  }
+
+  .info-gender-button {
+    font-size: 13px;
+  }
+
+  /* ===================================
+    모바일 분석 진행 상태 및 결과 확인
+  ======================================*/
+  .patient-result-page {
+    height: 100%;
+    padding: 10px;
+    overflow: hidden;
+  }
+
+  .patient-result-card {
+    width: 100%;
+    max-width: none;
+  
+    /* 헤더를 제외한 화면 높이에 맞춤 */
+    height: calc(100dvh - 76px);
+    min-height: 0;
+  
+    padding: 20px 16px;
+  
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .result-status-section {
+    padding: 26px 8px 22px;
+  }
+
+  .result-status-section h2 {
+    font-size: 21px;
+  }
+
+  .result-progress-section {
+    padding: 17px;
+  }
+
+  .result-progress-list {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .upload-photo-slots { 
+    gap: 6px; 
+  }
+  .upload-photo-badge { 
+    font-size: 9px;
+    padding: 3px 5px; 
+  }
+}

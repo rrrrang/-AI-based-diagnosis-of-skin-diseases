@@ -1,0 +1,995 @@
+/* =========================================================
+   01. 의사 화면의 최상위 레이아웃
+   ========================================================= */
+.app-container.doctor-app {
+  height: auto;
+  overflow: visible;
+}
+
+/* 의사 화면 헤더 */
+.doctor-app .main-header.doctor-mode {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 18px #173d3020;
+}
+
+/* 의사 화면 본문 */
+.doctor-dashboard {
+  width: calc(100% - 160px);
+  margin: 18px auto 40px;
+  color: var(--text-main);
+}
+
+.doctor-dashboard * {
+  box-sizing: border-box;
+}
+
+.doctor-dashboard h1,
+.doctor-dashboard h2,
+.doctor-dashboard h3,
+.doctor-dashboard p {
+  margin: 0;
+}
+
+.doctor-dashboard button,
+.doctor-dashboard input,
+.doctor-dashboard textarea {
+  font: inherit;
+}
+
+.doctor-dashboard button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+/* 공통 카드 외형: 예약 관리·환자 자료·AI 결과·최종 소견
+   - 카드 배경/테두리/모서리/내부 여백을 한 곳에서 관리 */
+.doctor-panel {
+  min-width: 0;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 2px 12px #274f3610;
+}
+
+/* =========================================================
+   의사 이름과 화면 제목
+   ========================================================= */
+.doctor-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 16px;
+}
+
+.doctor-heading h1 {
+  font-size: 24px;
+  color: var(--primary-dark);
+  margin-bottom: 6px;
+}
+
+.doctor-heading p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-sub);
+}
+
+.doctor-demo-pill {
+  border-radius: 20px;
+  background: #e8f3ec;
+  color: #35745a;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   예약 관리 카드
+   ========================================================= */
+.doctor-booking-panel {
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+}
+
+.doctor-booking-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.doctor-booking-title h2,
+.doctor-panel>h2 {
+  font-size: 18px;
+  color: var(--primary-dark);
+  font-weight: 800;
+}
+
+.doctor-booking-title p {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-top: 6px;
+}
+
+.doctor-booking-title p span {
+  padding: 0 5px;
+}
+
+/* 예약 관리 도구 모음: 날짜/검색/상태 필터/새로고침
+   - 공간이 부족할 때 다음 줄로 넘어가도록 flex-wrap 사용 */
+.doctor-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+/* 04. 예약 날짜 선택: 전날/날짜 선택/다음날/오늘 버튼 */
+.doctor-calendar-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.doctor-calendar-tools button,
+.doctor-calendar-tools label,
+.doctor-refresh {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--primary-dark);
+}
+
+.doctor-calendar-tools button,
+.doctor-refresh {
+  min-width: 35px;
+  padding: 0 8px;
+}
+
+/* ==========================================
+   시연 예약 기록 초기화 버튼
+   - 의사 UI 예약 관리 도구 영역
+   - 초기화 작업을 구분하기 위한 빨간색 테두리
+========================================== */
+
+.doctor-clear-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  min-height: 36px;
+  padding: 0 12px;
+
+  border: 1px solid #db9e9e;
+  border-radius: 8px;
+
+  background: #fff8f8;
+  color: #ad4949;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* 마우스를 올렸을 때 */
+.doctor-clear-button:hover:not(:disabled) {
+  background: #ffebeb;
+  border-color: #ca7777;
+}
+
+/* 버튼을 사용할 수 없을 때 */
+.doctor-clear-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+.doctor-calendar-tools label {
+  gap: 6px;
+  padding: 0 9px;
+}
+
+.doctor-calendar-tools input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 12px;
+  max-width: 130px;
+  color: var(--text-main);
+}
+
+/* 환자명 검색 입력창: 너비 변경 시 이 선택자의 width 조정 */
+.doctor-search {
+  height: 35px;
+  width: 155px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0 10px;
+  color: var(--text-sub);
+}
+
+.doctor-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  font-size: 12px;
+}
+
+/* 검토 상태 필터: 전체 / 검토 대기 / 완료 */
+.doctor-filters {
+  display: flex;
+  gap: 3px;
+  background: var(--surface-light);
+  padding: 4px;
+  border-radius: 9px;
+}
+
+.doctor-filters button {
+  border: 0;
+  background: transparent;
+  border-radius: 6px;
+  padding: 5px 10px;
+  color: var(--text-sub);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* 현재 선택된 필터 버튼만 강조 */
+.doctor-filters button.is-active {
+  background: var(--primary);
+  color: white;
+}
+
+/* =========================================================
+   예약 환자 테이블
+   ========================================================= */
+.doctor-table-outer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.doctor-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 750px;
+  font-size: 12px;
+}
+
+/* 테이블 제목 행: 배경색·글자색·안쪽 간격 */
+.doctor-table th {
+  background: #edf5f0;
+  text-align: left;
+  color: var(--primary-dark);
+  font-size: 12px;
+  padding: 10px 13px;
+  white-space: nowrap;
+}
+
+/* 테이블 환자 한 행 높이: 현재 55px 정도를 기준으로 표시
+   - 더 촘촘하게 배치하려면 padding/height를 여기서 조절 */
+.doctor-table td {
+  border-bottom: 1px solid #e9f0eb;
+  padding: 11px 13px;
+  height: 59px;
+  color: #355045;
+}
+
+.doctor-table td strong {
+  display: block;
+  font-size: 13px;
+}
+
+.doctor-table td small {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-sub);
+}
+
+/* 현재 검토 중인 환자 행 강조 */
+.doctor-table tr.is-selected td {
+  background: #e7f2eb;
+}
+
+.doctor-table tr:hover td {
+  background: #f2f8f4;
+}
+
+.doctor-table .doctor-table-empty {
+  text-align: center;
+  color: var(--text-sub);
+  height: 70px;
+}
+
+/* 상태 배지 공통 스타일 (대기/시연/완료) */
+.doctor-status {
+  display: inline-block;
+  background: #edf1f5;
+  color: #697982;
+  border-radius: 20px;
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.doctor-status.is-done {
+  background: #dff1e6;
+  color: #29754d;
+}
+
+.doctor-status.is-demo {
+  background: #fff0d5;
+  color: #95651f;
+}
+
+.doctor-status.is-wait {
+  background: #edf1f5;
+  color: #697982;
+}
+
+/* 검토하기/결과 보기 버튼: 클릭 이벤트는 TSX에서 담당 */
+.doctor-review-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  border: 1px solid var(--primary-light);
+  background: white;
+  border-radius: 8px;
+  padding: 7px 11px;
+  color: var(--primary-dark);
+  font-weight: 700;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* 예약 환자 페이지 이동: 이전 / 현재 페이지 / 다음 */
+.doctor-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 11px;
+  color: var(--text-sub);
+  font-size: 11px;
+}
+
+.doctor-pagination>div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.doctor-pagination button {
+  border: 1px solid var(--border-color);
+  background: white;
+  border-radius: 7px;
+  padding: 6px 10px;
+  color: var(--primary-dark);
+}
+
+/* 환자 자료 / AI 결과를 정확히 두 열에 배치, 내부 스크롤 없음 */
+
+/* =========================================================
+   환자 자료(왼쪽) / AI 분석(오른쪽)
+   ========================================================= */
+.doctor-review-split {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: 16px;
+  align-items: stretch;
+  margin-bottom: 16px;
+}
+
+.doctor-review-split>.doctor-panel {
+  overflow: visible;
+  max-height: none;
+}
+
+.doctor-panel>h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.doctor-panel>h2 svg {
+  color: var(--primary);
+}
+
+.doctor-panel h3 {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  margin: 18px 0 10px;
+}
+
+/* 환자를 선택하지 않았을 때 안내 문구 영역 */
+.doctor-empty-review {
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-sub);
+  font-size: 13px;
+  background: #f7faf8;
+  border: 1px dashed var(--border-color);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+/* 환자 기본 정보: 이름/나이/성별/예약·접수 번호 */
+.doctor-info-card {
+  background: #f1f7f3;
+  border-radius: 9px;
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-wrap: anywhere;
+}
+
+.doctor-info-card strong {
+  font-size: 14px;
+}
+
+.doctor-info-card span {
+  font-size: 11px;
+  color: var(--text-sub);
+}
+
+/* 환자 등록 사진: 정면 + 부위1 + 부위2, 총 3열 */
+.doctor-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 9px;
+}
+
+/* AI 분석 이미지: 원본과 마스킹 결과, 총 2열 */
+.doctor-ai-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
+}
+
+.doctor-photo-item {
+  min-width: 0;
+  text-align: center;
+}
+
+.doctor-photo-item>span {
+  display: block;
+  font-size: 12px;
+  margin-top: 7px;
+  color: var(--text-sub);
+}
+
+/* 이미지 틀 크기: aspect-ratio 4 / 3
+   - 사진 자체는 아래 object-fit: contain으로 잘리지 않게 표시 */
+.doctor-photo-box {
+  aspect-ratio: 4/3;
+  border: 1px solid #dce8df;
+  background: #f3f8f5;
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.doctor-photo-box>a,
+.doctor-photo-box img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.doctor-photo-box img {
+  object-fit: contain;
+  background: #eef2ee;
+}
+
+/* 사진이 없을 때 표시하는 빈 상태 */
+.doctor-photo-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 7px;
+  color: #90a79a;
+  width: 100%;
+  height: 100%;
+  font-size: 11px;
+}
+
+/* 환자가 고른 증상 및 증상 발생 시점 */
+.doctor-symptoms {
+  font-size: 13px;
+}
+
+.doctor-symptoms>div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.doctor-symptoms span {
+  background: #e6f2e9;
+  border-radius: 6px;
+  padding: 5px 10px;
+  color: #46735b;
+  font-size: 12px;
+}
+
+.doctor-symptoms p {
+  color: var(--text-sub);
+  font-size: 12px;
+}
+
+/* 환자 상세 문진 원문 */
+.doctor-patient-words {
+  background: #f7faf8;
+  border: 1px solid #e5ede7;
+  padding: 12px;
+  border-radius: 9px;
+  min-height: 90px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: #3f5549;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   AI 분석 상태 및 결과 안내
+   - 실제 모델 미연결 시 '대기' 또는 시연 결과가 표시됨
+   - 아래 안내/테스트 버튼의 스타일만 정의, AI 계산은 하지 않음
+   ========================================================= */
+.doctor-ai-state {
+  font-size: 12px;
+  color: var(--text-sub);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.doctor-analysis-pending {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  border-radius: 9px;
+  padding: 15px;
+  background: #f5f8f6;
+  color: var(--text-sub);
+  margin-top: 20px;
+}
+
+.doctor-analysis-pending strong {
+  display: block;
+  font-size: 13px;
+  color: var(--primary-dark);
+  margin-bottom: 7px;
+}
+
+.doctor-analysis-pending p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* 시연용 예측 그래프 버튼 영역: 실제 진단 모델과 무관 */
+.doctor-demo-action {
+  margin-top: 15px;
+  border-top: 1px solid #e9eee9;
+  padding-top: 15px;
+}
+
+.doctor-demo-action button {
+  background: #ecf5ee;
+  border: 1px solid var(--primary-light);
+  padding: 9px 12px;
+  color: var(--primary-dark);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.doctor-demo-action p,
+.doctor-hint {
+  font-size: 11px;
+  color: var(--text-sub);
+  line-height: 1.65;
+  margin-top: 8px !important;
+}
+
+/* 질환별 세로 막대 차트: 공통 Y축 0~100 */
+
+/* =========================================================
+   AI 질환별 세로 막대그래프
+   ========================================================= */
+.doctor-chart-section {
+  margin-top: 23px;
+}
+
+.doctor-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.doctor-chart-header h3 {
+  margin: 0 !important;
+}
+
+.doctor-chart {
+  display: flex;
+  gap: 10px;
+  height: 220px;
+  padding-top: 18px;
+  margin-top: 16px;
+}
+
+/* 그래프 Y축 숫자: 100 / 75 / 50 / 25 / 0 */
+.doctor-chart-axis {
+  width: 30px;
+  flex-shrink: 0;
+  height: 176px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: right;
+  color: #83978a;
+  font-size: 11px;
+}
+
+.doctor-chart-plot {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+/* Y축 눈금에 대응하는 가로 점선 */
+.doctor-chart-gridlines {
+  position: absolute;
+  inset: 0 0 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.doctor-chart-gridlines i {
+  border-top: 1px dashed #e2eae4;
+  width: 100%;
+}
+
+.doctor-chart-columns {
+  display: flex;
+  position: relative;
+  height: 100%;
+  gap: 14px;
+  justify-content: space-around;
+  align-items: stretch;
+}
+
+.doctor-chart-column {
+  flex: 1;
+  min-width: 0;
+  max-width: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 막대가 자라는 공간: Y축과 같은 200px */
+.doctor-chart-bar-area {
+  height: 176px;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.doctor-chart-bar {
+  width: min(58px,75%);
+  background: #a9cbbc;
+  border-radius: 7px 7px 0 0;
+  position: relative;
+  min-height: 2px;
+}
+
+/* 가장 높은 예측 점수(정렬된 첫 번째 막대)를 강조 */
+.doctor-chart-bar.is-primary {
+  background: var(--primary);
+}
+
+.doctor-chart-bar span {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--primary-dark);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* 그래프 X축: 각 질환 후보명 */
+.doctor-chart-name {
+  padding-top: 9px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.25;
+  color: var(--text-sub);
+  overflow-wrap: anywhere;
+}
+
+/* 화면 하단, 전체 폭의 최종 결과 작성 */
+
+/* =========================================================
+   의사 최종 진단 및 소견 작성
+   ========================================================= */
+.doctor-final-panel {
+  margin-bottom: 16px;
+}
+
+.doctor-alert,
+.doctor-success {
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 11px 13px;
+  border-radius: 8px;
+  margin-bottom: 13px !important;
+}
+
+/* AI 분석 전, 최종 소견 입력 불가 등 주의 문구 */
+.doctor-alert {
+  background: #fff5e4;
+  color: #996620;
+}
+
+.doctor-success {
+  background: #e9f5ed;
+  color: #25724d;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 소견 입력 폼: PC에서 두 열 배치
+   - 좁은 화면에서는 아래 @media에서 한 열로 변경 */
+.doctor-final-fields {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1.35fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.doctor-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.doctor-field>span {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.doctor-field b {
+  color: #b25550;
+}
+
+.doctor-field input[type=text],
+.doctor-field textarea {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  background: white;
+  font-size: 13px;
+  color: var(--text-main);
+  resize: vertical;
+  outline: none;
+}
+
+.doctor-field input:focus,
+.doctor-field textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px #648f8522;
+}
+
+.doctor-field input:disabled,
+.doctor-field textarea:disabled {
+  background: #f3f6f4;
+}
+
+/* 소견 입력 영역의 세로 공간 확대 */
+.doctor-opinion-field {
+  grid-row: span 2;
+}
+
+.doctor-visit-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-main);
+}
+
+.doctor-visit-check input {
+  accent-color: var(--primary);
+}
+
+/* 소견 저장 안내 및 임시 저장 / 최종 확정 버튼 */
+.doctor-final-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.doctor-final-footer p {
+  font-size: 11px;
+  color: var(--text-sub);
+}
+
+.doctor-final-footer>div {
+  display: flex;
+  gap: 9px;
+}
+
+.doctor-save-button,
+.doctor-confirm-button {
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 10px 16px;
+}
+
+.doctor-save-button {
+  background: white;
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-light);
+}
+
+.doctor-confirm-button {
+  background: var(--primary);
+  color: white;
+  border: 1px solid var(--primary);
+}
+
+.doctor-error {
+  font-size: 12px;
+  color: #ac3939;
+  margin-top: 10px !important;
+}
+
+/* =========================================================
+   최종 결과 확정 확인창
+   ========================================================= */
+.doctor-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: #15281f88;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.doctor-modal {
+  background: white;
+  padding: 24px;
+  border-radius: 14px;
+  max-width: 440px;
+  width: 100%;
+}
+
+.doctor-modal h2 {
+  font-size: 19px;
+  margin: 0 0 12px;
+  color: var(--primary-dark);
+}
+
+.doctor-modal p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-sub);
+}
+
+.doctor-modal>div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.doctor-modal>div>button:first-child {
+  border: 1px solid var(--border-color);
+  background: white;
+  border-radius: 8px;
+  padding: 10px 16px;
+}
+
+/* 20. 페이지 맨 아래 교육용 시뮬레이션 안내 문구 */
+.doctor-footer {
+  font-size: 11px;
+  text-align: center;
+  color: var(--text-sub);
+  line-height: 1.7;
+  padding-bottom: 20px;
+}
+
+/* =========================================================
+   반응형
+   ========================================================= */
+@media (max-width:1100px) {
+  .doctor-dashboard {
+    width: calc(100% - 36px);
+  }
+
+  .doctor-booking-header {
+    align-items: flex-start;
+  }
+
+  .doctor-tools {
+    width: 100%;
+  }
+
+}
+
+@media (max-width:800px) {
+  .doctor-review-split {
+    grid-template-columns: 1fr;
+  }
+
+  .doctor-final-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .doctor-opinion-field {
+    grid-row: auto;
+  }
+
+  .doctor-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .doctor-dashboard {
+    width: calc(100% - 24px);
+  }
+
+  .doctor-panel {
+    padding: 15px;
+  }
+
+  .doctor-pagination {
+    flex-wrap: wrap;
+  }
+
+}
