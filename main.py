@@ -1,4 +1,4 @@
-"""서버 시작점. 실행: uvicorn app.main:app --reload --port 8000"""
+"""서버 시작점. 실행: uvicorn main:app --reload --port 8000"""
 import uuid
 from contextlib import asynccontextmanager
 
@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request
 
 from app import db
 from app.errors import register_error_handlers
-from app.routers import doctors, health
+from app.routers import cases, doctors, health
 
 
 @asynccontextmanager
@@ -30,3 +30,4 @@ async def add_request_id(request: Request, call_next):
 register_error_handlers(app)
 app.include_router(health.router)
 app.include_router(doctors.router)
+app.include_router(cases.router)

@@ -10,6 +10,30 @@ from main import app
 
 
 class StartupTests(unittest.TestCase):
+    def test_case_intake_and_private_photo(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch.dict(os.environ, {"SKINAI_DB_PATH": str(root / "db"), "SKINAI_PHOTO_DIR": str(root / "photos")}):
+                with TestClient(app) as client:
+                    from PIL import Image
+                    from io import BytesIO
+
+                    image = BytesIO()
+                    Image.new("RGB", (8, 8)).save(image, format="PNG")
+                    result = client.post("/api/cases", data={
+                        "doctorId": "d1", "date": "2026-11-13", "time": "10:00",
+                        "patientName": "Demo", "age": "25", "gender": "none",
+                    }, files={"photo0": ("face.png", image.getvalue(), "image/png")})
+                    self.assertEqual(result.status_code, 201, result.text)
+                    body = result.json()
+                    url = f"/api/cases/{body['id']}"
+                    headers = {"Authorization": f"Bearer {body['accessToken']}"}
+                    self.assertEqual(client.get(url).status_code, 401)
+                    self.assertEqual(client.get(url, headers=headers).json()["patientName"], "Demo")
+                    photo = client.get(url + "/photos/0", headers=headers)
+                    self.assertEqual(photo.content, image.getvalue())
+                    self.assertEqual(client.get(url + "/photos/1", headers=headers).status_code, 404)
+
     def test_startup_and_doctors(self):
         with tempfile.TemporaryDirectory() as directory:
             database = Path(directory) / "backend.sqlite3"

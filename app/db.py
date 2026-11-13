@@ -22,3 +22,20 @@ def init_db():
             "INSERT OR IGNORE INTO doctors VALUES (?, ?, ?)",
             [(f"d{i}", f"시연 의사 {i}", "시연 병원") for i in range(1, 4)],
         )
+        connection.execute("""
+            CREATE TABLE IF NOT EXISTS cases (
+                id TEXT PRIMARY KEY,
+                doctor_id TEXT NOT NULL REFERENCES doctors(id),
+                token_hash TEXT NOT NULL,
+                intake TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        connection.execute("""
+            CREATE TABLE IF NOT EXISTS photos (
+                case_id TEXT NOT NULL REFERENCES cases(id),
+                photo_index INTEGER NOT NULL,
+                media_type TEXT NOT NULL,
+                PRIMARY KEY (case_id, photo_index)
+            )
+        """)
