@@ -33,3 +33,10 @@ python -m app.worker --mobilenet-root D:/models/mobile --resnet-root D:/models/r
 환자와 의사 앱은 각각의 프론트 폴더에서 `npm ci` 후 `VITE_SKINAI_API=true`를 설정하고 `npm run dev`로 시작합니다. 기본 주소는 환자 5173, 의사 5174이며 개발 서버는 `/api`를 8000번 포트로 전달합니다. 다른 주소는 `SKINAI_API_TARGET`으로 지정합니다.
 
 검증한 범위는 두 앱 빌드, 백엔드 테스트, Edge에서 환자 예약·합성 사진 업로드·문진 접수, 실제 세 가중치로 워커 추론, 담당 의사 소견 공개, 환자 화면에서 소견과 등록 사진 장수 확인까지입니다. 실제 신규 환자에 대한 성능은 검증 범위 밖입니다.
+
+### 작업 큐와 응답
+
+- SQLite에는 `doctors`, `cases`, `photos`, `analysis_jobs`, `analysis_workers`, `reviews`가 있습니다. 소견의 임시본과 공개본을 따로 저장합니다.
+- 접수 응답의 `id`와 `accessToken`으로 `POST /api/cases/{id}/analyze`를 호출합니다. 신규 작업은 202, 기존 작업 조회는 200이며 예시 본문은 `{"jobId":"...","state":"pending"}`입니다. 실패 작업 재요청에는 `?retry=true`를 사용합니다.
+- 작업 임대는 60초, 워커 갱신은 15초, 선점 상한은 총 3회입니다. 임대 만료 복구, 이전 임대의 결과 쓰기 차단, 선점 상한 이후 실패 처리를 격리 SQLite로 검증했습니다.
+- 담당 의사 응답의 `analysis`에 `candidate`, `decision`, 질환별 `votes`, 모델별 `models`, 체크포인트 해시 `modelVersions`, `thresholds`, `analyzedPhotoIndex`를 제공합니다. 시연용 토큰은 서버 환경변수로만 설정합니다.
