@@ -51,7 +51,7 @@ pipeline {
                                 branches: [[name: '*/main']],
                                 extensions: [[$class: 'ScmName', name: 'backend-main']],
                                 userRemoteConfigs: [[
-                                    url: 'https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases.git'
+                                    url: 'https://github.com:443/rrrrang/-AI-based-diagnosis-of-skin-diseases.git'
                                 ]]
                             ]
                         )
