@@ -4,7 +4,7 @@ pipeline {
     options {
         disableConcurrentBuilds()
         skipDefaultCheckout(true)
-        timeout(time: 20, unit: 'MINUTES')
+        timeout(time: 40, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
@@ -28,6 +28,7 @@ pipeline {
                         error('D드라이브 작업 폴더를 사용하는 Windows Jenkins에서 실행하세요.')
                     }
                     env.BASE_PYTHON = env.CI_PYTHON_EXE ?: 'D:/miniconda3/python.exe'
+                    env.DOCKER_EXE = env.CI_DOCKER_EXE ?: 'C:/Users/human/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe'
                     env.RUN_DIR = "${pwd()}/runs/${env.BUILD_NUMBER}"
                     env.CHECKS_DIR = "${env.RUN_DIR}/checks/ci/backend_contract"
                     env.BACKEND_DIR = "${env.RUN_DIR}/backend"
@@ -37,6 +38,7 @@ pipeline {
                     script {
                         def revision = checkout scm
                         env.CHECKS_COMMIT = revision.GIT_COMMIT
+                        env.CHECKS_BRANCH = revision.GIT_BRANCH ?: 'configured SCM branch'
                     }
                 }
                 dir("${env.BACKEND_DIR}") {
@@ -61,7 +63,7 @@ pipeline {
                     writeFile(
                         file: "runs/${env.BUILD_NUMBER}/logs/revisions.txt",
                         encoding: 'UTF-8',
-                        text: "checks_branch=ci/two-server-lab\nchecks_commit=${env.CHECKS_COMMIT}\nbackend_branch=main\nbackend_commit=${env.BACKEND_COMMIT}\n"
+                        text: "checks_branch=${env.CHECKS_BRANCH}\nchecks_commit=${env.CHECKS_COMMIT}\nbackend_branch=main\nbackend_commit=${env.BACKEND_COMMIT}\n"
                     )
                 }
                 echo "검사 코드: ${env.CHECKS_COMMIT} / 백엔드: ${env.BACKEND_COMMIT}"
@@ -131,6 +133,23 @@ exit /b %CHECK_EXIT%
                 }
             }
         }
+
+        stage('5. Docker 빌드·접수·권한·공개 검사') {
+            steps {
+                dir("${env.RUN_DIR}") {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+set "TEMP=%CD%\\temp"
+set "TMP=%TEMP%"
+"%TEST_PYTHON%" -B -X utf8 "%CHECKS_DIR%/run_container_checks.py" --docker "%DOCKER_EXE%" --source-root "%BACKEND_DIR%" --output-root "%CD%/docker" --run-id "%BUILD_NUMBER%" > "logs/docker-checks.log" 2>&1
+set "CHECK_EXIT=%ERRORLEVEL%"
+type "logs\\docker-checks.log"
+exit /b %CHECK_EXIT%
+'''
+                }
+            }
+        }
     }
 
     post {
@@ -138,17 +157,37 @@ exit /b %CHECK_EXIT%
             script {
                 if (env.RUN_DIR) {
                     dir("${env.RUN_DIR}") {
-                        archiveArtifacts(
-                            artifacts: 'logs/*.log,logs/revisions.txt,reports/*/summary.json,reports/*/*.log,reports/*/http/http-results.json,reports/*/http/server.log',
-                            allowEmptyArchive: true,
-                            fingerprint: true
-                        )
+                        try {
+                            // Retry cleanup after a cancelled/failed Docker check.
+                            // The helper verifies ownership labels before removal.
+                            if (fileExists('docker/state.json')) {
+                                def cleanupExit = bat(returnStatus: true, encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+"%BASE_PYTHON%" -B -X utf8 "%CHECKS_DIR%/run_container_checks.py" --docker "%DOCKER_EXE%" --output-root "%CD%/docker" --cleanup > "logs/docker-cleanup.log" 2>&1
+set "CHECK_EXIT=%ERRORLEVEL%"
+type "logs\\docker-cleanup.log"
+exit /b %CHECK_EXIT%
+''')
+                                if (cleanupExit != 0) {
+                                    currentBuild.result = 'FAILURE'
+                                    echo '검사 전용 Docker 자원 정리에 실패했습니다. docker/cleanup.json과 로그를 확인하세요.'
+                                }
+                            }
+                        } finally {
+                            // Explicit file list: credentials, DB and photos are excluded.
+                            archiveArtifacts(
+                                artifacts: 'logs/*.log,logs/revisions.txt,reports/*/summary.json,reports/*/*.log,reports/*/http/http-results.json,reports/*/http/server.log,docker/build.log,docker/create.log,docker/tests.log,docker/container.log,docker/summary.json,docker/cleanup.json',
+                                allowEmptyArchive: true,
+                                fingerprint: true
+                            )
+                        }
                     }
                 }
             }
         }
         success {
-            echo '백엔드 검사 통과. 검사 기록을 보관했습니다. 이미지 업로드·배포는 수행하지 않습니다.'
+            echo '백엔드 검사와 Docker HTTP 검사 5개를 통과하고 전용 컨테이너를 정리했습니다. 이미지 업로드·배포는 수행하지 않습니다.'
         }
         failure {
             echo '검사 실패. 보관된 로그와 summary.json을 확인하세요.'
