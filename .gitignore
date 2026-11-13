@@ -4,3 +4,5 @@ dist/
 .env
 .env.*
 !.env.example
+/frontend/patient-frontend/test-results/
+/frontend/patient-frontend/playwright-report/
