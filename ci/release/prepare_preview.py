@@ -205,7 +205,7 @@ def main():
         tags = {}
         for service in SERVICES:
             tag = f'skinai-preview-{service}:{suffix}'
-            command = [args.docker, 'build', '--platform', 'linux/amd64', '--progress=plain',
+            command = [args.docker, 'build', '--load', '--platform', 'linux/amd64', '--progress=plain',
                        '--label', 'org.opencontainers.image.revision=' + commit, '-t', tag]
             if service in ('api', 'worker'):
                 command += ['-f', 'ci/release/backend/Dockerfile', '--target', service]

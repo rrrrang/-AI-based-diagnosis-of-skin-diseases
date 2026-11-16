@@ -168,7 +168,7 @@ def main():
             raise RuntimeError("Docker Desktop must be running Linux containers")
         report["stage"] = "image build"
         print("Building an isolated backend image", flush=True)
-        docker.call("build", "--platform", "linux/amd64", "--progress=plain",
+        docker.call("build", "--load", "--platform", "linux/amd64", "--progress=plain",
                     "--build-context", "backend=" + str(source),
                     "--file", str(PACKAGE / "Dockerfile"),
                     "--label", OWNER_LABEL + "=" + OWNER, "--label", RUN_LABEL + "=" + nonce,
