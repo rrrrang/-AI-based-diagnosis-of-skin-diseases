@@ -613,8 +613,9 @@ export default function PatientReview({
             {isFinal && (
               <p className="doctor-success">
                 <CheckCircle2 size={18} />
-                최종 모의 결과가 확정되었습니다.
-                현재는 로컬 시연 저장 상태입니다.
+                {apiEnabled
+                  ? "의사 검토 결과가 확정되어 서버에 저장되었습니다."
+                  : "최종 모의 결과가 확정되었습니다. 현재는 로컬 시연 저장 상태입니다."}
               </p>
             )}
 
@@ -623,7 +624,7 @@ export default function PatientReview({
               {/* 의심 질환 */}
               <label className="doctor-field">
                 <span>
-                  의심 질환·모의 결과 <b>*</b>
+                  {apiEnabled ? "의심 질환·검토 결과" : "의심 질환·모의 결과"} <b>*</b>
                 </span>
 
                 <input
@@ -696,8 +697,9 @@ export default function PatientReview({
             {/* 저장 버튼 */}
             <div className="doctor-final-footer">
               <p>
-                현재는 같은 브라우저에 저장하는
-                교육용 시연 기능입니다.
+                {apiEnabled
+                  ? "작성 내용은 서버에 저장되며, 확정한 결과만 환자에게 공개됩니다."
+                  : "현재는 같은 브라우저에 저장하는 교육용 시연 기능입니다."}
               </p>
 
               <div>
@@ -740,7 +742,7 @@ export default function PatientReview({
             aria-labelledby="doctor-confirm-title"
           >
             <h2 id="doctor-confirm-title">
-              모의 결과 확정
+              {apiEnabled ? "의사 검토 결과 확정" : "모의 결과 확정"}
             </h2>
 
             <p>

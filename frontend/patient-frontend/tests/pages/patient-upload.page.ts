@@ -8,6 +8,9 @@ const TEST_IMAGE = Buffer.from(
   "base64"
 );
 
+type PhotoSlot = "정면" | "부위 1" | "부위 2";
+type PhotoFile = { name: string; mimeType: string; buffer: Buffer };
+
 export class PatientUploadPage {
   readonly page: Page;
 
@@ -27,8 +30,8 @@ export class PatientUploadPage {
     ).toBeVisible();
   }
 
-  // 지정한 사진 칸에 검사 이미지를 등록하는 공통 기능
-  private async addPhoto(slot: "정면" | "부위 1" | "부위 2") {
+  // 실제 파일 선택 동작은 공통화하고, 허용/거절 여부는 각 검사에서 확인합니다.
+  async selectPhotoFile(slot: PhotoSlot, file: PhotoFile) {
     const chooserPromise = this.page.waitForEvent("filechooser");
 
     await this.page.getByRole("button", {
@@ -38,7 +41,17 @@ export class PatientUploadPage {
 
     const chooser = await chooserPromise;
 
-    await chooser.setFiles({
+    await chooser.setFiles(file);
+  }
+
+  async expectPhotoMissing(slot: PhotoSlot) {
+    await expect(this.page.getByRole("button", { name: `${slot} 사진 추가`, exact: true })).toBeVisible();
+    await expect(this.page.getByRole("button", { name: `${slot} 사진 삭제`, exact: true })).toHaveCount(0);
+  }
+
+  // 지정한 사진 칸에 허용된 PNG 검사 이미지를 등록합니다.
+  private async addPhoto(slot: PhotoSlot) {
+    await this.selectPhotoFile(slot, {
       name: slot === "정면" ? "front-test.png" : slot === "부위 1" ? "lesion-test.png" : "extra-lesion-test.png",
       mimeType: "image/png",
       buffer: TEST_IMAGE,

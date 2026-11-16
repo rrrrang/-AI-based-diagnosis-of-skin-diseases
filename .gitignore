@@ -11,3 +11,4 @@ __pycache__/
 /data/
 /verification/
 .venv/
+dist-e2e/

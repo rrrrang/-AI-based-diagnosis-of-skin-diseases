@@ -1,0 +1,165 @@
+pipeline {
+    agent any
+
+    options {
+        disableConcurrentBuilds()
+        skipDefaultCheckout(true)
+        timeout(time: 30, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
+
+    environment {
+        PYTHONUTF8 = '1'
+        PYTHONIOENCODING = 'utf-8'
+        PYTHONDONTWRITEBYTECODE = '1'
+        npm_config_cache = 'D:/SkinAI_DevOps/npm-cache'
+    }
+
+    stages {
+        stage('1. 검사할 Git 코드 가져오기') {
+            steps {
+                script {
+                    def workspace = pwd().replace('\\', '/').replaceAll('/+$', '')
+                    if (isUnix() || !workspace.toLowerCase().startsWith('d:/') || !(env.BUILD_NUMBER ==~ /[0-9]+/)) {
+                        error('D드라이브 작업 폴더를 사용하는 Windows Jenkins에서 실행하세요.')
+                    }
+                    env.WORKFLOW_WORKSPACE = workspace
+                    env.WORKFLOW_RUN = "${workspace}/runs/${env.BUILD_NUMBER}"
+                    env.WORKFLOW_SOURCE = "${env.WORKFLOW_RUN}/source"
+                    env.WORKFLOW_OUTPUT = "${env.WORKFLOW_RUN}/workflow"
+                    env.TEMP = "${env.WORKFLOW_RUN}/temp"
+                    env.TMP = env.TEMP
+                    // Create the run and D-drive temp folder before checkout or unit tests can fail.
+                    dir("${env.WORKFLOW_RUN}") {
+                        writeFile(file: 'revision.txt', encoding: 'UTF-8', text: 'branch=unavailable\ncommit=unavailable\n')
+                        writeFile(file: 'jenkins-status.txt', encoding: 'UTF-8', text: 'cleanup_status=not_started\n')
+                        dir('temp') {
+                            writeFile(file: '.keep', text: '')
+                        }
+                    }
+                    env.WORKFLOW_PYTHON = env.CI_PYTHON_EXE ?: 'D:/miniconda3/python.exe'
+                    env.WORKFLOW_DOCKER = env.CI_DOCKER_EXE ?: 'C:/Users/human/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe'
+                    env.WORKFLOW_NODE = env.CI_NODE_DIR ?: 'D:/SkinAI_DevOps/tools/node-v24.22.2-win-x64'
+                    env.WORKFLOW_BROWSERS = env.CI_BROWSER_DIR ?: 'D:/SkinAI_DevOps/playwright-browsers'
+                    env.WORKFLOW_MODELS = env.CI_MODEL_DIR ?: 'D:/SkinAI_DevOps/ensemble_docker_check/models'
+                    env.WORKFLOW_SAMPLE = env.CI_SAMPLE_FILE ?: 'D:/SkinAI_DevOps/backend_ensemble_check/samples/sample.png'
+                    env.WORKFLOW_IMAGE = env.CI_WORKFLOW_IMAGE ?: 'skinai-backend-ensemble:20261113'
+                }
+                dir("${env.WORKFLOW_SOURCE}") {
+                    script {
+                        def revision = checkout scm
+                        currentBuild.description = "전체 연결 검사 ${revision.GIT_COMMIT.take(7)}"
+                        writeFile(file: '../revision.txt', encoding: 'UTF-8',
+                            text: "branch=${revision.GIT_BRANCH}\ncommit=${revision.GIT_COMMIT}\n")
+                    }
+                }
+            }
+        }
+
+        stage('2. 테스트 서버 정리 기능 검사') {
+            steps {
+                dir("${env.WORKFLOW_SOURCE}") {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+"%WORKFLOW_PYTHON%" -B -m unittest discover -s ci/ui_workflow -p test_runner.py -v
+exit /b %ERRORLEVEL%
+'''
+                }
+            }
+        }
+
+        stage('3. 환자 접수부터 의사 확정·결과 조회 검사') {
+            steps {
+                dir("${env.WORKFLOW_RUN}") {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+"%WORKFLOW_PYTHON%" -B "%WORKFLOW_SOURCE%/ci/ui_workflow/run_workflow.py" --repo "%WORKFLOW_SOURCE%" --models "%WORKFLOW_MODELS%" --sample "%WORKFLOW_SAMPLE%" --output "%WORKFLOW_OUTPUT%" --docker "%WORKFLOW_DOCKER%" --node-dir "%WORKFLOW_NODE%" --browsers "%WORKFLOW_BROWSERS%" --image "%WORKFLOW_IMAGE%"
+exit /b %ERRORLEVEL%
+'''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                if (env.WORKFLOW_RUN) {
+                    def cleanupResult = -1
+                    def cleanupStatus = 'not_attempted'
+                    def reportsSafe = false
+                    def archived = false
+                    try {
+                        if (env.WORKFLOW_OUTPUT && fileExists("${env.WORKFLOW_OUTPUT}")) {
+                            // Recovery also checks a partially initialized output folder.
+                            timeout(time: 3, unit: 'MINUTES') {
+                                cleanupResult = bat(returnStatus: true, encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+"%WORKFLOW_PYTHON%" -B "%WORKFLOW_SOURCE%/ci/ui_workflow/run_workflow.py" --cleanup --output "%WORKFLOW_OUTPUT%" --docker "%WORKFLOW_DOCKER%"
+exit /b %ERRORLEVEL%
+''')
+                            }
+                            cleanupStatus = cleanupResult == 0 ? 'passed' : 'failed'
+                            // A valid initialized run reaches credential redaction before cleanup returns 0.
+                            reportsSafe = cleanupResult == 0 && fileExists("${env.WORKFLOW_OUTPUT}/state.json")
+                        } else {
+                            cleanupResult = 0
+                            cleanupStatus = 'not_required'
+                        }
+                    } catch (Exception ignored) {
+                        // Never archive exception text: it can contain raw command or credential data.
+                        cleanupResult = -1
+                        cleanupStatus = 'interrupted_or_failed'
+                        currentBuild.result = 'FAILURE'
+                    } finally {
+                        // Recreate this folder if initialization ended before the first status write.
+                        dir("${env.WORKFLOW_RUN}") {
+                            writeFile(file: 'jenkins-status.txt', encoding: 'UTF-8',
+                                text: "cleanup_status=${cleanupStatus}\ncleanup_exit_code=${cleanupResult}\nredacted_reports_archived=${reportsSafe}\n")
+                        }
+                        def artifacts = "runs/${env.BUILD_NUMBER}/revision.txt,runs/${env.BUILD_NUMBER}/jenkins-status.txt"
+                        if (reportsSafe) {
+                            artifacts += ",runs/${env.BUILD_NUMBER}/workflow/results/*.json,runs/${env.BUILD_NUMBER}/workflow/results/*.log"
+                        }
+                        archiveArtifacts(artifacts: artifacts, allowEmptyArchive: false, fingerprint: true)
+                        archived = true
+                    }
+                    if (cleanupResult != 0) {
+                        error('테스트 서버 정리를 확인하지 못했습니다. 안전한 상태 기록만 보관하고 실행 폴더는 남겼습니다.')
+                    }
+                    if (archived) {
+                        // Resolve both paths on the Windows agent; reject redirected or unrelated targets.
+                        def currentWorkspace = pwd().replace('\\', '/').replaceAll('/+$', '')
+                        def expectedRun = "${currentWorkspace}/runs/${env.BUILD_NUMBER}"
+                        if (!currentWorkspace.equalsIgnoreCase(env.WORKFLOW_WORKSPACE) ||
+                                !expectedRun.equalsIgnoreCase(env.WORKFLOW_RUN)) {
+                            error('실행 폴더의 경로가 예상 작업 폴더와 달라 삭제하지 않았습니다.')
+                        }
+                        def safeToDelete = bat(returnStatus: true, encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+"%WORKFLOW_PYTHON%" -B -c "import os,sys; from pathlib import Path; workspace=Path(os.environ['WORKFLOW_WORKSPACE']).resolve(strict=True); run=Path(os.environ['WORKFLOW_RUN']); build=os.environ['BUILD_NUMBER']; expected=workspace/'runs'/build; valid=build.isdecimal() and workspace.drive.lower()=='d:' and run.is_absolute() and run.resolve(strict=True)==expected and run.parent.resolve(strict=True)==workspace/'runs' and not run.is_symlink() and not run.is_junction(); sys.exit(0 if valid else 1)"
+exit /b %ERRORLEVEL%
+''')
+                        if (safeToDelete != 0) {
+                            error('실행 폴더의 실제 경로를 확인하지 못해 삭제하지 않았습니다.')
+                        }
+                        dir("${env.WORKFLOW_RUN}") {
+                            deleteDir()
+                        }
+                    }
+                }
+            }
+        }
+        success {
+            echo '전체 연결 검사 2개와 정리 검사 15개를 통과했습니다. 검사 기록을 보관하고 이번 실행 폴더를 정리했습니다.'
+        }
+    }
+}

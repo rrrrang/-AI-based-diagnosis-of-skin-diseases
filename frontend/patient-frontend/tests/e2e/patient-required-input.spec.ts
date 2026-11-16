@@ -1,4 +1,5 @@
 import { test } from "@playwright/test";
+import { Buffer } from "node:buffer";
 import { PatientUploadPage } from "../pages/patient-upload.page";
 
 // 필수값을 하나씩 빠뜨렸을 때 나와야 하는 안내
@@ -54,6 +55,48 @@ test.describe("환자 사진·증상 필수 입력 검사", () => {
 
       // 해당 항목의 오류 안내와 현재 화면 유지를 확인
       await upload.expectBlocked(scenario.message);
+    });
+  }
+
+  const rejectedFiles = [
+    {
+      name: "백엔드가 받지 않는 WebP 사진을 거절한다",
+      filename: "unsupported.webp",
+      mimeType: "image/webp",
+      byteLength: 32,
+      message: "JPG, PNG 이미지만 등록할 수 있습니다.",
+    },
+    {
+      name: "8MiB보다 1바이트 큰 사진을 거절한다",
+      filename: "oversized.png",
+      mimeType: "image/png",
+      byteLength: 8 * 1024 * 1024 + 1,
+      message: "사진 한 장의 크기는 8MB(8,388,608바이트) 이하여야 합니다.",
+    },
+  ];
+
+  for (const scenario of rejectedFiles) {
+    test(scenario.name, async ({ page }) => {
+      const upload = new PatientUploadPage(page);
+      await upload.open();
+      await upload.addFrontPhoto();
+      await upload.selectSymptom();
+      await upload.selectDuration();
+      // 형식·크기 검사는 파일 내용 해석보다 앞에서 차단해야 합니다.
+      await upload.selectPhotoFile("부위 1", {
+        name: scenario.filename,
+        mimeType: scenario.mimeType,
+        buffer: Buffer.alloc(scenario.byteLength),
+      });
+      await upload.expectBlocked(scenario.message);
+      await upload.expectPhotoMissing("부위 1");
+      await upload.clickNext();
+      await upload.expectBlocked("부위 1에 피부질환이 잘 보이는 근접 사진을 등록해 주세요.");
+      // 잘못된 선택을 거절한 뒤에도 정상 PNG를 다시 선택할 수 있어야 합니다.
+      await upload.addLesionPhoto();
+      await upload.clickNext();
+      await upload.expectPatientInfo();
+      await upload.expectPhotoCount(2);
     });
   }
 

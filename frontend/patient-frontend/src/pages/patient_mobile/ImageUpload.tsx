@@ -93,12 +93,12 @@ export default function ImageUpload() {
     event.target.value = ""; // 동일 파일 다시 선택 허용
     if (!file) return;
 
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      setErrorMessage("JPG, PNG, WEBP 이미지만 등록할 수 있습니다.");
+    if (!["image/jpeg", "image/png"].includes(file.type)) {
+      setErrorMessage("JPG, PNG 이미지만 등록할 수 있습니다.");
       return;
     }
-    if (file.size > 10 * 1024 * 1024) {
-      setErrorMessage("사진 한 장의 크기는 10MB 이하여야 합니다.");
+    if (file.size > 8 * 1024 * 1024) {
+      setErrorMessage("사진 한 장의 크기는 8MB(8,388,608바이트) 이하여야 합니다.");
       return;
     }
     updateFile(targetSlot, file);
@@ -213,8 +213,8 @@ export default function ImageUpload() {
           </button>
         </div>
 
-        <input ref={cameraInputRef} type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleImageChange} hidden aria-label="카메라로 사진 촬영" />
-        <input ref={galleryInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} hidden aria-label="갤러리에서 사진 선택" />
+        <input ref={cameraInputRef} type="file" accept="image/jpeg,image/png" capture="environment" onChange={handleImageChange} hidden aria-label="카메라로 사진 촬영" />
+        <input ref={galleryInputRef} type="file" accept="image/jpeg,image/png" onChange={handleImageChange} hidden aria-label="갤러리에서 사진 선택" />
 
         {/* 자동 블러/근접 판별은 미연결: 안내 문구만 제공 */}
         <div className="upload-photo-warning">
