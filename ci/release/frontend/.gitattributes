@@ -1,0 +1,2 @@
+# Container entrypoint must retain POSIX line endings on Windows checkouts.
+entrypoint.sh text eol=lf

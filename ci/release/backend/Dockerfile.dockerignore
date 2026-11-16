@@ -1,0 +1,19 @@
+# Allow only source and release recipe inputs into the default build context.
+**
+!main.py
+!app/
+!app/**
+!ensemble/
+!ensemble/**
+!ci/
+!ci/release/
+!ci/release/backend/
+!ci/release/backend/Dockerfile
+!ci/release/backend/requirements-api.lock
+!ci/release/backend/requirements-worker.lock
+!ci/release/backend/model-lock.json
+!ci/release/backend/support/
+!ci/release/backend/support/*.py
+**/__pycache__/
+**/*.pyc
+**/.env*

@@ -1,0 +1,38 @@
+Frontend image smoke checks
+
+Build each app from the repository root using ci/release/frontend/Dockerfile
+and UI_APP=patient-frontend or UI_APP=doctor-frontend. The image listens on
+8080 and requires an API reachable as api:8000 on the same Docker network.
+Use a read-only root filesystem and writable /tmp to exercise runtime bounds.
+The release preview maps patient UI to 18166 and doctor UI to 18167.
+
+Check each UI:
+1. GET /healthz: status 200, text/plain body "ok", Cache-Control includes
+   no-store. This checks the UI itself and must keep working if the API is down.
+2. GET /api/health: backend status 200 and JSON body, not HTML. The /api prefix
+   is preserved. Cache-Control includes no-store, including error responses.
+3. GET /api/not-a-real-route: backend 404 JSON, never status 200 or the SPA's
+   index.html. When an upstream returns 503, the UI proxy must preserve 503.
+   With an unavailable upstream, nginx normally returns 502 (or 504 on timeout);
+   it must not fall back to the SPA. An unavailable upstream is not a 503 test.
+4. GET a valid client route such as /patient: status 200 with SPA HTML, and
+   Cache-Control includes no-store. The packaged UI must use the real API.
+5. Verify an authenticated doctor request succeeds through the doctor UI URL;
+   omitting/replacing the token must retain the backend authorization failure.
+   Do not place credentials in command arguments, query strings or test logs.
+6. Send three valid photos using the existing workflow. The proxy envelope is
+   26 MiB; the backend still enforces 8 MiB per photo and normal file validation.
+7. Request a URL with a harmless sentinel query and inspect container logs:
+   access records contain method, status, bytes and duration only. No path,
+   query, authorization header, cookies, response body or uploaded content.
+8. Confirm each container is UID 101 with read-only root storage and only /tmp
+   writable. Container health is healthy after startup. Invalid UI_APP fails
+   its allowlist check; invalid SKINAI_PROXY_TIMEOUT fails startup.
+
+SKINAI_PROXY_TIMEOUT defaults to 60s and accepts a positive duration such as
+30s or 2m. It applies to request-body, send and upstream timeouts. It is an
+inactivity timeout, not an overall processing deadline.
+
+The production UI bundle contains only public frontend assets. Do not add
+secrets or patient images to src/ or public/. No Vite development server is
+included. Existing Jenkins and CD configuration are outside this folder.

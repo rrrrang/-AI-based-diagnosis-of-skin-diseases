@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases",
+  "source_commits": {
+    "mobilenet": "e99a935ef130b0c6a271726e93943848e8470307",
+    "resnet50": "2cd283425fb163fe53ea4b69a495d2f58ca6a3dd",
+    "yolo": "1ae1287ac1be21ef3fa8fe8f37e1e06f77980ea7"
+  },
+  "files": [
+    {
+      "model": "mobilenet",
+      "path": "mobilenet/model/best.pt",
+      "sha256": "493e76716efeada4bbb3effddc7f1e9ee9f78055cef4e8492cbddfa7fc45ea6f",
+      "bytes": 6215657,
+      "source_commit": "e99a935ef130b0c6a271726e93943848e8470307",
+      "source_url": "https://raw.githubusercontent.com/rrrrang/-AI-based-diagnosis-of-skin-diseases/e99a935ef130b0c6a271726e93943848e8470307/model/best.pt"
+    },
+    {
+      "model": "mobilenet",
+      "path": "mobilenet/model/label2id.json",
+      "sha256": "0b3f5e1ab7a75a01cb95b42de3319a283933c76947e09fad71b8c51dc7d7c10d",
+      "bytes": 98,
+      "source_commit": "e99a935ef130b0c6a271726e93943848e8470307",
+      "source_url": "https://raw.githubusercontent.com/rrrrang/-AI-based-diagnosis-of-skin-diseases/e99a935ef130b0c6a271726e93943848e8470307/model/label2id.json"
+    },
+    {
+      "model": "mobilenet",
+      "path": "mobilenet/model/manifest.json",
+      "sha256": "50699d5d959cc67221311906b6a327fa954579121587bbda60907d1455db00d3",
+      "bytes": 1129,
+      "source_commit": "e99a935ef130b0c6a271726e93943848e8470307",
+      "source_url": "https://raw.githubusercontent.com/rrrrang/-AI-based-diagnosis-of-skin-diseases/e99a935ef130b0c6a271726e93943848e8470307/model/manifest.json"
+    },
+    {
+      "model": "mobilenet",
+      "path": "mobilenet/model/threshold.json",
+      "sha256": "9f8b8e29b697bd69c5458522ccb627607caa0e61dcf1ead01f895cc2f3ff8c4d",
+      "bytes": 108,
+      "source_commit": "e99a935ef130b0c6a271726e93943848e8470307",
+      "source_url": "https://raw.githubusercontent.com/rrrrang/-AI-based-diagnosis-of-skin-diseases/e99a935ef130b0c6a271726e93943848e8470307/model/threshold.json"
+    },
+    {
+      "model": "mobilenet",
+      "path": "mobilenet/scripts/inference_core.py",
+      "sha256": "a27d0aa4396152b1aaa1ea77beb13d9d6a3ebf2468c9a461767b08ab2858bfe5",
+      "bytes": 5724,
+      "source_commit": "e99a935ef130b0c6a271726e93943848e8470307",
+      "source_url": "https://raw.githubusercontent.com/rrrrang/-AI-based-diagnosis-of-skin-diseases/e99a935ef130b0c6a271726e93943848e8470307/scripts/inference_core.py"
+    },
+    {
+      "model": "resnet50",
+      "path": "resnet50/models/resnet50_side_best.pth",
+      "sha256": "2fb9580777988c5bb9506be107d8e1d18d53a857d9cce7ead4f79ab62842e0d3",
+      "bytes": 214242529,
+      "source_commit": "2cd283425fb163fe53ea4b69a495d2f58ca6a3dd",
+      "source_url": "https://media.githubusercontent.com/media/rrrrang/-AI-based-diagnosis-of-skin-diseases/2cd283425fb163fe53ea4b69a495d2f58ca6a3dd/models/resnet50_side_best.pth"
+    },
+    {
+      "model": "yolo",
+      "path": "yolo/models/yolo11_detect/side_hard_negative/weights/best.pt",
+      "sha256": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
+      "bytes": 5502746,
+      "source_commit": "1ae1287ac1be21ef3fa8fe8f37e1e06f77980ea7",
+      "source_url": "https://raw.githubusercontent.com/rrrrang/-AI-based-diagnosis-of-skin-diseases/1ae1287ac1be21ef3fa8fe8f37e1e06f77980ea7/models/yolo11_detect/side_hard_negative/weights/best.pt"
+    },
+    {
+      "model": "yolo",
+      "path": "yolo/requirements.txt",
+      "sha256": "401e54da28b9fa0a05f098b808c9145fa12038aa51bb6f789a63f81781214ac9",
+      "bytes": 962,
+      "source_commit": "1ae1287ac1be21ef3fa8fe8f37e1e06f77980ea7",
+      "source_url": "https://raw.githubusercontent.com/rrrrang/-AI-based-diagnosis-of-skin-diseases/1ae1287ac1be21ef3fa8fe8f37e1e06f77980ea7/requirements.txt"
+    },
+    {
+      "model": "yolo",
+      "path": "yolo/src/backend_inference.py",
+      "sha256": "310919fcf98ba0238eb1dd67893044ac5ebafc5bf67d708db94c97226851ad77",
+      "bytes": 3538,
+      "source_commit": "1ae1287ac1be21ef3fa8fe8f37e1e06f77980ea7",
+      "source_url": "https://raw.githubusercontent.com/rrrrang/-AI-based-diagnosis-of-skin-diseases/1ae1287ac1be21ef3fa8fe8f37e1e06f77980ea7/src/backend_inference.py"
+    },
+    {
+      "model": "yolo",
+      "path": "yolo/src/disease_detection.py",
+      "sha256": "3cb9c26e3f5b5ca912bce1525cbf966dd8b092eda684d97dc57b616d69e1a3ba",
+      "bytes": 62790,
+      "source_commit": "1ae1287ac1be21ef3fa8fe8f37e1e06f77980ea7",
+      "source_url": "https://raw.githubusercontent.com/rrrrang/-AI-based-diagnosis-of-skin-diseases/1ae1287ac1be21ef3fa8fe8f37e1e06f77980ea7/src/disease_detection.py"
+    }
+  ]
+}
