@@ -76,7 +76,8 @@ export class DoctorWorkflowPage {
   constructor(readonly page: Page) {}
 
   async connect(token: string, date: string, patientName: string) {
-    await this.page.goto("http://127.0.0.1:18167/#/doctor");
+    const doctorUrl = process.env.SKINAI_E2E_DOCTOR_URL || "http://127.0.0.1:18167";
+    await this.page.goto(`${doctorUrl}/#/doctor`);
     await this.page.getByLabel("시연용 의사 토큰").fill(token);
     const response = this.page.waitForResponse((r) =>
       new URL(r.url()).pathname === "/api/cases" && r.request().method() === "GET");

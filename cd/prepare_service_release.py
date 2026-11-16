@@ -22,7 +22,7 @@ def compose_for(images, source_commit):
             "SKINAI_PHOTO_DIR": "/data/photos",
         }
     services["api"].update(
-        env_file=["runtime.env"], ports=["127.0.0.1:18165:8000"],
+        env_file=["runtime.env"], ports=["127.0.0.1:18265:8000"],
         volumes=["db:/data/db", "photos:/data/photos"],
     )
     depends = {"api": {"condition": "service_healthy"}}
@@ -30,9 +30,9 @@ def compose_for(images, source_commit):
         depends_on=depends, network_mode="none",
         volumes=["db:/data/db", "photos:/data/photos:ro"],
     )
-    for name, port in (("patient-ui", 18166), ("doctor-ui", 18167)):
+    for name, port in (("patient-ui", 18266), ("doctor-ui", 18267)):
         services[name].update(depends_on=depends, ports=[f"127.0.0.1:{port}:8080"])
-    return {"name": "skinai-service", "x-skinai-source-commit": source_commit,
+    return {"name": "skinai-service-local", "x-skinai-source-commit": source_commit,
             "services": services, "volumes": {"db": {}, "photos": {}}}
 
 

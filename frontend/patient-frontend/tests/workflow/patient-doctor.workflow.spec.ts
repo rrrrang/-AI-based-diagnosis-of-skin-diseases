@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { DoctorWorkflowPage, PatientWorkflowPage } from "./workflow.pages";
 
-const API = "http://127.0.0.1:18165";
+const API = process.env.SKINAI_E2E_API_URL || "http://127.0.0.1:18165";
 const MODEL_KEYS = ["mobilenet", "resnet50", "yolo"];
 const CANDIDATE_KEYS = ["psoriasis", "atopic_dermatitis", "acne", "normal", "rosacea", "seborrheic_dermatitis"];
 const REVIEW_KEYS = ["diagnosis", "opinion", "visitRequired", "visitMessage"];

@@ -16,7 +16,7 @@ export default defineConfig({
     browserName: "chromium",
     actionTimeout: 20_000,
     navigationTimeout: 30_000,
-    baseURL: "http://127.0.0.1:18166",
+    baseURL: process.env.SKINAI_E2E_PATIENT_URL || "http://127.0.0.1:18166",
     viewport: { width: 390, height: 844 },
     trace: "off", video: "off", screenshot: "off",
   },
