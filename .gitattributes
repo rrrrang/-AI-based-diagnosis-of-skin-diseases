@@ -1,0 +1,2 @@
+# The model manifest is checked against an exact trusted byte checksum.
+/ci/release/backend/model-lock.json text eol=lf
