@@ -55,7 +55,8 @@ UI·Backend·Workflow CI 중 하나가 성공할 때 main의 같은 커밋을 �
 
 이 준비 코드의 업로드 기준은 이미 main입니다. 실제 전환은 아래 순서로 진행합니다.
 
-1. `SkinAI-Release-CI`만 잠시 비활성화합니다.
+1. `SkinAI-Release-CI`만 잠시 비활성화합니다. 실행 중인 Release는 완료될 때까지 기다리고,
+   대기 중인 Release가 있으면 취소합니다. 비활성화만으로 진행 중인 업로드가 중단되지는 않습니다.
 2. 검사를 마친 준비 코드를 main에 병합합니다.
 3. 아래 네 작업의 SCM 브랜치를 모두 `*/main`으로 바꿉니다. 작업 이름과 Script Path는 유지합니다.
 4. UI·Backend·Workflow 세 작업을 실행해 같은 새 main 커밋에서 모두 SUCCESS인지 확인합니다.
