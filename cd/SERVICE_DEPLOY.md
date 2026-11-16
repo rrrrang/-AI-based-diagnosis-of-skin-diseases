@@ -9,9 +9,11 @@ Jenkins `SkinAI-Release-CI` 성공 실행의 `release.json`을 사용합니다. 
 1. 변경을 main에 통합하고 `SkinAI-Service-CD` Pipeline 작업의 SCM을 `*/main`, Script Path를 `cd/Jenkinsfile`로 설정합니다. Copy Artifact 플러그인을 설치하고 `SkinAI-Release-CI`의 산출물을 이 작업이 복사할 수 있도록 허용합니다.
 2. 에이전트 환경에 영속 디렉터리 `SKINAI_CD_DIR`과 합성 PNG 경로 `SKINAI_E2E_SAMPLE`을 설정합니다. `runtime.env`에 설정한 d1 토큰과 일치하는 Jenkins Secret Text `skinai-cd-doctor-token`을 등록합니다. Chromium이 별도 경로에 설치돼 있다면 `PLAYWRIGHT_BROWSERS_PATH`를 설정합니다.
 3. 신규 Pipeline의 SCM 설정을 처음 한 번 읽히고, Release CI 성공 후 자동 실행되는지 확인합니다. CD는 해당 실행 번호의 `release.json`을 복사합니다. 수동 실행은 배포를 진행하지 않습니다.
-4. 성공 실행에서 `release.json`과 두 업무 흐름 검사 결과를 확인합니다. CD는 합성 접수 2건을 배포 데이터에 남기므로 팀 검증 환경을 사용합니다.
+4. 성공 실행에서 `release.json`과 `cd-evidence/candidate/`의 두 업무 흐름 검사 결과를 확인합니다. 검사 한 번당 합성 접수 2건이 배포 데이터에 남으므로 팀 검증 환경을 사용합니다.
 
-이미지 준비·실행·업무 흐름 검사를 통과하면 같은 디렉터리에 `last-good.json`이 저장됩니다. 실행 또는 업무 흐름 검사에 실패하면 직전 성공 구성을 다시 실행합니다. 첫 배포가 실패하면 서비스 컨테이너를 멈추고 볼륨을 보존합니다.
+배포할 이미지의 소스 커밋은 `release.json`에서 가져옵니다. CD는 그 커밋의 Playwright 코드와 잠금 파일을 임시 폴더에 준비합니다. 이전 성공 구성이 있으면 해당 커밋의 검사도 배포 전에 준비하며, 두 검사 중 하나라도 준비할 수 없으면 실행 중인 서비스를 교체하지 않습니다.
+
+이미지 실행과 업무 흐름 검사가 통과하면 소스 커밋이 포함된 `last-good.json`을 저장합니다. 실행이나 검사에 실패하면 이전 이미지를 다시 띄우고 **이전 커밋의 검사 코드로 사진 접수 → 분석 → 의사 확정 → 환자 결과 조회**를 다시 실행합니다. `cd-evidence/rollback/`에서 검사 커밋과 결과를 확인할 수 있습니다. 롤백 검사가 통과해도 신규 배포는 실패로 기록됩니다. 첫 배포가 실패하면 서비스 컨테이너를 멈추고 볼륨을 보존합니다. 기존 포맷의 `last-good.json`에 소스 커밋이 없다면 대응하는 원본 릴리스 파일에서 설정을 다시 생성해야 합니다.
 
 [Jenkins Copy Artifact 설정](https://www.jenkins.io/doc/pipeline/steps/copyartifact/)
 

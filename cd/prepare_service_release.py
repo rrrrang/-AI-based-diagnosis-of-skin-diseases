@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 
-def compose_for(images):
+def compose_for(images, source_commit):
     services = {
         name: {
             "image": image, "platform": "linux/amd64", "restart": "unless-stopped",
@@ -32,7 +32,8 @@ def compose_for(images):
     )
     for name, port in (("patient-ui", 18166), ("doctor-ui", 18167)):
         services[name].update(depends_on=depends, ports=[f"127.0.0.1:{port}:8080"])
-    return {"name": "skinai-service", "services": services, "volumes": {"db": {}, "photos": {}}}
+    return {"name": "skinai-service", "x-skinai-source-commit": source_commit,
+            "services": services, "volumes": {"db": {}, "photos": {}}}
 
 
 def main():
@@ -50,7 +51,7 @@ def main():
         spec.loader.exec_module(validator)
         release = validator.load_release(args.release)
         images = {name: record["image"] for name, record in release["services"].items()}
-        config = compose_for(images)
+        config = compose_for(images, release["source"]["commit"])
         with args.output.open("x", encoding="utf-8") as output:
             json.dump(config, output, indent=2)
             output.write("\n")

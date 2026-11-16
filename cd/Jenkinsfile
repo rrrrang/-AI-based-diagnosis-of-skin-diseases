@@ -29,9 +29,6 @@ pipeline {
         }
         stage('Prepare and verify deployment') {
             steps {
-                dir('frontend/patient-frontend') {
-                    bat 'npm ci --no-audit --no-fund'
-                }
                 withCredentials([string(credentialsId: 'skinai-cd-doctor-token',
                                         variable: 'SKINAI_E2E_DOCTOR_TOKEN')]) {
                     bat '''
@@ -52,11 +49,9 @@ if not exist "%SKINAI_E2E_SAMPLE%" (
     echo The configured smoke-test sample file is missing.
     exit /b 1
 )
-set "SKINAI_E2E_OUTPUT=%WORKSPACE%/cd-evidence"
 set "CANDIDATE=%SKINAI_CD_DIR%/candidate-%BUILD_NUMBER%.json"
 python -B cd/prepare_service_release.py release.json "%CANDIDATE%" || exit /b 1
-pushd "%WORKSPACE%/frontend/patient-frontend" || exit /b 1
-python -B "%WORKSPACE%/cd/deploy_service_release.py" "%CANDIDATE%" node node_modules/playwright/cli.js test --config playwright.release.config.ts
+python -B cd/deploy_service_release.py "%CANDIDATE%" --evidence "%WORKSPACE%/cd-evidence"
 exit /b %ERRORLEVEL%
 '''
                 }
@@ -65,7 +60,7 @@ exit /b %ERRORLEVEL%
     }
     post {
         always {
-            archiveArtifacts artifacts: 'release.json,cd-evidence/workflow-*-photos.json',
+            archiveArtifacts artifacts: 'release.json,cd-evidence/**/workflow-*-photos.json,cd-evidence/**/source-commit.txt',
                              fingerprint: true, allowEmptyArchive: true
         }
     }
