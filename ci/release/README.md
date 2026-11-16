@@ -1,7 +1,8 @@
 # 실제 서비스 이미지 빌드·검사·업로드
 
 API, 실제 3모델 worker, 환자 UI, 의사 UI를 각각 이미지로 만듭니다.
-기존 두 서버 CI·CD와 main은 변경하지 않습니다.
+이미지 검사·업로드와 전달 파일 생성을 담당하며 Git 병합이나 CD 배포는 실행하지 않습니다.
+이 문서는 준비 브랜치의 main 전환 기준입니다. main 반영과 Jenkins 설정 변경은 별도로 진행합니다.
 
 ## 정한 내용
 
@@ -18,19 +19,19 @@ worker에는 모델 파일도 포함됩니다. 로컬 검사는 127.0.0.1을 사
 
 ## Jenkins 자동 업로드
 
-새 Pipeline 작업 `SkinAI-Release-CI`에 다음을 설정합니다.
+main 전환 후 사용할 `SkinAI-Release-CI` 설정입니다. 기존 작업 이름·경로·자격증명은 유지합니다.
 
 | 설정 | 값 |
 | --- | --- |
 | Definition | Pipeline script from SCM |
 | SCM | Git |
 | Repository URL | https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases.git |
-| Branch Specifier | */ci/photo-intake-contract |
+| Branch Specifier | */main |
 | Script Path | ci/release/Jenkinsfile |
 | Docker Hub 자격증명 ID | skinai-dockerhub |
 
-처음 한 번 `지금 빌드`로 실행하면 자동 시작 조건과 검사 매개변수가 등록됩니다.
-이후 UI·Backend·Workflow CI 중 하나가 성공할 때 같은 커밋의 세 결과를 확인합니다.
+UI·Backend·Workflow CI 중 하나가 성공할 때 main의 같은 커밋을 검사한 세 결과를 확인합니다.
+세 작업이 모두 SUCCESS여야 진행하며 다른 브랜치의 성공 기록은 사용하지 않습니다.
 아직 검사가 끝나지 않았으면 `NOT_BUILT`로 종료하고, 다음 CI 성공 때 다시 확인합니다.
 하나라도 실패했거나 커밋이 다르면 이미지를 업로드하지 않습니다.
 
@@ -50,9 +51,29 @@ worker에는 모델 파일도 포함됩니다. 로컬 검사는 127.0.0.1을 사
 - 현재 작업은 이 PC의 Windows·Docker·모델·Node 경로와 Jenkins 완료 기록을 사용합니다.
   다른 실행 PC로 옮길 때는 Jenkinsfile의 경로와 검사 환경을 함께 맞춥니다.
 
-main 반영은 자동 업로드 성공과 실패 차단을 확인한 뒤 진행합니다.
-그때 세 CI와 업로드 작업의 검사 브랜치, `collect_ci_evidence.py`와
-`handoff/release.py`의 브랜치 기준도 함께 main으로 바꿔 다시 검증합니다.
+## main 전환 순서
+
+이 준비 코드의 업로드 기준은 이미 main입니다. 실제 전환은 아래 순서로 진행합니다.
+
+1. `SkinAI-Release-CI`만 잠시 비활성화합니다.
+2. 검사를 마친 준비 코드를 main에 병합합니다.
+3. 아래 네 작업의 SCM 브랜치를 모두 `*/main`으로 바꿉니다. 작업 이름과 Script Path는 유지합니다.
+4. UI·Backend·Workflow 세 작업을 실행해 같은 새 main 커밋에서 모두 SUCCESS인지 확인합니다.
+5. Release 작업을 다시 활성화하고 한 번 직접 실행합니다. 비활성화 중 끝난 검사는 자동 시작되지 않기 때문입니다.
+6. 이후 main 변경은 세 CI의 변경 감지 → 검사 성공 → Release 자동 확인 순서로 처리합니다.
+
+| Jenkins 작업 | 유지할 Script Path |
+| --- | --- |
+| SkinAI-UI-CI | Jenkinsfile |
+| SkinAI-Backend-CI | ci/backend_contract/Jenkinsfile |
+| SkinAI-Workflow-CI | ci/ui_workflow/Jenkinsfile |
+| SkinAI-Release-CI | ci/release/Jenkinsfile |
+
+세 검사 작업의 Poll SCM `H/5 * * * *`와 Release의 성공 후 자동 시작 조건은 유지합니다.
+UI의 Poll SCM은 Jenkins 화면에 설정되어 있으므로 브랜치를 바꿀 때도 그대로 둡니다.
+
+기존 CI 브랜치의 성공 번호를 main의 성공 근거로 재사용하지 않습니다.
+기존 두 서버 CI·CD 작업과 포트·복구 기록은 전환 대상이 아닙니다.
 
 ## 1. 터미널에서 이미지 검사
 
@@ -60,12 +81,13 @@ Windows에서 Docker Desktop의 Linux 컨테이너, Python, Node.js,
 Playwright Chromium, 검증된 모델 폴더와 비개인용 샘플 사진을 준비합니다.
 18165~18167 포트를 비워 둡니다. Workflow CI와 이미지 검사는 공통 잠금으로 순서대로 실행됩니다. 잠금은 최대 15분 기다립니다.
 
-프로젝트 최상위 폴더에서 실행하며, 경로는 현재 PC에 맞게 바꿉니다.
-업로드할 때는 먼저 커밋·푸시하고 같은 커밋의 세 CI 성공을 확인합니다.
+검사할 체크아웃의 프로젝트 최상위 폴더에서 터미널을 엽니다. 경로는 현재 PC에 맞게 바꿉니다.
+업로드할 때는 main 전환을 마친 체크아웃과 같은 커밋의 세 CI 성공 기록을 사용합니다.
 결과 폴더는 실행마다 새로 지정합니다.
 
 ```powershell
-Set-Location 'D:\SkinAI_DevOps\photo_intake_ci'
+# ci 폴더가 보이는 프로젝트 최상위 폴더에서 실행합니다.
+git branch --show-current
 $previewOutput = Join-Path 'D:\SkinAI_DevOps\release_preview' ('run-' + [guid]::NewGuid().ToString('N'))
 & 'D:\miniconda3\python.exe' -B '.\ci\release\prepare_preview.py' `
   --output $previewOutput `
@@ -90,7 +112,7 @@ UI의 /api 연결, 오류 응답과 준비 상태도 확인합니다.
 
 ## 2. 검사한 이미지 업로드
 
-SkinAI-UI-CI, SkinAI-Backend-CI, SkinAI-Workflow-CI의 같은 커밋이
+SkinAI-UI-CI, SkinAI-Backend-CI, SkinAI-Workflow-CI가 main의 같은 커밋에서
 모두 SUCCESS여야 합니다. 아래 번호는 실제 성공 번호로 바꿉니다.
 서로 다른 커밋의 최근 성공 번호를 조합하지 않습니다.
 Docker CLI에는 rlarns982 계정으로 로그인해 둡니다.

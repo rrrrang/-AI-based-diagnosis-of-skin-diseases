@@ -57,6 +57,7 @@ class SelectionTests(unittest.TestCase):
         return module.select_builds(self.home, SHA)
 
     def test_exact_three_successes_include_existing_collector_proof(self):
+        self.assertEqual(module.BRANCH, 'refs/remotes/origin/main')
         result = self.select()
         self.assertEqual(result['status'], 'READY')
         self.assertEqual(result['builds'], {'ui': 11, 'backend': 29, 'workflow': 5})
@@ -100,8 +101,11 @@ class SelectionTests(unittest.TestCase):
         self.assertNotIn('workflow', result['builds'])
 
     def test_wrong_branch_cannot_satisfy_same_sha(self):
-        self.write('workflow', 5, branch='refs/remotes/origin/main')
-        self.assertEqual(self.select()['status'], 'WAITING')
+        for branch in ['refs/remotes/origin/ci/photo-intake-contract',
+                       'refs/remotes/origin/wrong-branch']:
+            with self.subTest(branch=branch):
+                self.write('workflow', 5, branch=branch)
+                self.assertEqual(self.select()['status'], 'WAITING')
 
     def test_new_unknown_attempt_blocks_until_a_new_verified_attempt(self):
         folder = self.folder('backend', 30)

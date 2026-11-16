@@ -60,6 +60,7 @@ class CollectEvidenceTests(unittest.TestCase):
         return module.collect_evidence(self.home, commit, builds or self.builds)
 
     def test_three_explicit_completed_builds_and_audit_hashes(self):
+        self.assertEqual(module.BRANCH, "refs/remotes/origin/main")
         evidence, audit = self.collect()
         self.assertEqual(set(evidence), {"ui", "backend", "workflow"})
         for key, entry in evidence.items():
@@ -102,10 +103,12 @@ class CollectEvidenceTests(unittest.TestCase):
             self.collect()
 
     def test_wrong_branch_is_rejected_even_with_matching_commit(self):
-        self.write_build("backend", metadata(27, branch="refs/remotes/origin/main"),
-                         log(branch="refs/remotes/origin/main"))
-        with self.assertRaisesRegex(ValueError, "selected CI branch"):
-            self.collect()
+        for branch in ["refs/remotes/origin/ci/photo-intake-contract",
+                       "refs/remotes/origin/wrong-branch"]:
+            with self.subTest(branch=branch):
+                self.write_build("backend", metadata(27, branch=branch), log(branch=branch))
+                with self.assertRaisesRegex(ValueError, "selected CI branch"):
+                    self.collect()
 
     def test_last_scm_revision_and_build_number_cannot_be_stale(self):
         with self.subTest("old lastBuild"):

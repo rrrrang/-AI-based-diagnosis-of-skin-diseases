@@ -14,7 +14,7 @@ import sys
 
 SCHEMA = "skinai.release/v2"
 SOURCE_REPOSITORY = "https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases"
-SOURCE_BRANCH = "ci/photo-intake-contract"
+SOURCE_BRANCH = "main"
 PLATFORM = "linux/amd64"
 REPOSITORIES = {
     "api": "docker.io/rlarns982/skinai-api",

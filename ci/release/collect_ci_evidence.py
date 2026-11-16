@@ -20,7 +20,7 @@ JOBS = {
     "backend": "SkinAI-Backend-CI",
     "workflow": "SkinAI-Workflow-CI",
 }
-BRANCH = "refs/remotes/origin/ci/photo-intake-contract"
+BRANCH = "refs/remotes/origin/main"
 REPOSITORY = "https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases"
 COMMIT_RE = re.compile(r"[0-9a-f]{40}")
 LAST_BUILD_REFERENCE = re.compile(

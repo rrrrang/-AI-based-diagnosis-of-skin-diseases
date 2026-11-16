@@ -58,6 +58,7 @@ class PublicationContractTests(unittest.TestCase):
             release.validate_release(data)
 
     def test_complete_same_revision_handoff_does_not_claim_cd_ready(self):
+        self.assertEqual(release.SOURCE_BRANCH, "main")
         data = valid_release()
         before = copy.deepcopy(data)
         self.assertIsNone(release.validate_release(data))
@@ -137,7 +138,7 @@ class PublicationContractTests(unittest.TestCase):
         for field, value in (
             ("working_tree_dirty", True), ("working_tree_dirty", 0),
             ("commit", "short"), ("repository", "https://example.invalid/repo"),
-            ("branch", "main"),
+            ("branch", "ci/photo-intake-contract"), ("branch", "wrong-branch"),
         ):
             with self.subTest(field=field, value=value):
                 data = valid_release()
