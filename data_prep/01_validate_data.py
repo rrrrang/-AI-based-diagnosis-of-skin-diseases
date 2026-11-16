@@ -4,7 +4,8 @@ import pandas as pd
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent / "data"
-OUT = Path(__file__).resolve().parent.parent / "outputs"; OUT.mkdir(exist_ok=True)
+OUT = Path(__file__).resolve().parent.parent / "outputs"
+OUT.mkdir(exist_ok=True)
 IMG_EXTS = {".png", ".jpg", ".jpeg"}
 
 # 1. JSON 파싱 (Z4_ 측면만)
