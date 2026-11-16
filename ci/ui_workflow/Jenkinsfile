@@ -4,7 +4,7 @@ pipeline {
     options {
         disableConcurrentBuilds()
         skipDefaultCheckout(true)
-        timeout(time: 30, unit: 'MINUTES')
+        timeout(time: 50, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
@@ -66,7 +66,7 @@ pipeline {
                     bat encoding: 'UTF-8', script: '''
 @echo off
 chcp 65001 >nul
-"%WORKFLOW_PYTHON%" -B -m unittest discover -s ci/ui_workflow -p test_runner.py -v
+"%WORKFLOW_PYTHON%" -B -m unittest discover -s ci/ui_workflow -p test_*.py -v
 exit /b %ERRORLEVEL%
 '''
                 }
@@ -98,7 +98,7 @@ exit /b %ERRORLEVEL%
                     try {
                         if (env.WORKFLOW_OUTPUT && fileExists("${env.WORKFLOW_OUTPUT}")) {
                             // Recovery also checks a partially initialized output folder.
-                            timeout(time: 3, unit: 'MINUTES') {
+                            timeout(time: 18, unit: 'MINUTES') {
                                 cleanupResult = bat(returnStatus: true, encoding: 'UTF-8', script: '''
 @echo off
 chcp 65001 >nul
@@ -159,7 +159,7 @@ exit /b %ERRORLEVEL%
             }
         }
         success {
-            echo '전체 연결 검사 2개와 정리 검사 15개를 통과했습니다. 검사 기록을 보관하고 이번 실행 폴더를 정리했습니다.'
+            echo '전체 연결 검사 2개와 준비·정리 검사 23개를 통과했습니다. 검사 기록을 보관하고 이번 실행 폴더를 정리했습니다.'
         }
     }
 }

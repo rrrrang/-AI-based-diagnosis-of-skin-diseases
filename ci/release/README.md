@@ -16,11 +16,49 @@ worker에는 모델 파일도 포함됩니다. 로컬 검사는 127.0.0.1을 사
 다른 PC 접속 주소·허용 설정과 DB·사진 저장 위치·백업은 CD에서 준비합니다.
 새 버전을 배포해도 기존 데이터를 유지합니다.
 
-## 1. 이미지 검사
+## Jenkins 자동 업로드
+
+새 Pipeline 작업 `SkinAI-Release-CI`에 다음을 설정합니다.
+
+| 설정 | 값 |
+| --- | --- |
+| Definition | Pipeline script from SCM |
+| SCM | Git |
+| Repository URL | https://github.com/rrrrang/-AI-based-diagnosis-of-skin-diseases.git |
+| Branch Specifier | */ci/photo-intake-contract |
+| Script Path | ci/release/Jenkinsfile |
+| Docker Hub 자격증명 ID | skinai-dockerhub |
+
+처음 한 번 `지금 빌드`로 실행하면 자동 시작 조건과 검사 매개변수가 등록됩니다.
+이후 UI·Backend·Workflow CI 중 하나가 성공할 때 같은 커밋의 세 결과를 확인합니다.
+아직 검사가 끝나지 않았으면 `NOT_BUILT`로 종료하고, 다음 CI 성공 때 다시 확인합니다.
+하나라도 실패했거나 커밋이 다르면 이미지를 업로드하지 않습니다.
+
+세 검사 성공 → 네 이미지 빌드·연결 검사 → Docker Hub 업로드 →
+공개 접근·digest 확인 → 임시 서버·로그인 설정 정리 → `release.json` 보관 순서입니다.
+`release.json`은 성공한 실행의 **Artifacts**에서 받습니다. 기존 CD는 자동 실행하지 않습니다.
+실패한 실행에는 원인 확인용 보고서만 보관합니다.
+
+- `TEST_BLOCK_UPLOAD`: 수동 차단 검사 전용이며 기본값은 해제입니다. 체크하면
+  이미지 준비·로그인·업로드 전에 의도적으로 실패하고 `release.json`을 보관하지 않습니다.
+- 같은 버전을 다시 실행하면 이미 검증한 공개 이미지와 전달 파일을 확인해 재사용합니다. 원본 release.json의 검사 번호는 유지하고, 이번 재확인 번호는 gate.json에 남깁니다.
+- 일부만 업로드된 경우 같은 검사 이미지로 재시도합니다. 그 이미지가 없어졌다면
+  Workflow CI를 다시 검사해 새 버전 번호를 사용합니다.
+- 임시 로그인 정보는 Jenkins 자격증명에서 받아 별도 임시 폴더에만 두고 정리합니다.
+- 영구 작업 기록은 `D:/SkinAI_DevOps/release_ci_state`에 자동 생성합니다.
+  이전 실행의 이미지 근거와 재시도 기록이므로 임의로 지우거나 미리 만들지 않습니다.
+- 현재 작업은 이 PC의 Windows·Docker·모델·Node 경로와 Jenkins 완료 기록을 사용합니다.
+  다른 실행 PC로 옮길 때는 Jenkinsfile의 경로와 검사 환경을 함께 맞춥니다.
+
+main 반영은 자동 업로드 성공과 실패 차단을 확인한 뒤 진행합니다.
+그때 세 CI와 업로드 작업의 검사 브랜치, `collect_ci_evidence.py`와
+`handoff/release.py`의 브랜치 기준도 함께 main으로 바꿔 다시 검증합니다.
+
+## 1. 터미널에서 이미지 검사
 
 Windows에서 Docker Desktop의 Linux 컨테이너, Python, Node.js,
 Playwright Chromium, 검증된 모델 폴더와 비개인용 샘플 사진을 준비합니다.
-18165~18167 포트를 비워 둡니다. Workflow CI와 동시에 실행하지 않습니다.
+18165~18167 포트를 비워 둡니다. Workflow CI와 이미지 검사는 공통 잠금으로 순서대로 실행됩니다. 잠금은 최대 15분 기다립니다.
 
 프로젝트 최상위 폴더에서 실행하며, 경로는 현재 PC에 맞게 바꿉니다.
 업로드할 때는 먼저 커밋·푸시하고 같은 커밋의 세 CI 성공을 확인합니다.
@@ -68,7 +106,7 @@ $publishOutput = Join-Path 'D:\SkinAI_DevOps\release_publish' ('run-' + [guid]::
 ```
 
 `--publish`를 빼면 업로드 전 조건만 검사합니다. 실행마다 새 결과 폴더가 필요합니다.
-이 도구는 현재 PC의 Jenkins 완료 기록을 읽으며, Jenkins 자동 실행에는 아직 연결하지 않았습니다.
+이 도구는 현재 PC의 Jenkins 완료 기록을 읽습니다. Jenkins에서는 위 자동 업로드 작업이 검사 번호와 실행 순서를 관리합니다.
 
 기본값은 네 저장소가 이미 Public으로 확인되어야 업로드합니다.
 승인된 최초 생성에 한해 `--create-missing-repositories`를 추가할 수 있습니다.

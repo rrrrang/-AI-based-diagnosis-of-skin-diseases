@@ -1,0 +1,210 @@
+pipeline {
+    agent any
+
+    options {
+        disableConcurrentBuilds()
+        skipDefaultCheckout(true)
+        timeout(time: 90, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '15'))
+        quietPeriod(20)
+    }
+
+    triggers {
+        upstream(
+            upstreamProjects: 'SkinAI-UI-CI,SkinAI-Backend-CI,SkinAI-Workflow-CI',
+            threshold: hudson.model.Result.SUCCESS
+        )
+    }
+
+    parameters {
+        booleanParam(name: 'TEST_BLOCK_UPLOAD', defaultValue: false,
+            description: '수동 차단 검사 전용. 업로드 전에 실패시켜 이미지 업로드와 release.json 보관이 차단되는지 확인합니다.')
+    }
+
+    environment {
+        PYTHONUTF8 = '1'
+        PYTHONIOENCODING = 'utf-8'
+        PYTHONDONTWRITEBYTECODE = '1'
+        NPM_CONFIG_CACHE = 'D:/SkinAI_DevOps/npm-cache'
+        DOCKER_HOST = 'npipe:////./pipe/dockerDesktopLinuxEngine'
+    }
+
+    stages {
+        stage('1. 같은 커밋의 세 CI 성공 확인') {
+            steps {
+                script {
+                    if (isUnix() || !pwd().toLowerCase().startsWith('d:')) {
+                        error('현재 자동 업로드는 D드라이브의 Windows Jenkins에서 실행합니다.')
+                    }
+                    env.RELEASE_RUN = "${pwd()}/runs/${env.BUILD_NUMBER}"
+                    env.RELEASE_SOURCE = "${env.RELEASE_RUN}/source"
+                    env.RELEASE_GATE = "${env.RELEASE_RUN}/gate/gate.json"
+                    env.RELEASE_OUTPUT = "${env.RELEASE_RUN}/artifacts"
+                    env.RELEASE_AUTH = "${pwd(tmp: true)}/registry/${env.BUILD_NUMBER}"
+                    env.RELEASE_STATE = 'D:/SkinAI_DevOps/release_ci_state'
+                    env.RELEASE_JENKINS_HOME = 'D:/JenkinsHome'
+                    env.RELEASE_PYTHON = env.CI_PYTHON_EXE ?: 'D:/miniconda3/python.exe'
+                    env.RELEASE_DOCKER = env.CI_DOCKER_EXE ?: 'C:/Users/human/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe'
+                    env.RELEASE_NODE = env.CI_NODE_DIR ?: 'D:/SkinAI_DevOps/tools/node-v24.22.2-win-x64'
+                    env.RELEASE_BROWSERS = env.CI_BROWSER_DIR ?: 'D:/SkinAI_DevOps/playwright-browsers'
+                    env.RELEASE_MODELS = env.CI_MODEL_DIR ?: 'D:/SkinAI_DevOps/ensemble_docker_check/models'
+                    env.RELEASE_SAMPLE = env.CI_SAMPLE_FILE ?: 'D:/SkinAI_DevOps/backend_ensemble_check/samples/sample.png'
+                    env.TEMP = "${env.RELEASE_RUN}/temp"
+                    env.TMP = env.TEMP
+                    dir(env.TEMP) { writeFile(file: '.keep', text: '') }
+                    def causes = currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')
+                    writeFile(file: "${env.RELEASE_RUN}/upstream.json", encoding: 'UTF-8', text: causes.toString())
+                    if (params.TEST_BLOCK_UPLOAD && (causes.size() > 0 ||
+                            currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause').size() == 0)) {
+                        error('업로드 차단 검사는 직접 실행할 때만 사용할 수 있습니다.')
+                    }
+                }
+                dir(env.RELEASE_SOURCE) {
+                    script {
+                        def revision = checkout scm
+                        env.RELEASE_COMMIT = revision.GIT_COMMIT
+                        currentBuild.description = "이미지 전달 ${env.RELEASE_COMMIT.take(7)}"
+                    }
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+"%RELEASE_PYTHON%" -B ci/release/auto_release.py gate --jenkins-home "%RELEASE_JENKINS_HOME%" --commit "%RELEASE_COMMIT%" --causes "%RELEASE_RUN%/upstream.json" --output "%RELEASE_RUN%/gate"
+exit /b %ERRORLEVEL%
+'''
+                }
+                script {
+                    def properties = [:]
+                    readFile(file: "${env.RELEASE_RUN}/gate/gate.properties", encoding: 'UTF-8').readLines().each { line ->
+                        def pair = line.split('=', 2)
+                        if (pair.length == 2) { properties[pair[0]] = pair[1] }
+                    }
+                    env.RELEASE_GATE_STATUS = properties['status'] ?: 'INVALID'
+                    if (env.RELEASE_GATE_STATUS == 'WAITING') {
+                        currentBuild.result = 'NOT_BUILT'
+                        echo '같은 커밋의 세 검사 완료를 기다립니다. 업로드하지 않고 종료하며, 다음 CI 성공 시 다시 확인합니다.'
+                    } else if (env.RELEASE_GATE_STATUS != 'READY') {
+                        error('같은 커밋의 세 CI 성공을 확인하지 못해 업로드를 차단했습니다. gate.json을 확인하세요.')
+                    }
+                }
+            }
+        }
+
+        stage('2. 업로드 도구와 실패 차단 검사') {
+            when { expression { env.RELEASE_GATE_STATUS == 'READY' } }
+            steps {
+                dir(env.RELEASE_SOURCE) {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+"%RELEASE_PYTHON%" -B -m unittest discover -s ci/release/tests -p "test_*.py"
+if errorlevel 1 exit /b 1
+"%RELEASE_PYTHON%" -B -m unittest discover -s ci/release/handoff -p "test_*.py"
+if errorlevel 1 exit /b 1
+"%RELEASE_PYTHON%" -B -m unittest discover -s ci/release/backend/tests -p "test_*.py"
+exit /b %ERRORLEVEL%
+'''
+                }
+                script {
+                    if (params.TEST_BLOCK_UPLOAD) {
+                        writeFile(file: "${env.RELEASE_OUTPUT}/block-test.json", encoding: 'UTF-8',
+                            text: '{"status":"EXPECTED_BLOCK","credentials_used":false,"images_pushed":false,"release_created":false}\n')
+                        error('EXPECTED_UPLOAD_BLOCK: 업로드 전 의도적으로 중단했습니다. release.json은 보관하지 않습니다.')
+                    }
+                }
+            }
+        }
+
+        stage('3. 네 이미지 준비 및 실제 연결 검사') {
+            when { expression { env.RELEASE_GATE_STATUS == 'READY' } }
+            steps {
+                dir(env.RELEASE_SOURCE) {
+                    bat encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+"%RELEASE_PYTHON%" -B ci/release/auto_release.py prepare --gate "%RELEASE_GATE%" --jenkins-home "%RELEASE_JENKINS_HOME%" --state-root "%RELEASE_STATE%" --output "%RELEASE_OUTPUT%" --docker "%RELEASE_DOCKER%" --models "%RELEASE_MODELS%" --sample "%RELEASE_SAMPLE%" --node-dir "%RELEASE_NODE%" --browsers "%RELEASE_BROWSERS%"
+exit /b %ERRORLEVEL%
+'''
+                }
+                script {
+                    def properties = [:]
+                    readFile(file: "${env.RELEASE_OUTPUT}/preparation.properties", encoding: 'UTF-8').readLines().each { line ->
+                        def pair = line.split('=', 2)
+                        if (pair.length == 2) { properties[pair[0]] = pair[1] }
+                    }
+                    env.RELEASE_MODE = properties['mode'] ?: 'INVALID'
+                    if (!(env.RELEASE_MODE in ['reuse', 'publish'])) {
+                        error('이미지 준비 상태를 확인하지 못했습니다.')
+                    }
+                }
+            }
+        }
+
+        stage('4. Docker Hub 업로드 및 전달 파일 생성') {
+            when { expression { env.RELEASE_GATE_STATUS == 'READY' } }
+            steps {
+                script {
+                    def publishCommand = '''
+@echo off
+chcp 65001 >nul
+"%RELEASE_PYTHON%" -B ci/release/auto_release.py publish --gate "%RELEASE_GATE%" --jenkins-home "%RELEASE_JENKINS_HOME%" --state-root "%RELEASE_STATE%" --output "%RELEASE_OUTPUT%" --auth-scratch "%RELEASE_AUTH%" --docker "%RELEASE_DOCKER%"
+exit /b %ERRORLEVEL%
+'''
+                    if (env.RELEASE_MODE == 'reuse') {
+                        dir(env.RELEASE_SOURCE) { bat encoding: 'UTF-8', script: publishCommand }
+                    } else {
+                        withCredentials([usernamePassword(credentialsId: 'skinai-dockerhub',
+                                usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_TOKEN')]) {
+                            dir(env.RELEASE_SOURCE) { bat encoding: 'UTF-8', script: publishCommand }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                if (env.RELEASE_SOURCE && fileExists("${env.RELEASE_SOURCE}/ci/release/auto_release.py") &&
+                        env.RELEASE_GATE && fileExists(env.RELEASE_GATE)) {
+                    timeout(time: 18, unit: 'MINUTES') {
+                        dir(env.RELEASE_SOURCE) {
+                            def cleanupResult = bat(returnStatus: true, encoding: 'UTF-8', script: '''
+@echo off
+chcp 65001 >nul
+"%RELEASE_PYTHON%" -B ci/release/auto_release.py cleanup --gate "%RELEASE_GATE%" --state-root "%RELEASE_STATE%" --auth-scratch "%RELEASE_AUTH%" --docker "%RELEASE_DOCKER%"
+exit /b %ERRORLEVEL%
+''')
+                            if (cleanupResult != 0) {
+                                currentBuild.result = 'FAILURE'
+                                echo '임시 서버 또는 로그인 설정 정리를 확인하지 못했습니다. release.json 보관을 차단합니다.'
+                            }
+                        }
+                    }
+                }
+                if (env.RELEASE_RUN) {
+                    dir(env.RELEASE_RUN) {
+                        archiveArtifacts(
+                            artifacts: 'gate/gate.json,artifacts/preparation.json,artifacts/preparation-state.json,artifacts/failure.json,artifacts/block-test.json,artifacts/preview-summary.json,artifacts/ci-evidence.json,artifacts/publication_report.json',
+                            allowEmptyArchive: true, fingerprint: true
+                        )
+                    }
+                }
+            }
+        }
+        success {
+            script {
+                if (!fileExists("${env.RELEASE_OUTPUT}/release.json")) {
+                    error('성공한 이미지 전달 파일이 없어 release.json을 보관하지 않았습니다.')
+                }
+                dir(env.RELEASE_OUTPUT) {
+                    archiveArtifacts(artifacts: 'release.json', fingerprint: true, onlyIfSuccessful: true)
+                }
+                echo '네 이미지의 공개 업로드와 고정 주소 검증을 마치고 release.json을 보관했습니다. 기존 CD는 실행하지 않았습니다.'
+            }
+        }
+        failure {
+            echo '업로드 또는 준비가 실패했습니다. 이번 실행의 release.json은 보관하지 않습니다.'
+        }
+    }
+}

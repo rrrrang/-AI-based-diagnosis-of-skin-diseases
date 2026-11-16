@@ -324,4 +324,5 @@ def main():
 
 
 if __name__ == '__main__':
-    raise SystemExit(main())
+    from port_lock import run_locked
+    raise SystemExit(run_locked(main))

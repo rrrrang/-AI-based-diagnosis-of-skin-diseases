@@ -406,4 +406,5 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    from port_lock import run_locked
+    sys.exit(run_locked(main))
