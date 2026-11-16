@@ -166,6 +166,19 @@ class TransportTests(unittest.TestCase):
         with self.assertRaises(registry.RegistryError):
             registry._SafeRedirect(False).redirect_request(request,None,307,'',{},'https://cdn.example.test/blob')
 
+    def test_urllib_added_registry_host_is_not_forwarded_to_blob_cdn(self):
+        request=urllib.request.Request('https://registry-1.docker.io/v2/x/blobs/sha256:a',
+            headers={'Authorization':'Bearer anonymous-test-token'})
+        # HTTPHandler adds this to unredirected_hdrs during a real request.
+        # header_items() includes it even though it should not follow redirects.
+        request.add_unredirected_header('Host','registry-1.docker.io')
+        redirected=registry._SafeRedirect(True).redirect_request(
+            request,None,307,'',{},'https://production.cloudfront.docker.com/blob?signature=x')
+        self.assertEqual(request.get_header('Host'),'registry-1.docker.io')
+        self.assertIsNone(redirected.get_header('Host'))
+        self.assertEqual(redirected.host,'production.cloudfront.docker.com')
+        self.assertIsNone(redirected.get_header('Authorization'))
+
     def test_insecure_or_credential_redirect_is_refused(self):
         request=urllib.request.Request('https://registry-1.docker.io/v2/x')
         for url in ('http://cdn.example.test/blob','https://user:password@cdn.example.test/blob'):

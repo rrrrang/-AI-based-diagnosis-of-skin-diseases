@@ -86,8 +86,11 @@ class _SafeRedirect(urllib.request.HTTPRedirectHandler):
         cross_host = old.hostname != new.hostname
         if cross_host and not self.allow_blob_redirect:
             raise RegistryError('Unexpected cross-host registry redirect')
+        # urllib adds Host as an unredirected header before this callback.
+        # Let the next request compute its own Host, including CDN redirects.
         forwarded = {name: value for name, value in req.header_items()
-                     if not (cross_host and name.lower() in ('authorization', 'cookie', 'proxy-authorization'))}
+                     if name.lower() != 'host'
+                     and not (cross_host and name.lower() in ('authorization', 'cookie', 'proxy-authorization'))}
         # Only GET is used; do not copy credentials into redirected URLs or bodies.
         return urllib.request.Request(newurl, headers=forwarded, method='GET')
 
