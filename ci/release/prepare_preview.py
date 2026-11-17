@@ -171,7 +171,8 @@ def main():
            'npm_config_cache': 'D:/SkinAI_DevOps/npm-cache', 'CI': 'true',
            'PLAYWRIGHT_BROWSERS_PATH': str(args.browsers)}
     token = secrets.token_urlsafe(32)
-    env.update(SKINAI_E2E_DOCTOR_TOKEN=token, SKINAI_E2E_SAMPLE=str(args.sample.resolve()), SKINAI_E2E_OUTPUT=str(results))
+    env.update(SKINAI_E2E_DOCTOR_TOKEN=token, SKINAI_E2E_SAMPLE=str(args.sample.resolve()), SKINAI_E2E_OUTPUT=str(results),
+               SKINAI_E2E_DOCTOR_LOGIN='ci-doctor', SKINAI_E2E_DOCTOR_PASSWORD=token)
     def run(command, log, timeout=300, cwd=REPO):
         print('RUN:', log, flush=True)
         try:
@@ -233,7 +234,10 @@ def main():
         write_json(output/'compose.preview.json', compose_for(images, project))
         write_json(output/'preview-state.json', {'owner': OWNER, 'output': str(output), 'project': project,
                    'images': images, 'compose_sha256': digest(output/'compose.preview.json')})
-        (output/'.env.preview').write_text('SKINAI_DEMO_DOCTOR_TOKENS=' + json.dumps({'d1':token}) + '\n', encoding='utf-8')
+        (output/'.env.preview').write_text(
+            'SKINAI_DEMO_DOCTOR_TOKENS=' + json.dumps({'d1': token}) + '\n'
+            + 'SKINAI_DOCTOR_ACCOUNTS=' + json.dumps({'d1': {'loginId': 'ci-doctor', 'password': token}}) + '\n',
+            encoding='utf-8')
         run([args.docker, 'compose', '-p', project, '-f', str(output/'compose.preview.json'), 'up', '-d', '--wait', '--wait-timeout', '240'], 'startup.log', timeout=300)
         # Inspect actual built images/containers: no source or model bind mounts.
         ids = run([args.docker, 'compose', '-p', project, '-f', str(output/'compose.preview.json'), 'ps', '-q'], 'container-ids.log').split()

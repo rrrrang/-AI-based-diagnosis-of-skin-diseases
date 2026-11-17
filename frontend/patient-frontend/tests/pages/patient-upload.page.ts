@@ -18,8 +18,14 @@ export class PatientUploadPage {
     this.page = page;
   }
 
-  // 사진·증상 입력 화면 열기
+  // 첫 화면에서 전화번호·이름으로 로그인한 뒤 사진·증상 입력 화면 열기
   async open() {
+    await this.page.goto("/#/patient/login");
+    await this.page.getByLabel("전화번호", { exact: true }).fill("01012345678");
+    await this.page.getByLabel("이름", { exact: true }).fill("검사환자");
+    await this.page.getByRole("button", { name: "시작하기", exact: true }).click();
+    await expect(this.page.getByRole("button", { name: /AI 피부 분석 시작/ })).toBeVisible();
+
     await this.page.goto("/#/patient/upload");
 
     await expect(

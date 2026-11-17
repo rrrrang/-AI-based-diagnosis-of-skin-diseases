@@ -11,6 +11,18 @@ const FRONT_FIXTURE = Buffer.from(
 export class PatientWorkflowPage {
   constructor(readonly page: Page) {}
 
+  // 첫 화면: 전화번호(아이디)와 이름(비밀번호)으로 시작
+  async login(phone: string, name: string) {
+    await this.page.goto("/#/patient/login");
+    await this.page.getByLabel("전화번호", { exact: true }).fill(phone);
+    await this.page.getByLabel("이름", { exact: true }).fill(name);
+    const response = this.page.waitForResponse((r) =>
+      new URL(r.url()).pathname === "/api/auth/patient" && r.request().method() === "POST");
+    await this.page.getByRole("button", { name: "시작하기", exact: true }).click();
+    expect((await response).status()).toBe(200);
+    await expect(this.page.getByRole("button", { name: /AI 피부 분석 시작/ })).toBeVisible();
+  }
+
   async reserveDoctor(): Promise<string> {
     await this.page.goto("/#/patient/reservation");
     await this.page.getByRole("button", { name: /김서연/ }).click();
@@ -51,10 +63,10 @@ export class PatientWorkflowPage {
     await expect(this.page.getByRole("heading", { name: "환자 정보 입력" })).toBeVisible();
   }
 
+  // 이름은 첫 화면 로그인에서 받았으므로 나이와 상세 증상만 입력합니다.
   async fillPatient(name: string) {
-    await this.page.getByLabel("환자 이름").fill(name);
+    await expect(this.page.getByText(name, { exact: true })).toBeVisible();
     await this.page.getByLabel("환자 나이").fill("30");
-    await this.page.getByRole("button", { name: "선택 안 함", exact: true }).click();
     await this.page.getByPlaceholder("증상이 나타난 부위, 시작 시점, 불편한 점을 적어주세요.")
       .fill("CI 통합검사용 가상 접수입니다. 실제 환자 문진이 아닙니다.");
     await this.page.getByRole("checkbox").check();
@@ -75,13 +87,14 @@ export class PatientWorkflowPage {
 export class DoctorWorkflowPage {
   constructor(readonly page: Page) {}
 
-  async connect(token: string, date: string, patientName: string) {
+  async connect(loginId: string, password: string, date: string, patientName: string) {
     const doctorUrl = process.env.SKINAI_E2E_DOCTOR_URL || "http://127.0.0.1:18167";
     await this.page.goto(`${doctorUrl}/#/doctor`);
-    await this.page.getByLabel("시연용 의사 토큰").fill(token);
+    await this.page.getByLabel("의사 아이디").fill(loginId);
+    await this.page.getByLabel("비밀번호").fill(password);
     const response = this.page.waitForResponse((r) =>
       new URL(r.url()).pathname === "/api/cases" && r.request().method() === "GET");
-    await this.page.getByRole("button", { name: "접수 목록 연결", exact: true }).click();
+    await this.page.getByRole("button", { name: "로그인", exact: true }).click();
     expect((await response).status()).toBe(200);
     await this.page.getByLabel("예약 날짜", { exact: true }).fill(date);
     await this.page.getByPlaceholder("환자명 검색").fill(patientName);

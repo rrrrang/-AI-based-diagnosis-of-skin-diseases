@@ -18,7 +18,14 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { apiEnabled, doctorTokenKey, readCasePhotos } from "../../services/api";
+import {
+  apiEnabled,
+  doctorDisplayName,
+  doctorLoggedIn,
+  doctorLogin,
+  doctorLogout,
+  readCasePhotos,
+} from "../../services/api";
 import PatientReview from "./PatientReview";
 
 import type { DoctorCase } from "../../types/doctorCase";
@@ -84,7 +91,12 @@ export default function DoctorDashboard() {
   // 데이터 조회 상태
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
-  const [token, setToken] = useState("");
+  // 의사 로그인 (아이디·비밀번호)
+  const [loggedIn, setLoggedIn] = useState(() => doctorLoggedIn());
+  const [loginId, setLoginId] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [loggingIn, setLoggingIn] = useState(false);
   const [loadedPhotos, setLoadedPhotos] = useState<DoctorCase | null>(null);
   const [photoError, setPhotoError] = useState("");
 
@@ -144,6 +156,8 @@ export default function DoctorDashboard() {
           ? error.message
           : "환자 접수 정보 조회에 실패했습니다."
       );
+      // 로그인이 끝났으면 로그인 창을 다시 보여 줍니다.
+      if (apiEnabled && !doctorLoggedIn()) setLoggedIn(false);
     } finally {
       setLoading(false);
     }
@@ -338,20 +352,47 @@ export default function DoctorDashboard() {
 
   return (
     <main className="doctor-dashboard">
-      {apiEnabled && (
-        <form onSubmit={(event) => {
+      {/* 의사 로그인: 로그인해야 예약 목록이 보입니다 */}
+      {apiEnabled && !loggedIn && (
+        <form className="doctor-login" onSubmit={async (event) => {
           event.preventDefault();
-          sessionStorage.setItem(doctorTokenKey, token.trim());
-          setToken("");
-          setCases([]);
-          setSelectedId(null);
-          setLoadedPhotos(null);
-          void refresh();
+          if (loggingIn) return;
+          setLoggingIn(true);
+          setLoginError("");
+          try {
+            await doctorLogin(loginId, password);
+            setPassword("");
+            setLoggedIn(true);
+            setCases([]);
+            setSelectedId(null);
+            setLoadedPhotos(null);
+            void refresh();
+          } catch (error) {
+            setLoginError(error instanceof Error ? error.message : "로그인하지 못했습니다.");
+          } finally {
+            setLoggingIn(false);
+          }
         }}>
-          <label>시연용 의사 토큰 <input type="password" value={token}
-            onChange={(event) => setToken(event.target.value)} /></label>
-          <button type="submit">접수 목록 연결</button>
+          <h2>의사 로그인</h2>
+          <label>의사 아이디 <input value={loginId} autoComplete="username"
+            onChange={(event) => setLoginId(event.target.value)} /></label>
+          <label>비밀번호 <input type="password" value={password} autoComplete="current-password"
+            onChange={(event) => setPassword(event.target.value)} /></label>
+          <button type="submit" disabled={loggingIn}>로그인</button>
+          {loginError && <p className="doctor-login-error" role="alert">{loginError}</p>}
         </form>
+      )}
+      {apiEnabled && loggedIn && (
+        <div className="doctor-session">
+          <span>{doctorDisplayName()} 선생님으로 로그인됨</span>
+          <button type="button" onClick={async () => {
+            await doctorLogout();
+            setLoggedIn(false);
+            setCases([]);
+            setSelectedId(null);
+            setLoadedPhotos(null);
+          }}>로그아웃</button>
+        </div>
       )}
 
       {/* 상단 담당 의사 정보 */}

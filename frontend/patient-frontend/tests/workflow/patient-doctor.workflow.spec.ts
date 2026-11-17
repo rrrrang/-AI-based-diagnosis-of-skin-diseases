@@ -38,6 +38,13 @@ type CaseDetail = {
   [key: string]: unknown;
 };
 
+// 의사 아이디·비밀번호로 로그인해 API 확인용 토큰을 받습니다 (보고서에는 남기지 않음).
+async function doctorApiToken(client: APIRequestContext, loginId: string, password: string): Promise<string> {
+  const response = await client.post(`${API}/api/auth/login`, { data: { loginId, password } });
+  expect(response.status(), "The doctor account must be configured on the API server.").toBe(200);
+  return (await response.json() as { accessToken: string }).accessToken;
+}
+
 async function readCase(client: APIRequestContext, id: string, token: string): Promise<CaseDetail> {
   const response = await client.get(`${API}/api/cases/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -61,7 +68,9 @@ function assertPatientProjection(detail: CaseDetail, published: boolean) {
 for (const photoCount of [2, 3] as const) {
   test(`실제 UI·3모델 연결: 사진 ${photoCount}장 접수 → 의사 확정 → 환자 결과`, async ({ page, browser }) => {
     const sample = requiredEnv("SKINAI_E2E_SAMPLE");
-    const doctorToken = requiredEnv("SKINAI_E2E_DOCTOR_TOKEN");
+    const doctorLogin = process.env.SKINAI_E2E_DOCTOR_LOGIN || "ci-doctor";
+    // CD는 기존 Jenkins 비밀값(SKINAI_E2E_DOCTOR_TOKEN)을 의사 비밀번호로 그대로 씁니다.
+    const doctorPassword = process.env.SKINAI_E2E_DOCTOR_PASSWORD || requiredEnv("SKINAI_E2E_DOCTOR_TOKEN");
     const output = requiredEnv("SKINAI_E2E_OUTPUT");
     expect(existsSync(sample), "A prepared local, non-personal close-up fixture is required.").toBe(true);
     const doctorContext = await browser.newContext({ viewport: { width: 1440, height: 1080 } });
@@ -70,11 +79,13 @@ for (const photoCount of [2, 3] as const) {
     const doctor = new DoctorWorkflowPage(doctorPage);
     const unique = Date.now().toString(36);
     const patientName = `CI연결${photoCount}-${unique}`;
+    const patientPhone = "010" + String(Date.now() + photoCount).slice(-8);
     const diagnosis = `CI 확인용 결과 ${photoCount}-${unique}`;
     const opinion = "사진 전송과 의사 확정 후 공개를 확인한 자동검사 문구입니다. 실제 의료 소견이 아닙니다.";
     const started = Date.now();
 
     try {
+      await patient.login(patientPhone, patientName);
       const bookingDate = await patient.reserveDoctor();
       await patient.photosAndSymptoms(sample, photoCount);
       await patient.fillPatient(patientName);
@@ -103,7 +114,8 @@ for (const photoCount of [2, 3] as const) {
       assertPatientProjection(beforeAnalysis, false);
       await expect(page.getByRole("heading", { name: "최종 모의 검토 결과" })).toHaveCount(0);
 
-      await doctor.connect(doctorToken, bookingDate, patientName);
+      await doctor.connect(doctorLogin, doctorPassword, bookingDate, patientName);
+      const doctorToken = await doctorApiToken(doctorPage.request, doctorLogin, doctorPassword);
       let complete: CaseDetail | undefined;
       await expect.poll(async () => {
         complete = await readCase(doctorPage.request, caseId, doctorToken);

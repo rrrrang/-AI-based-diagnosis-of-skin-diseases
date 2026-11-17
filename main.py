@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request
 
 from app import db
 from app.errors import register_error_handlers
-from app.routers import cases, doctors, health
+from app.routers import auth, cases, doctors, health
 
 
 @asynccontextmanager
@@ -31,3 +31,4 @@ register_error_handlers(app)
 app.include_router(health.router)
 app.include_router(doctors.router)
 app.include_router(cases.router)
+app.include_router(auth.router)

@@ -34,6 +34,14 @@ python -m app.worker --mobilenet-root D:/models/mobile --resnet-root D:/models/r
 
 검증한 범위는 두 앱 빌드, 백엔드 테스트, Edge에서 환자 예약·합성 사진 업로드·문진 접수, 실제 세 가중치로 워커 추론, 담당 의사 소견 공개, 환자 화면에서 소견과 등록 사진 장수 확인까지입니다. 실제 신규 환자에 대한 성능은 검증 범위 밖입니다.
 
+### 로그인
+
+- 환자는 첫 화면에서 전화번호(아이디)와 이름(비밀번호)을 넣습니다. `POST /api/auth/patient`에 `{"phone", "name", "create": true}`를 보내면 처음 온 환자는 계정이 만들어지고, 다음부터는 같은 값으로 로그인합니다. 결과 확인 화면은 `create: false`로 로그인합니다. 응답의 `accessToken`(12시간 유지)으로 접수하면 접수가 계정에 연결되고, `GET /api/me/cases`로 담당 의사·예약 일시·올린 사진·진행 상태와 의사가 공개한 소견을 볼 수 있습니다. AI 후보·점수와 임시 소견은 환자에게 보내지 않습니다.
+- 의사는 `POST /api/auth/login`에 `{"loginId", "password"}`를 보냅니다. 의사 계정은 코드나 Git에 비밀번호를 적지 않고 API 서버 설정 `SKINAI_DOCTOR_ACCOUNTS`에 JSON으로 넣습니다. 예: `{"d1": {"loginId": "doctor1", "password": "..."}}`.
+- 이름과 비밀번호는 PBKDF2-SHA256 해시로만 저장하고, DB에는 로그인 토큰의 해시만 남깁니다. 5번 틀리면 5분 동안 잠깁니다. `POST /api/auth/logout`으로 로그아웃하고 `GET /api/auth/me`로 로그인 정보를 확인합니다.
+- 이름은 다른 사람도 알 수 있는 값이라 비밀번호로는 약합니다. 합성 데이터 시연용 설정이며 실제 서비스에는 별도 비밀번호나 본인 인증이 필요합니다.
+- 기존 접수 토큰과 `SKINAI_DEMO_DOCTOR_TOKENS` 시연 토큰도 그대로 동작합니다.
+
 ### 작업 큐와 응답
 
 - SQLite에는 `doctors`, `cases`, `photos`, `analysis_jobs`, `analysis_workers`, `reviews`가 있습니다. 소견의 임시본과 공개본을 따로 저장합니다.
