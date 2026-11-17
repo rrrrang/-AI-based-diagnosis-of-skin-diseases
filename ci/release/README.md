@@ -1,8 +1,8 @@
 # 실제 서비스 이미지 빌드·검사·업로드
 
 API, 실제 3모델 worker, 환자 UI, 의사 UI를 각각 이미지로 만듭니다.
-이미지 검사·업로드와 전달 파일 생성을 담당하며 Git 병합이나 CD 배포는 실행하지 않습니다.
-이 문서는 준비 브랜치의 main 전환 기준입니다. main 반영과 Jenkins 설정 변경은 별도로 진행합니다.
+Release 작업은 이미지 검사·업로드와 전달 파일 생성을 담당합니다. 성공하면 별도 `SkinAI-Service-CD` 작업이 자동 배포합니다.
+현재 main의 같은 커밋을 UI·Backend·Workflow CI에서 검사하며, 세 결과가 모두 SUCCESS여야 Release가 진행합니다.
 
 ## 정한 내용
 
@@ -19,7 +19,7 @@ worker에는 모델 파일도 포함됩니다. 로컬 검사는 127.0.0.1을 사
 
 ## Jenkins 자동 업로드
 
-main 전환 후 사용할 `SkinAI-Release-CI` 설정입니다. 기존 작업 이름·경로·자격증명은 유지합니다.
+현재 사용하는 `SkinAI-Release-CI` 설정입니다. 기존 작업 이름·경로·자격증명은 유지합니다.
 
 | 설정 | 값 |
 | --- | --- |
@@ -37,7 +37,7 @@ UI·Backend·Workflow CI 중 하나가 성공할 때 main의 같은 커밋을 �
 
 세 검사 성공 → 4개의 이미지 빌드·연결 검사 → Docker Hub 업로드 →
 공개 접근·digest 확인 → 임시 서버·로그인 설정 정리 → `release.json` 보관 순서입니다.
-`release.json`은 성공한 실행의 **Artifacts**에서 받습니다. 기존 CD는 자동 실행하지 않습니다.
+`release.json`은 성공한 실행의 **Artifacts**에서 받습니다. 새 서비스 CD가 이 파일을 받아 배포하며, 기존 `SkinAI-Two-Server-CD`는 실행하지 않습니다.
 실패한 실행에는 원인 확인용 보고서만 보관합니다.
 
 - `TEST_BLOCK_UPLOAD`: 수동 차단 검사 전용이며 기본값은 해제입니다. 체크하면
@@ -50,6 +50,16 @@ UI·Backend·Workflow CI 중 하나가 성공할 때 main의 같은 커밋을 �
   이전 실행의 이미지 근거와 재시도 기록이므로 임의로 지우거나 미리 만들지 않습니다.
 - 현재 작업은 이 PC의 Windows·Docker·모델·Node 경로와 Jenkins 완료 기록을 사용합니다.
   다른 실행 PC로 옮길 때는 Jenkinsfile의 경로와 검사 환경을 함께 맞춥니다.
+
+## main 푸시 후 자동 연결 확인
+
+1. main에 변경을 커밋·푸시하고 **Build Now는 누르지 않습니다.** Poll SCM은 약 5분 간격으로 변경을 확인합니다.
+2. UI·Backend·Workflow가 같은 커밋에서 모두 SUCCESS인지 확인합니다.
+3. Release의 이미지 4개 업로드와 `release.json` 보관이 성공했는지 확인합니다.
+4. Service-CD가 해당 Release 번호로 자동 시작하고, 사진 2장·3장 접수부터 환자 결과 조회까지 통과했는지 확인합니다.
+5. 복구용 이전 Release와 실행 설정을 보관하고 DB·사진 저장 볼륨이 유지됐는지 확인합니다.
+
+Jenkins·Docker·배포 전용 노드가 실행 중이어야 하며 PC가 절전 상태에 들어가지 않아야 합니다.
 
 ## main 전환 순서
 
