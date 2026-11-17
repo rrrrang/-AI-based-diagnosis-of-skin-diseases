@@ -30,6 +30,11 @@ def photo_root():
     return Path(os.environ.get("SKINAI_PHOTO_DIR", "data/private-photos"))
 
 
+def overlay_path(case_id, job_id):
+    # 분석 작업마다 하나씩 저장한다. 사진과 같은 비공개 폴더를 쓴다.
+    return photo_root() / case_id / f"overlay-{job_id}.png"
+
+
 def token_digest(token):
     return hashlib.sha256(token.encode()).hexdigest()
 
@@ -236,3 +241,19 @@ def get_photo(case_id: str, index: Literal["0", "1", "2"],
     if row is None or not path.is_file():
         raise HTTPException(404, "Photo not found")
     return FileResponse(path, media_type=row["media_type"], headers={"Cache-Control": "private, no-store"})
+
+
+@router.get("/{case_id}/analysis-image")
+def get_analysis_image(case_id: str,
+                       credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)]):
+    """AI가 주목한 부위 표시 그림. 담당 의사만 볼 수 있다."""
+    case, doctor = case_for_view(case_id, credentials)
+    if not doctor:
+        raise HTTPException(403, "Assigned doctor access required")
+    with closing(connect()) as connection:
+        job = latest(connection, case["id"])
+    result = json.loads(job["result"]) if job and job["state"] == "completed" and job["result"] else {}
+    path = overlay_path(case["id"], job["id"]) if job else None
+    if not result.get("overlayAvailable") or not path.is_file():
+        raise HTTPException(404, "Analysis image not found")
+    return FileResponse(path, media_type="image/png", headers={"Cache-Control": "private, no-store"})

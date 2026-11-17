@@ -10,15 +10,36 @@ from PIL import Image
 
 from app.db import init_db
 from app.jobs import LEASE_SECONDS, claim, finish, heartbeat, renew
-from app.routers.cases import photo_root
+from app.routers.cases import overlay_path, photo_root
 from ensemble.__main__ import Ensemble
+
+
+def save_overlay(job, ensemble, photo):
+    """의사 참고용 표시 그림을 저장하고, 저장했으면 True를 돌려준다."""
+    make = getattr(ensemble, "overlay", None)
+    if make is None:
+        return False
+    try:
+        overlay = make(photo)
+        if not isinstance(overlay, Image.Image):
+            return False
+        path = overlay_path(job["case_id"], job["id"])
+        temporary = path.with_name(path.name + ".tmp")
+        overlay.save(temporary, format="PNG")
+        temporary.replace(path)  # 다 쓴 뒤에 이름을 바꿔서, 반쯤 쓴 파일이 보이지 않게 한다
+        return True
+    except Exception:
+        logging.exception("Overlay failed for job %s", job["id"])
+        return False
 
 
 def run_job(job, ensemble, versions):
     try:
         with Image.open(photo_root() / job["case_id"] / str(job["photo_index"])) as photo:
             result = ensemble.predict(photo, f'{job["case_id"]}:{job["photo_index"]}', "side_closeup")
-        result.update(modelVersions=versions, analyzedPhotoIndex=job["photo_index"])
+            overlay_saved = save_overlay(job, ensemble, photo)
+        result.update(modelVersions=versions, analyzedPhotoIndex=job["photo_index"],
+                      overlayAvailable=overlay_saved)
     except Exception:
         logging.exception("Analysis failed for job %s", job["id"])
         return finish(job, error="inference_failed")

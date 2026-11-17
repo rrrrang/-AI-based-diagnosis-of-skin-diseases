@@ -45,6 +45,10 @@ class Ensemble:
         predictions = self.predict_models(image, image_id)
         return {'image_id': image_id, 'input_role': role, **decide(predictions, self.thresholds)}
 
+    def overlay(self, image):
+        """MobileNet이 주목한 부위를 색으로 표시한 그림(Grad-CAM). 의사 참고용이며 투표에는 쓰지 않는다."""
+        return self.mobilenet.predict(image, with_cam=True)['overlay']
+
     def predict_models(self, image, image_id):
         import torch
 

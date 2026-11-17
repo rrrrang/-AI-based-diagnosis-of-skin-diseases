@@ -39,6 +39,7 @@ python -m app.worker --mobilenet-root D:/models/mobile --resnet-root D:/models/r
 - SQLite에는 `doctors`, `cases`, `photos`, `analysis_jobs`, `analysis_workers`, `reviews`가 있습니다. 소견의 임시본과 공개본을 따로 저장합니다.
 - 접수 응답의 `id`와 `accessToken`으로 `POST /api/cases/{id}/analyze`를 호출합니다. 신규 작업은 202, 기존 작업 조회는 200이며 예시 본문은 `{"jobId":"...","state":"pending"}`입니다. 실패 작업 재요청에는 `?retry=true`를 사용합니다.
 - 작업 임대는 60초, 워커 갱신은 15초, 선점 상한은 총 3회입니다. 임대 만료 복구, 이전 임대의 결과 쓰기 차단, 선점 상한 이후 실패 처리를 격리 SQLite로 검증했습니다.
+- 담당 의사는 `GET /api/cases/{id}/analysis-image`로 AI가 주목한 부위를 색으로 표시한 그림(MobileNet Grad-CAM, PNG)을 볼 수 있습니다. 워커가 분석할 때 함께 만들어 사진과 같은 비공개 폴더에 저장하며, 의사 응답의 `analysis.overlayAvailable`이 `true`일 때만 있습니다. 환자는 볼 수 없고(403), 그림이 없으면 404입니다. 그림을 만들다 실패해도 분석 결과는 그대로 저장됩니다. 투표 결과에는 쓰지 않는 의사 참고용입니다.
 - 담당 의사 응답의 `analysis`에 `candidate`, `decision`, 질환별 `votes`, 모델별 `models`, 체크포인트 해시 `modelVersions`, `thresholds`, `analyzedPhotoIndex`를 제공합니다. 시연용 토큰은 서버 환경변수로만 설정합니다.
 
 ### 자동 테스트
