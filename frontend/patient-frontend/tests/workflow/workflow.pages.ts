@@ -1,5 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 import { Buffer } from "node:buffer";
+import type { DoctorWorkflowIdentity } from "../support/auth";
 
 // Synthetic, non-personal front fixture; the real worker analyzes close-up slot 1.
 // This checks transmission and visibility, not face quality or diagnosis accuracy.
@@ -75,14 +76,9 @@ export class PatientWorkflowPage {
 export class DoctorWorkflowPage {
   constructor(readonly page: Page) {}
 
-  async connect(token: string, date: string, patientName: string) {
+  async connect(identity: DoctorWorkflowIdentity, date: string, patientName: string) {
     const doctorUrl = process.env.SKINAI_E2E_DOCTOR_URL || "http://127.0.0.1:18167";
-    await this.page.goto(`${doctorUrl}/#/doctor`);
-    await this.page.getByLabel("시연용 의사 토큰").fill(token);
-    const response = this.page.waitForResponse((r) =>
-      new URL(r.url()).pathname === "/api/cases" && r.request().method() === "GET");
-    await this.page.getByRole("button", { name: "접수 목록 연결", exact: true }).click();
-    expect((await response).status()).toBe(200);
+    await identity.connect(this.page, doctorUrl);
     await this.page.getByLabel("예약 날짜", { exact: true }).fill(date);
     await this.page.getByPlaceholder("환자명 검색").fill(patientName);
   }

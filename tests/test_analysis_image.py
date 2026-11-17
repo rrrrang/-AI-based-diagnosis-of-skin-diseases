@@ -12,6 +12,8 @@ from PIL import Image
 from app.jobs import claim, heartbeat
 from app.worker import run_job
 from main import app
+from ci.backend_contract.auth_support import (bearer_headers, doctor_environment,
+                                               new_doctor_tokens, patient_headers)
 
 
 class FakeEnsemble:
@@ -36,10 +38,11 @@ def png(color=(0, 0, 0), size=(8, 8)):
 class AnalysisImageTests(unittest.TestCase):
     def setUp(self):
         root = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        doctor_tokens = new_doctor_tokens()
         self.enterContext(patch.dict(os.environ, {
             "SKINAI_DB_PATH": str(root / "db"),
             "SKINAI_PHOTO_DIR": str(root / "photos"),
-            "SKINAI_DEMO_DOCTOR_TOKENS": '{"d1":"test-one","d2":"test-two"}',
+            **doctor_environment(doctor_tokens),
         }))
         self.client = self.enterContext(TestClient(app))
         body = self.client.post("/api/cases", data={
@@ -47,9 +50,9 @@ class AnalysisImageTests(unittest.TestCase):
             "patientName": "Demo", "age": "25", "gender": "none",
         }, files={key: ("photo.png", png(), "image/png") for key in ("photo0", "photo1")}).json()
         self.url = f"/api/cases/{body['id']}"
-        self.patient = {"Authorization": f"Bearer {body['accessToken']}"}
-        self.doctor = {"Authorization": "Bearer test-one"}
-        self.other = {"Authorization": "Bearer test-two"}
+        self.patient = patient_headers(body)
+        self.doctor = bearer_headers(doctor_tokens["d1"])
+        self.other = bearer_headers(doctor_tokens["d2"])
 
     def analyze(self, ensemble):
         heartbeat("test-worker")

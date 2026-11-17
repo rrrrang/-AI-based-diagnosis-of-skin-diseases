@@ -31,6 +31,7 @@ class InputSnapshotTests(unittest.TestCase):
         self.write("ci/release/handoff/candidate.py", "validator-v1")
         self.write("ci/ui_workflow/run_workflow.py", "process-helper-v1")
         self.write("frontend/patient-frontend/tests/workflow/workflow.pages.ts", "pages-v1")
+        self.write("frontend/patient-frontend/tests/support/auth.ts", "auth-v1")
 
     def write(self, relative, value):
         path = self.repo / relative
@@ -49,6 +50,7 @@ class InputSnapshotTests(unittest.TestCase):
             "ci/release/backend/Dockerfile", "ci/release/handoff/candidate.py",
             "ci/ui_workflow/run_workflow.py",
             "frontend/patient-frontend/tests/workflow/workflow.pages.ts",
+            "frontend/patient-frontend/tests/support/auth.ts",
         ):
             self.assertIn(name, snapshot)
         self.assertIsNone(provenance.assert_inputs_unchanged(self.repo, snapshot))
@@ -58,6 +60,7 @@ class InputSnapshotTests(unittest.TestCase):
             "app/worker.py", "frontend/patient-frontend/package-lock.json",
             "ci/release/backend/Dockerfile", "ci/ui_workflow/run_workflow.py",
             "frontend/patient-frontend/tests/workflow/workflow.pages.ts",
+            "frontend/patient-frontend/tests/support/auth.ts",
         ):
             with self.subTest(name=name):
                 frozen = provenance.snapshot_inputs(self.repo)

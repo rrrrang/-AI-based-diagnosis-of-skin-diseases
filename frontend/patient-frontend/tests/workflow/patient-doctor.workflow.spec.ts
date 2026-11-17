@@ -2,6 +2,9 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { DoctorWorkflowPage, PatientWorkflowPage } from "./workflow.pages";
+import {
+  doctorIdentityFromEnvironment, patientIdentityFromIntake, type WorkflowIdentity,
+} from "../support/auth";
 
 const API = process.env.SKINAI_E2E_API_URL || "http://127.0.0.1:18165";
 const MODEL_KEYS = ["mobilenet", "resnet50", "yolo"];
@@ -38,10 +41,8 @@ type CaseDetail = {
   [key: string]: unknown;
 };
 
-async function readCase(client: APIRequestContext, id: string, token: string): Promise<CaseDetail> {
-  const response = await client.get(`${API}/api/cases/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+async function readCase(client: APIRequestContext, id: string, identity: WorkflowIdentity): Promise<CaseDetail> {
+  const response = await client.get(`${API}/api/cases/${id}`, identity.requestOptions());
   expect(response.status(), "The actual backend must accept this case-specific identity.").toBe(200);
   return await response.json() as CaseDetail;
 }
@@ -61,7 +62,7 @@ function assertPatientProjection(detail: CaseDetail, published: boolean) {
 for (const photoCount of [2, 3] as const) {
   test(`실제 UI·3모델 연결: 사진 ${photoCount}장 접수 → 의사 확정 → 환자 결과`, async ({ page, browser }) => {
     const sample = requiredEnv("SKINAI_E2E_SAMPLE");
-    const doctorToken = requiredEnv("SKINAI_E2E_DOCTOR_TOKEN");
+    const doctorIdentity = doctorIdentityFromEnvironment();
     const output = requiredEnv("SKINAI_E2E_OUTPUT");
     expect(existsSync(sample), "A prepared local, non-personal close-up fixture is required.").toBe(true);
     const doctorContext = await browser.newContext({ viewport: { width: 1440, height: 1080 } });
@@ -87,26 +88,23 @@ for (const photoCount of [2, 3] as const) {
       await page.getByRole("button", { name: "AI 분석 요청", exact: true }).click();
       const intake = await intakeResponse;
       expect(intake.status(), "UI must create a real backend case; demo storage is not accepted.").toBe(201);
-      const created = await intake.json() as { id: string; accessToken: string };
-      expect(typeof created.id).toBe("string");
-      expect(typeof created.accessToken).toBe("string");
-      const caseId = created.id;
-      const patientToken = created.accessToken; // Never saved to reports, screenshots, or traces.
+      const patientIdentity = patientIdentityFromIntake(await intake.json());
+      const caseId = patientIdentity.caseId;
       const queued = await queueResponse;
       expect(new URL(queued.url()).pathname).toBe(`/api/cases/${caseId}/analyze`);
       expect(queued.status(), "The actual model worker must accept the request.").toBe(202);
       await expect(page).toHaveURL(/#\/patient\/result$/);
       await expect(page.getByRole("heading", { name: "AI 피부 분석 결과" })).toBeVisible();
 
-      const beforeAnalysis = await readCase(page.request, caseId, patientToken);
+      const beforeAnalysis = await readCase(page.request, caseId, patientIdentity);
       expect(beforeAnalysis.photoCount).toBe(photoCount);
       assertPatientProjection(beforeAnalysis, false);
       await expect(page.getByRole("heading", { name: "최종 모의 검토 결과" })).toHaveCount(0);
 
-      await doctor.connect(doctorToken, bookingDate, patientName);
+      await doctor.connect(doctorIdentity, bookingDate, patientName);
       let complete: CaseDetail | undefined;
       await expect.poll(async () => {
-        complete = await readCase(doctorPage.request, caseId, doctorToken);
+        complete = await readCase(doctorPage.request, caseId, doctorIdentity);
         return complete.aiState;
       }, { message: "The real three-model worker must finish the submitted close-up.",
         timeout: 240_000, intervals: [1000, 3000, 5000] }).toBe("완료");
@@ -158,9 +156,9 @@ for (const photoCount of [2, 3] as const) {
 
       await doctor.fillReview(diagnosis, opinion);
       await doctor.saveDraft(caseId);
-      const draftDoctor = await readCase(doctorPage.request, caseId, doctorToken);
+      const draftDoctor = await readCase(doctorPage.request, caseId, doctorIdentity);
       expect(draftDoctor.reviewState).toBe("임시 저장");
-      const beforePublish = await readCase(page.request, caseId, patientToken);
+      const beforePublish = await readCase(page.request, caseId, patientIdentity);
       expect(beforePublish.reviewState).toBe("검토 대기");
       assertPatientProjection(beforePublish, false);
       await patient.refreshResults(caseId);
@@ -168,7 +166,7 @@ for (const photoCount of [2, 3] as const) {
       await expect(page.getByText(diagnosis, { exact: false })).toHaveCount(0);
 
       await doctor.publish(caseId);
-      const finalPatient = await readCase(page.request, caseId, patientToken);
+      const finalPatient = await readCase(page.request, caseId, patientIdentity);
       expect(finalPatient.reviewState).toBe("결과 전달 완료");
       expect(finalPatient.diagnosis).toBe(diagnosis);
       expect(finalPatient.opinion).toBe(opinion);

@@ -5,7 +5,6 @@ import io
 import json
 import os
 from pathlib import Path
-import secrets
 import socket
 import subprocess
 import sys
@@ -16,6 +15,13 @@ from datetime import datetime, timezone
 
 import httpx
 from PIL import Image
+
+if __package__:
+    from .auth_support import (bearer_headers, doctor_environment, new_doctor_tokens,
+                               patient_headers)
+else:
+    from auth_support import (bearer_headers, doctor_environment, new_doctor_tokens,
+                              patient_headers)
 
 ROOT = Path(__file__).resolve().parents[2]
 OBS = {}
@@ -132,7 +138,7 @@ class LiveApiTests(unittest.TestCase):
         data = response.json()
         self.assertTrue(data["id"].startswith("CASE-"))
         self.assertTrue(data["accessToken"])
-        return "/api/cases/" + data["id"], {"Authorization": "Bearer " + data["accessToken"]}
+        return "/api/cases/" + data["id"], patient_headers(data)
 
     def complete_with_fake_model(self, url, headers, decision):
         from app.jobs import claim, heartbeat
@@ -494,14 +500,14 @@ def main():
     RUN.mkdir(parents=True, exist_ok=False)
     PORT = args.port
     BASE = f"http://127.0.0.1:{PORT}"
-    tokens = {"d1": secrets.token_urlsafe(32), "d2": secrets.token_urlsafe(32)}
+    tokens = new_doctor_tokens()
     settings = {"SKINAI_DB_PATH": str(RUN / "backend.sqlite3"),
                 "SKINAI_PHOTO_DIR": str(RUN / "photos"),
-                "SKINAI_DEMO_DOCTOR_TOKENS": json.dumps(tokens), "PYTHONUTF8": "1"}
+                **doctor_environment(tokens), "PYTHONUTF8": "1"}
     previous = {key: os.environ.get(key) for key in settings}
     os.environ.update(settings)
-    DOCTOR = {"Authorization": "Bearer " + tokens["d1"]}
-    OTHER = {"Authorization": "Bearer " + tokens["d2"]}
+    DOCTOR = bearer_headers(tokens["d1"])
+    OTHER = bearer_headers(tokens["d2"])
     report = {"scope": "actual local HTTP; synthetic images and model outputs",
               "status": "FAIL", "python": sys.version, "port": PORT, "source_root": str(ROOT),
               "expected_tests": list(EXPECTED_TESTS), "executed_tests": [], "tests_run": 0,

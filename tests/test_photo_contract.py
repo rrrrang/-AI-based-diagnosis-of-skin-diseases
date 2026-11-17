@@ -11,6 +11,8 @@ from PIL import Image
 
 from app.db import connect
 from main import app
+from ci.backend_contract.auth_support import (doctor_environment, new_doctor_tokens,
+                                               patient_headers)
 
 
 class PhotoContractTests(unittest.TestCase):
@@ -21,7 +23,7 @@ class PhotoContractTests(unittest.TestCase):
         self.enterContext(patch.dict(os.environ, {
             "SKINAI_DB_PATH": str(self.root / "backend.sqlite3"),
             "SKINAI_PHOTO_DIR": str(self.root / "photos"),
-            "SKINAI_DEMO_DOCTOR_TOKENS": '{"d1":"photo-contract-doctor"}',
+            **doctor_environment(new_doctor_tokens(("d1",))),
         }))
         self.client = self.enterContext(TestClient(app))
         self.fields = {
@@ -49,7 +51,7 @@ class PhotoContractTests(unittest.TestCase):
         response = self.upload(names)
         self.assertEqual(response.status_code, 201, response.text)
         case = response.json()
-        patient = {"Authorization": "Bearer " + case["accessToken"]}
+        patient = patient_headers(case)
         url = "/api/cases/" + case["id"]
         data = self.client.get(url, headers=patient).json()
         self.assertEqual(data["photoCount"], len(names))
