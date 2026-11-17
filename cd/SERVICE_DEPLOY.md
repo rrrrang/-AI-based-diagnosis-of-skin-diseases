@@ -10,9 +10,9 @@ Jenkins `SkinAI-Release-CI` 성공 실행의 `release.json`을 사용합니다. 
 
 영속 설정·복구 기록은 `D:/SkinAI_DevOps/service_cd_runtime`, 에이전트 작업 폴더는 `D:/SkinAI_DevOps/service_cd_agent`를 사용합니다. DB·사진 데이터 자체는 `skinai-service-local_db`, `skinai-service-local_photos` Docker 볼륨에 있습니다. 이 저장 폴더와 볼륨의 백업은 별도로 준비합니다.
 
-1. 변경을 main에 통합하고 `SkinAI-Service-CD` Pipeline 작업의 SCM을 `*/main`, Script Path를 `cd/Jenkinsfile`로 설정합니다. Copy Artifact 플러그인을 설치하고 `SkinAI-Release-CI`의 산출물을 이 작업이 복사할 수 있도록 허용합니다.
+1. 현재 PC의 첫 배포는 수동 번호 선택 기능을 추가한 `*/cd/local-service-deploy` 브랜치, Script Path `cd/Jenkinsfile`로 `SkinAI-Service-CD`를 연결합니다. 배포 확인 후 이 CD 변경을 main에 반영하고 새 CD 작업의 브랜치를 `*/main`으로 전환할 수 있습니다. 기존 CI와 이전 CD 작업의 브랜치는 바꾸지 않습니다. Copy Artifact 플러그인을 설치하고 `SkinAI-Release-CI`의 산출물을 이 작업이 복사할 수 있도록 허용합니다.
 2. 에이전트 환경에 `SKINAI_CD_DIR=D:/SkinAI_DevOps/service_cd_runtime`과 합성 PNG 경로 `SKINAI_E2E_SAMPLE`을 설정합니다. `runtime.env`에 설정한 d1 토큰과 일치하는 Jenkins Secret Text `skinai-cd-doctor-token`을 등록합니다. Chromium이 별도 경로에 설치돼 있다면 `PLAYWRIGHT_BROWSERS_PATH`를 설정합니다.
-3. 신규 Pipeline의 SCM 설정을 처음 한 번 읽히고, Release CI 성공 후 자동 실행되는지 확인합니다. CD는 해당 실행 번호의 `release.json`을 복사합니다. 수동 실행은 배포를 진행하지 않습니다.
+3. Jenkins 새 CD 작업은 `cd/Jenkinsfile`을 읽습니다. 자동 실행은 해당 Release CI 실행 번호를 사용합니다. 수동 배포는 `RELEASE_BUILD_NUMBER`에 성공한 Release 번호(예: `13`)를 입력합니다. 기본값은 비워 둡니다. 두 방식 모두 Jenkins의 실제 `SUCCESS` 결과를 확인한 뒤 정확히 그 번호의 `release.json`만 복사합니다. 번호가 없거나 실행 원인이 여러 개면 배포를 중단합니다. 최초 등록 시 매개변수가 아직 보이지 않으면 빈 번호로 한 번 실행하여 등록한 뒤 번호를 입력합니다.
 4. 성공 실행에서 `release.json`과 `cd-evidence/candidate/`의 두 업무 흐름 검사 결과를 확인합니다. 검사 한 번당 합성 접수 2건이 배포 데이터에 남으므로 팀 검증 환경을 사용합니다.
 
 검사 주소를 설정으로 받는 새 커밋이 세 CI와 Release 검사를 통과한 뒤 배포를 연결합니다. 기존 Release #10의 검사 주소는 CI 포트에 고정돼 있어 이 구성으로 실제 배포할 수 없습니다. #10은 설정 생성·이미지 확인 자료로만 사용하고 원본 커밋이나 검사 파일을 바꾸지 않습니다. 이 구성은 `cd/local-service-deploy` 브랜치에서 준비합니다. 브랜치에 커밋·푸시하는 것만으로 기존 main이나 Jenkins 작업 설정이 바뀌지는 않습니다. main 반영과 새 CD 작업 연결은 별도 단계로 진행합니다.

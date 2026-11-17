@@ -7,20 +7,46 @@ pipeline {
     triggers {
         upstream(upstreamProjects: 'SkinAI-Release-CI', threshold: hudson.model.Result.SUCCESS)
     }
+    parameters {
+        string(name: 'RELEASE_BUILD_NUMBER', defaultValue: '', trim: true,
+               description: 'Manual deployment: successful SkinAI-Release-CI build number. Leave empty for automatic runs.')
+    }
     stages {
         stage('Fetch exact release artifact') {
             steps {
                 deleteDir()
                 checkout scm
                 script {
-                    def causes = currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')
-                    if (causes.size() != 1 || causes[0].upstreamProject != 'SkinAI-Release-CI') {
-                        error('Expected one successful SkinAI-Release-CI upstream build')
+                    def causes = currentBuild.getBuildCauses()
+                    def requested = (params.RELEASE_BUILD_NUMBER ?: '').trim()
+                    if (causes.size() != 1) {
+                        error('Expected exactly one unambiguous build cause')
                     }
-                    env.RELEASE_BUILD = causes[0].upstreamBuild.toString()
+                    def cause = causes[0]
+                    if (cause._class == 'hudson.model.Cause$UpstreamCause') {
+                        if (cause.upstreamProject != 'SkinAI-Release-CI' || requested) {
+                            error('Automatic deployment requires one Release CI cause and no manual number')
+                        }
+                        env.RELEASE_BUILD = cause.upstreamBuild.toString()
+                    } else if (cause._class == 'hudson.model.Cause$UserIdCause') {
+                        env.RELEASE_BUILD = requested
+                    } else {
+                        error('Only Release CI completion or explicit manual deployment is supported')
+                    }
                     if (!(env.RELEASE_BUILD ==~ /[1-9][0-9]*/)) {
-                        error('Invalid upstream build number')
+                        error('Enter a positive Release CI build number for manual deployment')
                     }
+                    timeout(time: 5, unit: 'MINUTES') {
+                        def releaseRun = waitForBuild(
+                            runId: "SkinAI-Release-CI#${env.RELEASE_BUILD}",
+                            propagate: false, propagateAbort: false
+                        )
+                        if (releaseRun.result != 'SUCCESS') {
+                            error("Release #${env.RELEASE_BUILD} is not SUCCESS")
+                        }
+                    }
+                    currentBuild.description = "Release #${env.RELEASE_BUILD}"
+                    echo "Verified successful Release #${env.RELEASE_BUILD}"
                 }
                 copyArtifacts(projectName: 'SkinAI-Release-CI',
                               selector: specific(env.RELEASE_BUILD), filter: 'release.json')
