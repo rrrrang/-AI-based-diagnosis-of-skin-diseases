@@ -1,0 +1,253 @@
+{
+  "status": "completed",
+  "split": "validation_only",
+  "weights_sha256": "e792fb2374a6024f49249a40a9f2807282ef8d1bad9c3ec5c2f48055d03ed800",
+  "initial_sha256": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
+  "baseline": {
+    "images": 619,
+    "disease_images": 514,
+    "correct_disease_top1": 510,
+    "disease_accuracy": 0.9922178988326849,
+    "normal_images": 105,
+    "normal_false_disease_images": 0,
+    "normal_false_positive_rate": 0.0,
+    "normal_top1_correct": 0,
+    "normal_top1_disease": 0,
+    "disease_no_detection": 0,
+    "disease_to_normal": 0,
+    "abstained": 105,
+    "per_class": {
+      "0": {
+        "images": 101,
+        "correct_top1": 101,
+        "precision": 0.9711538461538461,
+        "recall": 1.0,
+        "f1": 0.9853658536585366
+      },
+      "1": {
+        "images": 101,
+        "correct_top1": 98,
+        "precision": 0.98989898989899,
+        "recall": 0.9702970297029703,
+        "f1": 0.98
+      },
+      "2": {
+        "images": 101,
+        "correct_top1": 101,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "3": {
+        "images": 105,
+        "correct_top1": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "4": {
+        "images": 105,
+        "correct_top1": 105,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "5": {
+        "images": 106,
+        "correct_top1": 105,
+        "precision": 1.0,
+        "recall": 0.9905660377358491,
+        "f1": 0.9952606635071091
+      }
+    },
+    "macro_f1": 0.8267710861942743,
+    "confusion_matrix_rows_truth_cols_6classes_plus_undetermined": [
+      [
+        101,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        98,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        101,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        105
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        105,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        105,
+        0
+      ]
+    ],
+    "baseline_cannot_predict_normal": true,
+    "normal_confirmed": false
+  },
+  "trial": {
+    "images": 619,
+    "disease_images": 514,
+    "correct_disease_top1": 508,
+    "disease_accuracy": 0.9883268482490273,
+    "normal_images": 105,
+    "normal_false_disease_images": 11,
+    "normal_false_positive_rate": 0.10476190476190476,
+    "normal_top1_correct": 104,
+    "normal_top1_disease": 1,
+    "disease_no_detection": 0,
+    "disease_to_normal": 1,
+    "abstained": 0,
+    "per_class": {
+      "0": {
+        "images": 101,
+        "correct_top1": 100,
+        "precision": 0.970873786407767,
+        "recall": 0.9900990099009901,
+        "f1": 0.9803921568627452
+      },
+      "1": {
+        "images": 101,
+        "correct_top1": 98,
+        "precision": 0.98,
+        "recall": 0.9702970297029703,
+        "f1": 0.9751243781094527
+      },
+      "2": {
+        "images": 101,
+        "correct_top1": 100,
+        "precision": 0.9900990099009901,
+        "recall": 0.9900990099009901,
+        "f1": 0.9900990099009901
+      },
+      "3": {
+        "images": 105,
+        "correct_top1": 104,
+        "precision": 0.9904761904761905,
+        "recall": 0.9904761904761905,
+        "f1": 0.9904761904761905
+      },
+      "4": {
+        "images": 105,
+        "correct_top1": 105,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "5": {
+        "images": 106,
+        "correct_top1": 105,
+        "precision": 1.0,
+        "recall": 0.9905660377358491,
+        "f1": 0.9952606635071091
+      }
+    },
+    "macro_f1": 0.988558733142748,
+    "confusion_matrix_rows_truth_cols_6classes_plus_undetermined": [
+      [
+        100,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        98,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        100,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        104,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        105,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        105,
+        0
+      ]
+    ],
+    "baseline_cannot_predict_normal": false,
+    "normal_confirmed": false
+  },
+  "region_metrics": {
+    "metrics/precision(B)": 0.9695723774933432,
+    "metrics/recall(B)": 0.9796916151883096,
+    "metrics/mAP50(B)": 0.989740056396791,
+    "metrics/mAP50-95(B)": 0.8806406130662718,
+    "fitness": 0.8806406130662718
+  },
+  "normal_fp_definition": "any non-normal detection at conf>=0.25; also report top1 separately",
+  "five_vs_six_class_map_directly_comparable": false,
+  "independent_final_test": false,
+  "test_evaluated": false,
+  "calibration_applied": false,
+  "backend_replaced": false
+}

@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "image_id": "smoke-class-0",
   "input_role": "side_closeup",
   "status": "candidates_for_review",
@@ -8,7 +8,7 @@
       "class_id": 0,
       "name": "psoriasis",
       "label": "건선",
-      "score": 0.9593830108642578,
+      "score": 0.980399489402771,
       "detected": true
     },
     {
@@ -27,13 +27,20 @@
     },
     {
       "class_id": 3,
+      "name": "normal",
+      "label": "정상",
+      "score": null,
+      "detected": false
+    },
+    {
+      "class_id": 4,
       "name": "rosacea",
       "label": "주사",
       "score": null,
       "detected": false
     },
     {
-      "class_id": 4,
+      "class_id": 5,
       "name": "seborrheic_dermatitis",
       "label": "지루",
       "score": null,
@@ -44,14 +51,14 @@
     "class_id": 0,
     "name": "psoriasis",
     "label": "건선",
-    "score": 0.9593830108642578,
+    "score": 0.980399489402771,
     "detected": true
   },
   "score_type": "uncalibrated_detection_confidence",
   "scores_sum_to_100": false,
   "normal_confirmed": false,
-  "model_sha256": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
-  "model_version": "yolo11n-side-hard-negative-20261112",
+  "model_sha256": "e792fb2374a6024f49249a40a9f2807282ef8d1bad9c3ec5c2f48055d03ed800",
+  "model_version": "yolo11n-side-six-class-20261117",
   "inference_settings": {
     "imgsz": 640,
     "confidence": 0.25,

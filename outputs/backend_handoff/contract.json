@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "2.0",
   "supported_role": "side_closeup",
   "unsupported_role": "front",
   "settings": {
@@ -8,26 +8,27 @@
     "nms_iou": 0.7,
     "device": "cpu"
   },
-  "weights_sha256": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
+  "weights_sha256": "e792fb2374a6024f49249a40a9f2807282ef8d1bad9c3ec5c2f48055d03ed800",
   "python_API": "backend_inference.DiseasePredictor.predict(image, image_id, role)",
   "statuses": [
     "candidates_for_review",
     "undetermined",
     "unsupported_input"
   ],
-  "disease_scores": "five fixed classes; score in [0,1] or null; no sum normalization; missing is not 0% probability",
+  "disease_scores": "six fixed classes including normal; retained confidence in [0.25,1] or null; no sum normalization",
   "normal_probability_available": false,
   "localization_available": false,
   "HTTP_endpoint_implemented": false,
-  "model_version": "yolo11n-side-hard-negative-20261112",
-  "weights_path": "models/yolo11_detect/side_hard_negative/weights/best.pt",
+  "model_version": "yolo11n-side-six-class-20261117",
+  "weights_path": "models/yolo11_detect/side_six_class_augmented/weights/best.pt",
   "calibration_applied": false,
   "class_names": {
     "0": "psoriasis",
     "1": "atopic_dermatitis",
     "2": "acne",
-    "3": "rosacea",
-    "4": "seborrheic_dermatitis"
+    "3": "normal",
+    "4": "rosacea",
+    "5": "seborrheic_dermatitis"
   },
   "preprocessing": {
     "mode": "full",
@@ -37,5 +38,22 @@
     "max_det": 300,
     "color": "RGB",
     "orientation": "EXIF transpose"
+  },
+  "class_labels": {
+    "0": "건선",
+    "1": "아토피",
+    "2": "여드름",
+    "3": "정상",
+    "4": "주사",
+    "5": "지루"
+  },
+  "normal_candidate_available": true,
+  "migration": {
+    "previous_schema": "1.0",
+    "new_class_id_3": "normal",
+    "previous_rosacea_3_now": 4,
+    "previous_seborrheic_4_now": 5,
+    "backend_ensemble_normal_policy_update_required": true,
+    "backend_model_path_commit_and_checksum_update_required": true
   }
 }

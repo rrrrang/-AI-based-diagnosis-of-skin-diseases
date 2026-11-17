@@ -1,0 +1,64 @@
+{
+  "status": "passed",
+  "weights_sha256": "e792fb2374a6024f49249a40a9f2807282ef8d1bad9c3ec5c2f48055d03ed800",
+  "uploaded_file_sha256": {
+    "best.pt": "e792fb2374a6024f49249a40a9f2807282ef8d1bad9c3ec5c2f48055d03ed800",
+    "results.csv": "f81ccac216d07504031846bf864ff56240d55175f9c1eac9873ee89dab05c857",
+    "args.yaml": "fa3cb22bc76519a3c3ddb4b65f05f673e769f3f5c790589b1a254e235d8f8a21",
+    "transfer_receipt.json": "ab2e787c8f0b4a741d84bb1463147679fa116f63b78129f0781b1c8f9b355ad2",
+    "results.png": "313b19e25ef26ed2a23512ae177be7b2f0506c8c0c525cc5ee8625318f0d794a",
+    "summary.json": "a85067f47cc95af1a9bc863ef4df79a84db78f84eb5f060802a3197679508279",
+    "predictions.json": "b8930396d25b758a5772260b30345cce7cec26de4ecef0ddb1beafb777edbf98",
+    "BoxF1_curve.png": "4887f07ac53959113d3db5e06253ec61ac495b9f978f9e8114bc257d0c090bb4",
+    "BoxPR_curve.png": "4eedf7b3b9c97d9db32fcba1dd6deafc41bb2e76da44cace68545e0837a4fb50",
+    "confusion_matrix.png": "82abbefe3f979816f790518ff3f1a422f17befc3f65f153fd92d4ad936919bf4",
+    "confusion_matrix_normalized.png": "f789364766bef7dcacbe2c72d86805cdf479354cdee5095d3683ff6cf56aa1bb",
+    "yolo11n_six_class_augmented.ipynb": "68821136e824c15da66fb53e6d69fa4ff41fbfc6ac64ab5985b79d008cb1cfa5"
+  },
+  "validation_rows_recomputed": 619,
+  "metrics_match_uploaded_summary": true,
+  "local_cpu_smoke_images": [
+    {
+      "source_class_id": 0,
+      "image_sha256": "f04698bc764d18eb5b4e7533d465a62716b415e4a12b42acbe3e745ca269f068",
+      "max_score_difference": 0.0
+    },
+    {
+      "source_class_id": 1,
+      "image_sha256": "6560376945fdd89e3d1c5c87690df856ca709298a08fd38f3eab1abbad8d6be8",
+      "max_score_difference": 1.1920928955078125e-07
+    },
+    {
+      "source_class_id": 2,
+      "image_sha256": "2ecb37ba3b72e398a95c5479a38d25d0e44a3b222559fcddfb2275f47993ffdd",
+      "max_score_difference": 5.960464477539063e-08
+    },
+    {
+      "source_class_id": 3,
+      "image_sha256": "06e6a1eff891ca78d2b9520f752109e60cb31b141db9808363d224e0fb99dc2b",
+      "max_score_difference": 0.0
+    },
+    {
+      "source_class_id": 4,
+      "image_sha256": "785032f20ccd8ec6933c4ba6a0412fa50a9cd5b50a8ec79e14030d310820c85b",
+      "max_score_difference": 1.1920928955078125e-07
+    },
+    {
+      "source_class_id": 5,
+      "image_sha256": "bc836d7e1f7719ab92aa4ec29eebaf0467754199ca76e4d5823ee342b3388f9b",
+      "max_score_difference": 0.0
+    }
+  ],
+  "notebook_error_outputs": 0,
+  "epochs_completed_csv": 8,
+  "best_epoch_csv": 1,
+  "training_seconds_csv": 4139.63,
+  "test_evaluated": false,
+  "backend_replaced": false,
+  "best_epoch_training_map50_95": 0.88123,
+  "reloaded_checkpoint_validation_map50_95": 0.8806406130662718,
+  "region_map": "Colab reported values; not recomputed from operating-confidence saved predictions",
+  "actual_args_match_frozen_trial": true,
+  "region_confusion_matrix_confidence_floor": 0.001,
+  "operating_photo_confidence": 0.25
+}

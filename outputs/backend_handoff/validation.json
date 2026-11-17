@@ -1,8 +1,8 @@
 {
   "status": "local_smoke_passed",
-  "model_version": "yolo11n-side-hard-negative-20261112",
-  "weights_sha256": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
-  "real_images": 6,
+  "model_version": "yolo11n-side-six-class-20261117",
+  "weights_sha256": "e792fb2374a6024f49249a40a9f2807282ef8d1bad9c3ec5c2f48055d03ed800",
+  "real_images": 8,
   "checks": [
     {
       "source_class_id": 0,
@@ -12,7 +12,7 @@
         "class_id": 0,
         "name": "psoriasis",
         "label": "건선",
-        "score": 0.9593830108642578,
+        "score": 0.980399489402771,
         "detected": true
       },
       "matches_saved_validation_scores": true
@@ -25,7 +25,7 @@
         "class_id": 1,
         "name": "atopic_dermatitis",
         "label": "아토피",
-        "score": 0.959830105304718,
+        "score": 0.9770134091377258,
         "detected": true
       },
       "matches_saved_validation_scores": true
@@ -38,7 +38,7 @@
         "class_id": 2,
         "name": "acne",
         "label": "여드름",
-        "score": 0.9624157547950745,
+        "score": 0.9790385365486145,
         "detected": true
       },
       "matches_saved_validation_scores": true
@@ -46,8 +46,14 @@
     {
       "source_class_id": 3,
       "image_sha256": "06e6a1eff891ca78d2b9520f752109e60cb31b141db9808363d224e0fb99dc2b",
-      "status": "undetermined",
-      "top_candidate": null,
+      "status": "candidates_for_review",
+      "top_candidate": {
+        "class_id": 3,
+        "name": "normal",
+        "label": "정상",
+        "score": 0.9624741673469543,
+        "detected": true
+      },
       "matches_saved_validation_scores": true
     },
     {
@@ -55,10 +61,10 @@
       "image_sha256": "785032f20ccd8ec6933c4ba6a0412fa50a9cd5b50a8ec79e14030d310820c85b",
       "status": "candidates_for_review",
       "top_candidate": {
-        "class_id": 3,
+        "class_id": 4,
         "name": "rosacea",
         "label": "주사",
-        "score": 0.9476189017295837,
+        "score": 0.9494596719741821,
         "detected": true
       },
       "matches_saved_validation_scores": true
@@ -68,10 +74,36 @@
       "image_sha256": "bc836d7e1f7719ab92aa4ec29eebaf0467754199ca76e4d5823ee342b3388f9b",
       "status": "candidates_for_review",
       "top_candidate": {
-        "class_id": 4,
+        "class_id": 5,
         "name": "seborrheic_dermatitis",
         "label": "지루",
-        "score": 0.9502264857292175,
+        "score": 0.9531574249267578,
+        "detected": true
+      },
+      "matches_saved_validation_scores": true
+    },
+    {
+      "source_class_id": 3,
+      "image_sha256": "a13d303ff9d4d8c3e83b6f07f07d4b8f87236ab257c67012b636a4a70d1deb9a",
+      "status": "candidates_for_review",
+      "top_candidate": {
+        "class_id": 3,
+        "name": "normal",
+        "label": "정상",
+        "score": 0.7940708994865417,
+        "detected": true
+      },
+      "matches_saved_validation_scores": true
+    },
+    {
+      "source_class_id": 1,
+      "image_sha256": "e0e0614a41b08d5861534b860f7a2a1e958d5407743fcaeedb4edabf57f18d97",
+      "status": "candidates_for_review",
+      "top_candidate": {
+        "class_id": 3,
+        "name": "normal",
+        "label": "정상",
+        "score": 0.8826115727424622,
         "detected": true
       },
       "matches_saved_validation_scores": true
@@ -82,6 +114,8 @@
   "invalid_image_rejected": true,
   "wrong_weights_rejected": true,
   "original_model_unchanged": true,
+  "previous_hard_negative_model_unchanged": true,
+  "six_class_normal_and_secondary_disease_scores_retained": true,
   "python": "3.12.15",
   "versions": {
     "torch": "2.8.0+cpu",
@@ -95,5 +129,6 @@
   "performance_remeasured": false,
   "extracted_package_cli_smoke_passed": true,
   "zip_crc_passed": true,
-  "member_hashes_verified": true
+  "member_hashes_verified": true,
+  "extracted_package_contract_tests_passed": true
 }

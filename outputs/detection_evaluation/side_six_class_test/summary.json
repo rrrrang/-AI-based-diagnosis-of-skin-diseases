@@ -1,0 +1,269 @@
+{
+  "status": "completed",
+  "split": "test_side",
+  "images": 535,
+  "normal_images": 89,
+  "disease_images": 446,
+  "weights_sha256": "e792fb2374a6024f49249a40a9f2807282ef8d1bad9c3ec5c2f48055d03ed800",
+  "contract": {
+    "weights_sha256": "e792fb2374a6024f49249a40a9f2807282ef8d1bad9c3ec5c2f48055d03ed800",
+    "test_manifest_sha256": "03e8a4905b22dae99d989a4f91dd711e302469ce0e1639f134231e8ea49ebab9",
+    "imgsz": 640,
+    "confidence": 0.25,
+    "nms_iou": 0.7,
+    "quantize": 32,
+    "rect_operating": false,
+    "augment": false,
+    "max_det": 300
+  },
+  "trial": {
+    "images": 535,
+    "disease_images": 446,
+    "correct_disease_top1": 442,
+    "disease_accuracy": 0.9910313901345291,
+    "normal_images": 89,
+    "normal_false_disease_images": 5,
+    "normal_false_positive_rate": 0.056179775280898875,
+    "normal_top1_correct": 86,
+    "normal_top1_disease": 3,
+    "disease_no_detection": 0,
+    "disease_to_normal": 0,
+    "abstained": 0,
+    "per_class": {
+      "0": {
+        "images": 89,
+        "correct_top1": 87,
+        "precision": 0.9666666666666667,
+        "recall": 0.9775280898876404,
+        "f1": 0.9720670391061451
+      },
+      "1": {
+        "images": 89,
+        "correct_top1": 88,
+        "precision": 0.9565217391304348,
+        "recall": 0.9887640449438202,
+        "f1": 0.9723756906077348
+      },
+      "2": {
+        "images": 89,
+        "correct_top1": 88,
+        "precision": 1.0,
+        "recall": 0.9887640449438202,
+        "f1": 0.9943502824858756
+      },
+      "3": {
+        "images": 89,
+        "correct_top1": 86,
+        "precision": 1.0,
+        "recall": 0.9662921348314607,
+        "f1": 0.9828571428571428
+      },
+      "4": {
+        "images": 90,
+        "correct_top1": 90,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "5": {
+        "images": 89,
+        "correct_top1": 89,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    "macro_f1": 0.986941692509483,
+    "confusion_matrix_rows_truth_cols_6classes_plus_undetermined": [
+      [
+        87,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        88,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        88,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        2,
+        0,
+        86,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        90,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        89,
+        0
+      ]
+    ],
+    "baseline_cannot_predict_normal": false,
+    "normal_confirmed": false
+  },
+  "baseline": {
+    "images": 535,
+    "disease_images": 446,
+    "correct_disease_top1": 442,
+    "disease_accuracy": 0.9910313901345291,
+    "normal_images": 89,
+    "normal_false_disease_images": 0,
+    "normal_false_positive_rate": 0.0,
+    "normal_top1_correct": 0,
+    "normal_top1_disease": 0,
+    "disease_no_detection": 1,
+    "disease_to_normal": 0,
+    "abstained": 90,
+    "per_class": {
+      "0": {
+        "images": 89,
+        "correct_top1": 87,
+        "precision": 0.9886363636363636,
+        "recall": 0.9775280898876404,
+        "f1": 0.983050847457627
+      },
+      "1": {
+        "images": 89,
+        "correct_top1": 87,
+        "precision": 0.9775280898876404,
+        "recall": 0.9775280898876404,
+        "f1": 0.9775280898876404
+      },
+      "2": {
+        "images": 89,
+        "correct_top1": 89,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "3": {
+        "images": 89,
+        "correct_top1": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "4": {
+        "images": 90,
+        "correct_top1": 90,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "5": {
+        "images": 89,
+        "correct_top1": 89,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    "macro_f1": 0.8267631562242111,
+    "confusion_matrix_rows_truth_cols_6classes_plus_undetermined": [
+      [
+        87,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        87,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        89,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        89
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        90,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        89,
+        0
+      ]
+    ],
+    "baseline_cannot_predict_normal": true,
+    "normal_confirmed": false
+  },
+  "region_metrics": {
+    "metrics/precision(B)": 0.9798735538776794,
+    "metrics/recall(B)": 0.9749065042070221,
+    "metrics/mAP50(B)": 0.9903332615536596,
+    "metrics/mAP50-95(B)": 0.8758312621973995,
+    "fitness": 0.8758312621973995
+  },
+  "normal_fp_definition": "any non-normal detection at confidence>=0.25; top1 error reported separately",
+  "test_previously_observed": true,
+  "independent_clinical_test": false,
+  "patient_independence_proven": false,
+  "training_executed": false,
+  "threshold_selected_on_test": false,
+  "backend_replaced": false,
+  "five_vs_six_class_map_directly_comparable": false,
+  "scores_are_diagnostic_probabilities": false
+}

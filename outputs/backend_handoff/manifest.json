@@ -1,16 +1,16 @@
 {
-  "model_version": "yolo11n-side-hard-negative-20261112",
-  "weights_sha256": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
+  "model_version": "yolo11n-side-six-class-20261117",
+  "weights_sha256": "e792fb2374a6024f49249a40a9f2807282ef8d1bad9c3ec5c2f48055d03ed800",
   "files": [
     {
       "path": "src/backend_inference.py",
-      "sha256": "310919fcf98ba0238eb1dd67893044ac5ebafc5bf67d708db94c97226851ad77",
-      "size_bytes": 3538
+      "sha256": "eda1f8c32a87b64c7905a91ac8fd8670d372aa6f2bde34ad8720246d9f46da03",
+      "size_bytes": 5085
     },
     {
-      "path": "src/disease_detection.py",
-      "sha256": "3cb9c26e3f5b5ca912bce1525cbf966dd8b092eda684d97dc57b616d69e1a3ba",
-      "size_bytes": 62790
+      "path": "src/test_backend_inference.py",
+      "sha256": "d12bba6105027bbe5b21cad47df2d4ad84c3fda864af99ccba80215d284a3ae6",
+      "size_bytes": 2283
     },
     {
       "path": "requirements.txt",
@@ -18,39 +18,54 @@
       "size_bytes": 962
     },
     {
-      "path": "models/yolo11_detect/side_hard_negative/weights/best.pt",
-      "sha256": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
-      "size_bytes": 5502746
+      "path": "models/yolo11_detect/side_six_class_augmented/weights/best.pt",
+      "sha256": "e792fb2374a6024f49249a40a9f2807282ef8d1bad9c3ec5c2f48055d03ed800",
+      "size_bytes": 5469594
     },
     {
-      "path": "outputs/detection_evaluation/side_hard_negative_test/summary.json",
-      "sha256": "7ce17a1a57770ebf41df77bca32cefb4456d4187a7bdfba2c28306e8de2a14be",
-      "size_bytes": 3163
+      "path": "outputs/detection_evaluation/side_six_class_test/summary.json",
+      "sha256": "6ca1073a0a5cee7f26f63e3ee2c36ba16d983057e1a27b4cfcc51067fbb1ae47",
+      "size_bytes": 5469
     },
     {
-      "path": "outputs/detection_evaluation/side_hard_negative_test/import_verification.json",
-      "sha256": "805ae6ff00ba72e2c6806faede6253f14fbc8f54d8fd5ec91643c28146e06df4",
-      "size_bytes": 5687
+      "path": "outputs/detection_evaluation/side_six_class_test/import_verification.json",
+      "sha256": "e920a8b9998d9363b6230ddd4ba68ca4625e84f7c545f3369f154dc6d1f7c6aa",
+      "size_bytes": 5330
+    },
+    {
+      "path": "outputs/detection_evaluation/side_six_class_validation/summary.json",
+      "sha256": "a85067f47cc95af1a9bc863ef4df79a84db78f84eb5f060802a3197679508279",
+      "size_bytes": 5072
+    },
+    {
+      "path": "outputs/detection_evaluation/side_six_class_validation/import_verification.json",
+      "sha256": "ede8e88e3781be5b63449b9799b9d528eb4b6330dc8ff9eb8d858ce862b79067",
+      "size_bytes": 2997
     },
     {
       "path": "outputs/backend_handoff/contract.json",
-      "sha256": "2102ffbf9cc56fb138d310b8c991c1e4d3ed1cdfee967e3579e78f20da53caec",
-      "size_bytes": 1230
+      "sha256": "8b587f25b8c7ca9e211bd47178bbfe65a56c9cac6a62a5498edbc2f31db33b28",
+      "size_bytes": 1733
     },
     {
       "path": "outputs/backend_handoff/example_response.json",
-      "sha256": "f398fa2bc411bdaa34cfdb91322cd0a7437f9525b741345e1710434cffc920de",
-      "size_bytes": 1456
+      "sha256": "f2fb360ea11b17429b6b68a76de9c41e5524f7d76db1e5501a8f2c7b7725d335",
+      "size_bytes": 1585
+    },
+    {
+      "path": "outputs/backend_handoff/example_normal_response.json",
+      "sha256": "4917a11adcb9fa935fbad001040b7d5612e43d1b72f7557771e784f0af571381",
+      "size_bytes": 1584
     },
     {
       "path": "outputs/backend_handoff/README.md",
-      "sha256": "8fde656819e29a1cd28c2c9253334322110a59b5c952f31efea97203c7dd62ba",
-      "size_bytes": 5345
+      "sha256": "c5717476e268db98ef8e26cd768b835260dffdb086d9c24a9a50cf59e98c8e49",
+      "size_bytes": 7630
     },
     {
       "path": "outputs/backend_handoff/validation.json",
-      "sha256": "2c5151179f3a835c0b61611e02e407d67c910d10be2e47ce225891fc5681cc5f",
-      "size_bytes": 3135
+      "sha256": "57f4bd4aaaa3a9ed1a48885c89a979fddff8e881872f20088873dccc2cbe41f7",
+      "size_bytes": 4265
     }
   ]
 }
