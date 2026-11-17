@@ -59,6 +59,11 @@ pipeline {
                                         variable: 'SKINAI_E2E_DOCTOR_TOKEN')]) {
                     bat '''
 @echo off
+if not defined SKINAI_E2E_DOCTOR_TOKEN (
+    echo CD doctor token is empty. Update the skinai-cd-doctor-token Secret text credential.
+    exit /b 1
+)
+echo CD_DOCTOR_TOKEN_CONFIGURED=PASS
 if not defined SKINAI_CD_DIR (
     echo SKINAI_CD_DIR is not configured.
     exit /b 1
