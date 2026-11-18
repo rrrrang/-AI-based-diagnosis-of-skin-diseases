@@ -9,8 +9,8 @@ export default defineConfig({
   retries: 0,
   forbidOnly: true,
 
-  // 전체 제한에는 브라우저와 페이지 준비 시간도 포함됩니다.
-  // CI의 초기 실행 지연에 여유를 주고 검사 조건과 재시도 횟수는 유지합니다.
+  // 실제 화면 검사 제한입니다. 첫 탭 준비는 tests/support/ui-test.ts에서
+  // 별도 제한을 사용하며, 검사 조건과 재시도 횟수는 유지합니다.
   timeout: process.env.CI ? 60_000 : 30_000,
 
   // 터미널에 검사 결과 표시

@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { test } from "../support/ui-test";
 import { Buffer } from "node:buffer";
 import { PatientUploadPage } from "../pages/patient-upload.page";
 
