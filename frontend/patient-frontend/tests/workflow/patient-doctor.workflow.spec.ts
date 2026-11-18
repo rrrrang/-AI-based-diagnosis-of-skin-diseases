@@ -2,14 +2,19 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { DoctorWorkflowPage, PatientWorkflowPage } from "./workflow.pages";
+import { PHOTO_SLOT_LABELS } from "../pages/patient-upload.page";
+import {
+  doctorIdentityFromEnvironment, logoutViaUi, patientIdentityFromIntake, type WorkflowIdentity,
+} from "../support/auth";
 
 const API = process.env.SKINAI_E2E_API_URL || "http://127.0.0.1:18165";
 const MODEL_KEYS = ["mobilenet", "resnet50", "yolo"];
 const CANDIDATE_KEYS = ["psoriasis", "atopic_dermatitis", "acne", "normal", "rosacea", "seborrheic_dermatitis"];
+const CANDIDATE_LABELS = ["건선", "아토피", "여드름", "정상", "주사", "지루"];
 const REVIEW_KEYS = ["diagnosis", "opinion", "visitRequired", "visitMessage"];
 const PRIVATE_RESULT_KEYS = [
   "analysis", "photoIndices", "photos", "predictions", "analysisPhoto",
-  "maskPhoto", "models", "modelVersions", "accessToken",
+  "maskPhoto", "models", "modelVersions", "yolo_disease_scores", "accessToken",
 ];
 
 function requiredEnv(name: string) {
@@ -25,6 +30,13 @@ type Analysis = {
   models: Record<string, { candidate: string; score: number } | null>;
   modelVersions: Record<string, string>;
   analyzedPhotoIndex: number;
+  yolo_disease_scores: {
+    class_id: number;
+    name: string;
+    label: string;
+    detected: boolean;
+    score: number | null;
+  }[];
 };
 type CaseDetail = {
   id: string;
@@ -38,24 +50,21 @@ type CaseDetail = {
   [key: string]: unknown;
 };
 
-// 의사 아이디·비밀번호로 로그인해 API 확인용 토큰을 받습니다 (보고서에는 남기지 않음).
-async function doctorApiToken(client: APIRequestContext, loginId: string, password: string): Promise<string> {
-  const response = await client.post(`${API}/api/auth/login`, { data: { loginId, password } });
-  expect(response.status(), "The doctor account must be configured on the API server.").toBe(200);
-  return (await response.json() as { accessToken: string }).accessToken;
-}
-
-async function readCase(client: APIRequestContext, id: string, token: string): Promise<CaseDetail> {
-  const response = await client.get(`${API}/api/cases/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  expect(response.status(), "The actual backend must accept this case-specific identity.").toBe(200);
+async function readCase(client: APIRequestContext, id: string, identity: WorkflowIdentity): Promise<CaseDetail> {
+  const response = await client.get(`${API}/api/cases/${id}`, identity.requestOptions());
+  expect(response.status(), "The actual backend must accept this authenticated identity.").toBe(200);
   return await response.json() as CaseDetail;
 }
 
-function assertPatientProjection(detail: CaseDetail, published: boolean) {
+function assertPatientProjection(detail: CaseDetail, published: boolean, view: "detail" | "reservation" = "detail") {
   // Assert the raw server response, not only what React chooses to render.
+  if (view === "reservation") {
+    expect([2, 3]).toContain(detail.photoCount);
+    expect(detail.photoIndices).toEqual(detail.photoCount === 3 ? [0, 1, 2] : [0, 1]);
+  }
   for (const key of PRIVATE_RESULT_KEYS) {
+    // The authenticated reservation list exposes slot numbers, not image data.
+    if (view === "reservation" && key === "photoIndices") continue;
     expect(Object.prototype.hasOwnProperty.call(detail, key), `Patient response must omit ${key}`).toBe(false);
   }
   if (!published) {
@@ -68,9 +77,7 @@ function assertPatientProjection(detail: CaseDetail, published: boolean) {
 for (const photoCount of [2, 3] as const) {
   test(`실제 UI·3모델 연결: 사진 ${photoCount}장 접수 → 의사 확정 → 환자 결과`, async ({ page, browser }) => {
     const sample = requiredEnv("SKINAI_E2E_SAMPLE");
-    const doctorLogin = process.env.SKINAI_E2E_DOCTOR_LOGIN || "ci-doctor";
-    // CD는 기존 Jenkins 비밀값(SKINAI_E2E_DOCTOR_TOKEN)을 의사 비밀번호로 그대로 씁니다.
-    const doctorPassword = process.env.SKINAI_E2E_DOCTOR_PASSWORD || requiredEnv("SKINAI_E2E_DOCTOR_TOKEN");
+    const doctorIdentity = doctorIdentityFromEnvironment();
     const output = requiredEnv("SKINAI_E2E_OUTPUT");
     expect(existsSync(sample), "A prepared local, non-personal close-up fixture is required.").toBe(true);
     const doctorContext = await browser.newContext({ viewport: { width: 1440, height: 1080 } });
@@ -85,7 +92,7 @@ for (const photoCount of [2, 3] as const) {
     const started = Date.now();
 
     try {
-      await patient.login(patientPhone, patientName);
+      const patientSession = await patient.login(patientPhone, patientName);
       const bookingDate = await patient.reserveDoctor();
       await patient.photosAndSymptoms(sample, photoCount);
       await patient.fillPatient(patientName);
@@ -98,27 +105,23 @@ for (const photoCount of [2, 3] as const) {
       await page.getByRole("button", { name: "AI 분석 요청", exact: true }).click();
       const intake = await intakeResponse;
       expect(intake.status(), "UI must create a real backend case; demo storage is not accepted.").toBe(201);
-      const created = await intake.json() as { id: string; accessToken: string };
-      expect(typeof created.id).toBe("string");
-      expect(typeof created.accessToken).toBe("string");
-      const caseId = created.id;
-      const patientToken = created.accessToken; // Never saved to reports, screenshots, or traces.
+      const caseIdentity = patientIdentityFromIntake(await intake.json());
+      const caseId = caseIdentity.caseId;
       const queued = await queueResponse;
       expect(new URL(queued.url()).pathname).toBe(`/api/cases/${caseId}/analyze`);
       expect(queued.status(), "The actual model worker must accept the request.").toBe(202);
       await expect(page).toHaveURL(/#\/patient\/result$/);
       await expect(page.getByRole("heading", { name: "AI 피부 분석 결과" })).toBeVisible();
 
-      const beforeAnalysis = await readCase(page.request, caseId, patientToken);
+      const beforeAnalysis = await readCase(page.request, caseId, patientSession);
       expect(beforeAnalysis.photoCount).toBe(photoCount);
       assertPatientProjection(beforeAnalysis, false);
       await expect(page.getByRole("heading", { name: "최종 모의 검토 결과" })).toHaveCount(0);
 
-      await doctor.connect(doctorLogin, doctorPassword, bookingDate, patientName);
-      const doctorToken = await doctorApiToken(doctorPage.request, doctorLogin, doctorPassword);
+      const doctorSession = await doctor.connect(doctorIdentity, bookingDate, patientName);
       let complete: CaseDetail | undefined;
       await expect.poll(async () => {
-        complete = await readCase(doctorPage.request, caseId, doctorToken);
+        complete = await readCase(doctorPage.request, caseId, doctorSession);
         return complete.aiState;
       }, { message: "The real three-model worker must finish the submitted close-up.",
         timeout: 240_000, intervals: [1000, 3000, 5000] }).toBe("완료");
@@ -136,12 +139,33 @@ for (const photoCount of [2, 3] as const) {
         }
         if (prediction !== null) {
           expect(CANDIDATE_KEYS).toContain(prediction.candidate);
-          if (model === "yolo") expect(prediction.candidate).not.toBe("normal");
           expect(Number.isFinite(prediction.score)).toBe(true);
           expect(prediction.score).toBeGreaterThanOrEqual(0);
           expect(prediction.score).toBeLessThanOrEqual(1);
         }
       }
+      // The six-class detector can emit normal (ID 3). These are retained
+      // detection scores, not calibrated probabilities or a confirmed diagnosis.
+      expect(Array.isArray(analysis.yolo_disease_scores), "The actual YOLO adapter must return all six score rows.").toBe(true);
+      expect(analysis.yolo_disease_scores).toHaveLength(6);
+      for (const [index, row] of analysis.yolo_disease_scores.entries()) {
+        expect(row.class_id).toBe(index);
+        expect(row.name).toBe(CANDIDATE_KEYS[index]);
+        expect(row.label).toBe(CANDIDATE_LABELS[index]);
+        expect(typeof row.detected).toBe("boolean");
+        if (row.detected) {
+          expect(typeof row.score).toBe("number");
+          expect(Number.isFinite(row.score)).toBe(true);
+          expect(row.score).toBeGreaterThanOrEqual(0.25);
+          expect(row.score).toBeLessThanOrEqual(1);
+        } else {
+          expect(row.score).toBeNull();
+        }
+      }
+      const detections = analysis.yolo_disease_scores.filter((row) => row.detected)
+        .sort((left, right) => right.score! - left.score! || left.class_id - right.class_id);
+      const top = detections[0];
+      expect(analysis.models.yolo).toEqual(top ? { candidate: top.name, score: top.score } : null);
       expect(["majority", "single_qualified", "normal_consensus", "deferred", "undetermined"])
         .toContain(analysis.decision);
       expect(complete!.photoIndices).toEqual(photoCount === 3 ? [0, 1, 2] : [0, 1]);
@@ -157,7 +181,9 @@ for (const photoCount of [2, 3] as const) {
           r.request().method() === "GET"));
       await doctor.openPatient(patientName);
       for (const response of await Promise.all(photoResponses)) expect(response.status()).toBe(200);
-      for (const label of photoCount === 3 ? ["정면", "증상 부위 1", "증상 부위 2"] : ["정면", "증상 부위 1"]) {
+      const photoLabels = photoCount === 3 ? Object.values(PHOTO_SLOT_LABELS) :
+        [PHOTO_SLOT_LABELS["정면"], PHOTO_SLOT_LABELS["부위 1"]];
+      for (const label of photoLabels) {
         const photo = doctorPage.getByRole("img", { name: label, exact: true });
         await expect(photo).toBeVisible();
         await expect.poll(() => photo.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
@@ -170,17 +196,22 @@ for (const photoCount of [2, 3] as const) {
 
       await doctor.fillReview(diagnosis, opinion);
       await doctor.saveDraft(caseId);
-      const draftDoctor = await readCase(doctorPage.request, caseId, doctorToken);
+      const draftDoctor = await readCase(doctorPage.request, caseId, doctorSession);
       expect(draftDoctor.reviewState).toBe("임시 저장");
-      const beforePublish = await readCase(page.request, caseId, patientToken);
+      const beforePublish = await readCase(page.request, caseId, patientSession);
       expect(beforePublish.reviewState).toBe("검토 대기");
       assertPatientProjection(beforePublish, false);
+      const pendingReservations = await page.request.get(`${API}/api/me/cases`, patientSession.requestOptions());
+      expect(pendingReservations.status()).toBe(200);
+      const pendingCase = (await pendingReservations.json() as CaseDetail[]).find((item) => item.id === caseId);
+      expect(pendingCase, "The intake must belong to the logged-in patient.").toBeDefined();
+      assertPatientProjection(pendingCase!, false, "reservation");
       await patient.refreshResults(caseId);
       await expect(page.getByRole("heading", { name: "최종 모의 검토 결과" })).toHaveCount(0);
       await expect(page.getByText(diagnosis, { exact: false })).toHaveCount(0);
 
       await doctor.publish(caseId);
-      const finalPatient = await readCase(page.request, caseId, patientToken);
+      const finalPatient = await readCase(page.request, caseId, patientSession);
       expect(finalPatient.reviewState).toBe("결과 전달 완료");
       expect(finalPatient.diagnosis).toBe(diagnosis);
       expect(finalPatient.opinion).toBe(opinion);
@@ -190,6 +221,37 @@ for (const photoCount of [2, 3] as const) {
       await expect(page.getByText(`검토 내용: ${diagnosis}`, { exact: true })).toBeVisible();
       await expect(page.getByText(`의사 소견: ${opinion}`, { exact: true })).toBeVisible();
       await expect(page.locator("img")).toHaveCount(0);
+
+      // A new browser must find the reservation using the agreed phone/name login,
+      // without relying on the original browser's legacy per-case token.
+      const returningContext = await browser.newContext({ baseURL: new URL(page.url()).origin });
+      try {
+        const returningPage = await returningContext.newPage();
+        const returningPatient = new PatientWorkflowPage(returningPage);
+        const returningSession = await returningPatient.login(patientPhone, patientName, false);
+        const reservations = await returningPage.request.get(`${API}/api/me/cases`, returningSession.requestOptions());
+        expect(reservations.status()).toBe(200);
+        const ownCases = await reservations.json() as CaseDetail[];
+        const returnedCase = ownCases.find((item) => item.id === caseId);
+        expect(returnedCase).toBeDefined();
+        expect(returnedCase!.opinion).toBe(opinion);
+        assertPatientProjection(returnedCase!, true, "reservation");
+        await expect(returningPage.getByText(`의사 소견: ${opinion}`, { exact: true })).toBeVisible();
+        // The latest layout keeps the patient logout action on the home screen.
+        await returningPatient.returnHome();
+        await logoutViaUi(returningPage);
+        await expect(returningPage.getByRole("button", { name: "시작하기", exact: true })).toBeVisible();
+        expect((await returningPage.request.get(`${API}/api/auth/me`, returningSession.requestOptions())).status()).toBe(401);
+        expect((await returningPage.request.get(`${API}/api/me/cases`, returningSession.requestOptions())).status()).toBe(401);
+      } finally {
+        await returningContext.close();
+      }
+
+      await logoutViaUi(doctorPage);
+      await expect(doctorPage.getByRole("button", { name: "로그인", exact: true })).toBeVisible();
+      await expect(doctorPage.getByRole("row").filter({ hasText: patientName })).toHaveCount(0);
+      expect((await doctorPage.request.get(`${API}/api/auth/me`, doctorSession.requestOptions())).status()).toBe(401);
+      expect((await doctorPage.request.get(`${API}/api/cases`, doctorSession.requestOptions())).status()).toBe(403);
 
       mkdirSync(output, { recursive: true });
       // Deliberately omit tokens, photo paths, image data, and full clinical payloads.
@@ -205,7 +267,11 @@ for (const photoCount of [2, 3] as const) {
         actual_model_decision: analysis.decision,
         checked: {
           actual_patient_and_doctor_ui: true,
+          real_login_sessions_used_for_api: true,
+          patient_reservations_in_new_browser: true,
+          doctor_and_patient_logout_revokes_session: true,
           three_real_model_results: true,
+          yolo_six_class_response_checked: true,
           doctor_photo_access: true,
           draft_hidden_from_patient_api_and_ui: true,
           confirmed_text_visible_to_patient: true,

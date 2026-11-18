@@ -8,6 +8,16 @@ const TEST_IMAGE = Buffer.from(
   "base64"
 );
 
+type PhotoSlot = "정면" | "부위 1" | "부위 2";
+type PhotoFile = { name: string; mimeType: string; buffer: Buffer };
+
+// Keep the agreed slot meanings stable while the visible UI wording changes.
+export const PHOTO_SLOT_LABELS: Record<PhotoSlot, string> = {
+  "정면": "전체 부위",
+  "부위 1": "상세 부위 1",
+  "부위 2": "상세 부위 2",
+};
+
 export class PatientUploadPage {
   readonly page: Page;
 
@@ -15,8 +25,14 @@ export class PatientUploadPage {
     this.page = page;
   }
 
-  // 사진·증상 입력 화면 열기
+  // 첫 화면에서 전화번호·이름으로 로그인한 뒤 사진·증상 입력 화면 열기
   async open() {
+    await this.page.goto("/#/patient/login");
+    await this.page.getByLabel("전화번호", { exact: true }).fill("01012345678");
+    await this.page.getByLabel("이름", { exact: true }).fill("검사환자");
+    await this.page.getByRole("button", { name: "시작하기", exact: true }).click();
+    await expect(this.page.getByRole("button", { name: /AI 피부 분석 시작/ })).toBeVisible();
+
     await this.page.goto("/#/patient/upload");
 
     await expect(
@@ -27,19 +43,29 @@ export class PatientUploadPage {
     ).toBeVisible();
   }
 
-  // 지정한 사진 칸에 검사 이미지를 등록하는 공통 기능
-  private async addPhoto(slot: "정면" | "부위 1") {
+  // 실제 파일 선택 동작은 공통화하고, 허용/거절 여부는 각 검사에서 확인합니다.
+  async selectPhotoFile(slot: PhotoSlot, file: PhotoFile) {
     const chooserPromise = this.page.waitForEvent("filechooser");
 
     await this.page.getByRole("button", {
-      name: `${slot} 사진 추가`,
+      name: `${PHOTO_SLOT_LABELS[slot]} 사진 추가`,
       exact: true,
     }).click();
 
     const chooser = await chooserPromise;
 
-    await chooser.setFiles({
-      name: slot === "정면" ? "front-test.png" : "lesion-test.png",
+    await chooser.setFiles(file);
+  }
+
+  async expectPhotoMissing(slot: PhotoSlot) {
+    await expect(this.page.getByRole("button", { name: `${PHOTO_SLOT_LABELS[slot]} 사진 추가`, exact: true })).toBeVisible();
+    await expect(this.page.getByRole("button", { name: `${PHOTO_SLOT_LABELS[slot]} 사진 삭제`, exact: true })).toHaveCount(0);
+  }
+
+  // 지정한 사진 칸에 허용된 PNG 검사 이미지를 등록합니다.
+  private async addPhoto(slot: PhotoSlot) {
+    await this.selectPhotoFile(slot, {
+      name: slot === "정면" ? "front-test.png" : slot === "부위 1" ? "lesion-test.png" : "extra-lesion-test.png",
       mimeType: "image/png",
       buffer: TEST_IMAGE,
     });
@@ -47,7 +73,7 @@ export class PatientUploadPage {
     // 등록 후 해당 사진의 삭제 버튼이 나타나는지 확인
     await expect(
       this.page.getByRole("button", {
-        name: `${slot} 사진 삭제`,
+        name: `${PHOTO_SLOT_LABELS[slot]} 사진 삭제`,
         exact: true,
       })
     ).toBeVisible();
@@ -61,6 +87,25 @@ export class PatientUploadPage {
   // 부위 사진 등록
   async addLesionPhoto() {
     await this.addPhoto("부위 1");
+  }
+
+  // 선택 항목인 두 번째 근접 사진 등록
+  async addExtraLesionPhoto() {
+    await this.addPhoto("부위 2");
+  }
+
+  async removePhoto(slot: "정면" | "부위 1" | "부위 2") {
+    await this.page.getByRole("button", { name: `${PHOTO_SLOT_LABELS[slot]} 사진 삭제`, exact: true }).click();
+    await expect(this.page.getByRole("button", { name: `${PHOTO_SLOT_LABELS[slot]} 사진 추가`, exact: true })).toBeVisible();
+  }
+
+  async returnToUpload() {
+    await this.page.getByRole("button", { name: "사진·증상 입력 화면으로 돌아가기", exact: true }).click();
+    await expect(this.page.getByRole("heading", { name: "피부 사진 등록", exact: true })).toBeVisible();
+  }
+
+  async expectPhotoCount(count: number) {
+    await expect(this.page.getByText(`등록 사진 ${count}장`, { exact: false })).toBeVisible();
   }
 
   // 증상 선택

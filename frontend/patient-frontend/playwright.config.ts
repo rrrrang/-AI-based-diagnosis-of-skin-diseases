@@ -9,8 +9,9 @@ export default defineConfig({
   retries: 0,
   forbidOnly: true,
 
-  // 검사 하나당 최대 대기 시간
-  timeout: 30_000,
+  // 실제 화면 검사 제한입니다. 첫 탭 준비는 tests/support/ui-test.ts에서
+  // 별도 제한을 사용하며, 검사 조건과 재시도 횟수는 유지합니다.
+  timeout: process.env.CI ? 60_000 : 30_000,
 
   // 터미널에 검사 결과 표시
   reporter: "list",
@@ -20,7 +21,7 @@ export default defineConfig({
 
   use: {
     browserName: "chromium",
-    baseURL: "http://127.0.0.1:18140",
+    baseURL: "http://127.0.0.1:18161",
     viewport: { width: 390, height: 844 },
 
     // 실패한 경우 확인할 화면과 실행 기록
@@ -31,9 +32,9 @@ export default defineConfig({
   webServer: {
     // 환자 UI를 빌드한 뒤 검사용 서버 실행
     command:
-      "npm run build && npm run preview -- --host 127.0.0.1 --port 18140 --strictPort",
+      "npm run build && npm run preview -- --host 127.0.0.1 --port 18161 --strictPort",
 
-    url: "http://127.0.0.1:18140",
+    url: "http://127.0.0.1:18161",
     timeout: 180_000,
 
     // 다른 서버를 잘못 검사하지 않도록 기존 서버 재사용 금지

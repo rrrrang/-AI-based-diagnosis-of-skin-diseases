@@ -1,5 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 import { Buffer } from "node:buffer";
+import { patientLoginViaUi, type DoctorWorkflowIdentity } from "../support/auth";
+import { PHOTO_SLOT_LABELS } from "../pages/patient-upload.page";
 
 // Synthetic, non-personal front fixture; the real worker analyzes close-up slot 1.
 // This checks transmission and visibility, not face quality or diagnosis accuracy.
@@ -11,16 +13,15 @@ const FRONT_FIXTURE = Buffer.from(
 export class PatientWorkflowPage {
   constructor(readonly page: Page) {}
 
-  // 첫 화면: 전화번호(아이디)와 이름(비밀번호)으로 시작
-  async login(phone: string, name: string) {
-    await this.page.goto("/#/patient/login");
-    await this.page.getByLabel("전화번호", { exact: true }).fill(phone);
-    await this.page.getByLabel("이름", { exact: true }).fill(name);
-    const response = this.page.waitForResponse((r) =>
-      new URL(r.url()).pathname === "/api/auth/patient" && r.request().method() === "POST");
-    await this.page.getByRole("button", { name: "시작하기", exact: true }).click();
-    expect((await response).status()).toBe(200);
-    await expect(this.page.getByRole("button", { name: /AI 피부 분석 시작/ })).toBeVisible();
+  async login(phone: string, name: string, create = true) {
+    const identity = await patientLoginViaUi(this.page, phone, name, create);
+    if (create) {
+      await expect(this.page.getByRole("button", { name: /AI 피부 분석 시작/ })).toBeVisible();
+    } else {
+      await expect(this.page).toHaveURL(/#\/patient\/result$/);
+      await expect(this.page.getByRole("heading", { name: "AI 피부 분석 결과", exact: true })).toBeVisible();
+    }
+    return identity;
   }
 
   async reserveDoctor(): Promise<string> {
@@ -46,16 +47,17 @@ export class PatientWorkflowPage {
 
   async photosAndSymptoms(sample: string, count: 2 | 3) {
     const front = this.page.waitForEvent("filechooser");
-    await this.page.getByRole("button", { name: "정면 사진 추가", exact: true }).click();
+    await this.page.getByRole("button", { name: `${PHOTO_SLOT_LABELS["정면"]} 사진 추가`, exact: true }).click();
     await (await front).setFiles({
       name: "synthetic-front.png", mimeType: "image/png", buffer: FRONT_FIXTURE,
     });
-    await expect(this.page.getByRole("button", { name: "정면 사진 삭제" })).toBeVisible();
-    for (const slot of count === 3 ? ["부위 1", "부위 2"] : ["부위 1"]) {
+    await expect(this.page.getByRole("button", { name: `${PHOTO_SLOT_LABELS["정면"]} 사진 삭제` })).toBeVisible();
+    const slots = count === 3 ? ["부위 1", "부위 2"] as const : ["부위 1"] as const;
+    for (const slot of slots) {
       const chooser = this.page.waitForEvent("filechooser");
-      await this.page.getByRole("button", { name: slot + " 사진 추가", exact: true }).click();
+      await this.page.getByRole("button", { name: PHOTO_SLOT_LABELS[slot] + " 사진 추가", exact: true }).click();
       await (await chooser).setFiles(sample);
-      await expect(this.page.getByRole("button", { name: slot + " 사진 삭제" })).toBeVisible();
+      await expect(this.page.getByRole("button", { name: PHOTO_SLOT_LABELS[slot] + " 사진 삭제" })).toBeVisible();
     }
     await this.page.getByRole("button", { name: "가려움", exact: true }).click();
     await this.page.getByLabel("증상 발생 시점").selectOption({ label: "1~3일" });
@@ -63,10 +65,12 @@ export class PatientWorkflowPage {
     await expect(this.page.getByRole("heading", { name: "환자 정보 입력" })).toBeVisible();
   }
 
-  // 이름은 첫 화면 로그인에서 받았으므로 나이와 상세 증상만 입력합니다.
+  // 로그인한 이름은 읽기 전용으로 확인하고 추가 입력을 채웁니다.
   async fillPatient(name: string) {
-    await expect(this.page.getByText(name, { exact: true })).toBeVisible();
+    await expect(this.page.getByLabel("환자 이름", { exact: true })).toHaveValue(name);
+    await expect(this.page.getByLabel("환자 이름", { exact: true })).toHaveJSProperty("readOnly", true);
     await this.page.getByLabel("환자 나이").fill("30");
+    await this.page.getByRole("button", { name: "선택 안 함", exact: true }).click();
     await this.page.getByPlaceholder("증상이 나타난 부위, 시작 시점, 불편한 점을 적어주세요.")
       .fill("CI 통합검사용 가상 접수입니다. 실제 환자 문진이 아닙니다.");
     await this.page.getByRole("checkbox").check();
@@ -74,30 +78,34 @@ export class PatientWorkflowPage {
 
   async refreshResults(caseId: string) {
     const response = this.page.waitForResponse((r) =>
-      new URL(r.url()).pathname === `/api/cases/${caseId}` && r.request().method() === "GET");
+      new URL(r.url()).pathname === "/api/me/cases" && r.request().method() === "GET");
     const refresh = this.page.getByRole("button", { name: "검토 상태 새로고침", exact: true });
     await refresh.click();
     const refreshed = await response;
     expect(refreshed.status()).toBe(200);
     await refreshed.finished();
+    const cases = await refreshed.json() as { id: string }[];
+    expect(cases.some((item) => item.id === caseId), "The refreshed account must include this intake.").toBe(true);
     await expect(refresh).toBeEnabled();
+  }
+
+  async returnHome() {
+    // The header navigation is hidden on mobile; use the result page's visible action.
+    await this.page.getByRole("button", { name: "홈으로 돌아가기", exact: true }).click();
+    await expect(this.page).toHaveURL(/#\/patient$/);
+    await expect(this.page.getByRole("button", { name: "로그아웃", exact: true })).toBeVisible();
   }
 }
 
 export class DoctorWorkflowPage {
   constructor(readonly page: Page) {}
 
-  async connect(loginId: string, password: string, date: string, patientName: string) {
+  async connect(identity: DoctorWorkflowIdentity, date: string, patientName: string) {
     const doctorUrl = process.env.SKINAI_E2E_DOCTOR_URL || "http://127.0.0.1:18167";
-    await this.page.goto(`${doctorUrl}/#/doctor`);
-    await this.page.getByLabel("의사 아이디").fill(loginId);
-    await this.page.getByLabel("비밀번호").fill(password);
-    const response = this.page.waitForResponse((r) =>
-      new URL(r.url()).pathname === "/api/cases" && r.request().method() === "GET");
-    await this.page.getByRole("button", { name: "로그인", exact: true }).click();
-    expect((await response).status()).toBe(200);
+    const session = await identity.connect(this.page, doctorUrl);
     await this.page.getByLabel("예약 날짜", { exact: true }).fill(date);
     await this.page.getByPlaceholder("환자명 검색").fill(patientName);
+    return session;
   }
 
   async openPatient(patientName: string) {
