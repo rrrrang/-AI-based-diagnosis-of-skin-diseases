@@ -18,10 +18,12 @@ from PIL import Image
 
 if __package__:
     from .auth_support import (bearer_headers, doctor_environment, new_doctor_tokens,
-                               patient_headers)
+                               patient_headers, login_patient, login_doctor, logout_session,
+                               DOCTOR_ACCOUNTS_ENV)
 else:
     from auth_support import (bearer_headers, doctor_environment, new_doctor_tokens,
-                              patient_headers)
+                              patient_headers, login_patient, login_doctor, logout_session,
+                              DOCTOR_ACCOUNTS_ENV)
 
 ROOT = Path(__file__).resolve().parents[2]
 OBS = {}
@@ -47,6 +49,9 @@ EXPECTED_TESTS = (
     "test_18_optional_second_closeup",
     "test_19_missing_photos_rejected_without_records",
     "test_20_extra_or_duplicate_photos_rejected",
+    "test_21_login_session_intake_and_published_reservations",
+    "test_22_doctor_logout_blocks_reads_and_writes",
+    "test_23_doctor_wrong_password_lock",
 )
 
 
@@ -116,7 +121,7 @@ class LiveApiTests(unittest.TestCase):
     def tearDownClass(cls):
         cls.client.close()
 
-    def intake(self, fields=None, lesion=True, photo=PNG, filename="synthetic.png", mime="image/png", omit=(), photo_keys=None):
+    def intake(self, fields=None, lesion=True, photo=PNG, filename="synthetic.png", mime="image/png", omit=(), photo_keys=None, headers=None):
         data = {"doctorId": "d1", "date": "2026-11-13", "time": "10:00", "patientName": "가상 검사자", "age": "25", "gender": "none",
                 "symptoms": ["가려움", "붉어짐"], "duration": "3일", "description": "합성 이미지 API 검증"}
         data.update(fields or {})
@@ -130,7 +135,7 @@ class LiveApiTests(unittest.TestCase):
         if photo_keys is not None:
             # A list preserves repeated multipart names for bypass tests.
             files = [(key, ("synthetic.png", PNG, "image/png")) for key in photo_keys]
-        return self.client.post("/api/cases", data=data, files=files)
+        return self.client.post("/api/cases", data=data, files=files, headers=headers)
 
     def new_case(self, **kwargs):
         response = self.intake(**kwargs)
@@ -412,6 +417,73 @@ class LiveApiTests(unittest.TestCase):
             with self.subTest(photos=photo_keys):
                 self.assert_rejected_without_records(photo_keys)
 
+    def login_doctor(self):
+        return login_doctor(self.client, login_id=LOGIN_DOCTOR["loginId"], password=LOGIN_DOCTOR["password"])
+
+    def test_21_login_session_intake_and_published_reservations(self):
+        patient = login_patient(self.client, phone="01000000001", name="가상 로그인 검사자", create=True)
+        response = self.intake(headers=patient.headers())
+        self.assertEqual(response.status_code, 201)
+        case = response.json()
+        url = "/api/cases/" + case["id"]
+        self.complete_with_fake_model(url, patient.headers(), "normal_consensus")
+        doctor = self.login_doctor()
+        review = {"diagnosis": "로그인 흐름 검사", "opinion": "의사 확정 뒤 공개할 소견",
+                  "visitRequired": False, "visitMessage": "", "reviewState": "임시 저장"}
+        self.assertEqual(self.client.patch(url + "/review", headers=patient.headers(), json=review).status_code, 403)
+        self.assertEqual(self.client.patch(url + "/review", headers=doctor.headers(), json=review).status_code, 200)
+        hidden = self.client.get("/api/me/cases", headers=patient.headers()).json()[0]
+        self.assertEqual(hidden["id"], case["id"])
+        for field in ("analysis", "diagnosis", "opinion", "visitRequired", "visitMessage"):
+            self.assertNotIn(field, hidden)
+        review["reviewState"] = "결과 전달 완료"
+        self.assertEqual(self.client.patch(url + "/review", headers=doctor.headers(), json=review).status_code, 200)
+        published = self.client.get("/api/me/cases", headers=patient.headers()).json()[0]
+        self.assertEqual(published["opinion"], review["opinion"])
+        self.assertNotIn("analysis", published)
+        logout_session(self.client, patient)
+        self.assertEqual(self.client.get("/api/me/cases", headers=patient.headers()).status_code, 401)
+        self.assertEqual(self.client.get(url, headers=patient.headers()).status_code, 404)
+        self.assertEqual(self.client.get(url, headers=patient_headers(case)).status_code, 200)
+        # Returning patients need only the agreed phone/name pair, not a saved case token.
+        returning = login_patient(self.client, phone="01000000001", name="가상 로그인 검사자", create=False)
+        self.assertEqual(self.client.get("/api/me/cases", headers=returning.headers()).json()[0]["id"], case["id"])
+        logout_session(self.client, returning)
+        logout_session(self.client, doctor)
+        OBS["login_workflow"] = "Session-linked intake; synthetic analysis; doctor publication; phone/name re-login; legacy case token remains independent"
+
+    def test_22_doctor_logout_blocks_reads_and_writes(self):
+        url, patient = self.new_case()
+        doctor = self.login_doctor()
+        headers = doctor.headers()
+        self.assertEqual(self.client.get(url, headers=headers).status_code, 200)
+        logout_session(self.client, doctor)
+        for path, status in (("/api/auth/me", 401), ("/api/cases", 403), (url, 404), (url + "/photos/0", 404)):
+            with self.subTest(path=path):
+                self.assertEqual(self.client.get(path, headers=headers).status_code, status)
+        review = {"diagnosis": "차단할 변경", "opinion": "로그아웃 뒤 저장 불가",
+                  "visitRequired": False, "visitMessage": "", "reviewState": "결과 전달 완료"}
+        self.assertEqual(self.client.patch(url + "/review", headers=headers, json=review).status_code, 403)
+        fresh = self.login_doctor()
+        detail = self.client.get(url, headers=fresh.headers()).json()
+        self.assertEqual(detail["reviewState"], "검토 대기")
+        self.assertNotIn("opinion", detail)
+        logout_session(self.client, fresh)
+
+    def test_23_doctor_wrong_password_lock(self):
+        # Last test uses this disposable account; no deployed account is touched.
+        for attempt in range(1, 6):
+            with self.subTest(attempt=attempt):
+                self.assertEqual(self.client.post("/api/auth/login", json={
+                    "loginId": LOGIN_DOCTOR["loginId"], "password": "incorrect-test-password",
+                }).status_code, 401)
+        for password in ("incorrect-test-password", LOGIN_DOCTOR["password"]):
+            response = self.client.post("/api/auth/login", json={
+                "loginId": LOGIN_DOCTOR["loginId"], "password": password,
+            })
+            self.assertEqual(response.status_code, 429)
+        OBS["doctor_lock"] = "Five failed attempts return 401; subsequent wrong/correct password requests return 429"
+
 
 class Result(unittest.TextTestResult):
     def __init__(self, *args, **kwargs):
@@ -482,7 +554,7 @@ class Result(unittest.TextTestResult):
 
 
 def main():
-    global ROOT, RUN, PORT, BASE, DOCTOR, OTHER
+    global ROOT, RUN, PORT, BASE, DOCTOR, OTHER, LOGIN_DOCTOR
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--source-root", type=Path, default=Path(__file__).resolve().parents[2],
@@ -501,8 +573,10 @@ def main():
     PORT = args.port
     BASE = f"http://127.0.0.1:{PORT}"
     tokens = new_doctor_tokens()
+    LOGIN_DOCTOR = {"loginId": "ci-doctor", "password": new_doctor_tokens(("d1",))["d1"]}
     settings = {"SKINAI_DB_PATH": str(RUN / "backend.sqlite3"),
                 "SKINAI_PHOTO_DIR": str(RUN / "photos"),
+                DOCTOR_ACCOUNTS_ENV: json.dumps({"d1": LOGIN_DOCTOR}),
                 **doctor_environment(tokens), "PYTHONUTF8": "1"}
     previous = {key: os.environ.get(key) for key in settings}
     os.environ.update(settings)

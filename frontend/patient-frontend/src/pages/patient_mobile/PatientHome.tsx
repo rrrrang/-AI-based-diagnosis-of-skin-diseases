@@ -16,14 +16,30 @@ import{
 
 // 환자 UI 전용 CSS
 import "../../css/Patient.css";
+import "../../css/Login.css";
+import { currentPatient, patientLogout } from "../../services/auth";
 
 // 환자 시작 화면
 function PatientHome() {
   // 다른 페이지로 이동할 때 사용하는 함수
   const navigate = useNavigate();
+  const patient = currentPatient();
+
+  const logout = async () => {
+    await patientLogout();
+    navigate("/patient/login", { replace: true });
+  };
 
   return (
     <div className="patient-home">
+
+      {/* 0. 로그인한 환자 인사와 로그아웃 */}
+      <div className="patient-greeting">
+        <span>{patient?.name}님, 안녕하세요</span>
+        <button type="button" className="patient-logout-button" onClick={() => void logout()}>
+          로그아웃
+        </button>
+      </div>
 
       {/* 1. 서비스 로고 및 제목 */}
       <div className="patient-home-logo">
@@ -64,9 +80,9 @@ function PatientHome() {
         </button>
 
         {/* 결과 확인 */}
-        <button type="button" className="patient-quick-item" onClick={() => navigate("/patient/result")}>
+        <button type="button" className="patient-quick-item" onClick={() => navigate("/patient/my")}>
           <ChartNoAxesColumnIncreasing size={32} />
-          <span>결과 확인</span>
+          <span>내 예약 확인</span>
         </button>
 
       </div>

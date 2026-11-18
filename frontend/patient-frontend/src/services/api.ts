@@ -1,4 +1,5 @@
 import type { DoctorCase } from "../types/doctorCase";
+import { patientAuthHeader } from "./auth";
 
 export const apiEnabled = import.meta.env.VITE_SKINAI_API === "true";
 const tokenKey = (id: string) => `skinai-case-token:${id}`;
@@ -21,7 +22,8 @@ export async function submitCase(item: DoctorCase): Promise<string> {
   }
   item.symptoms.forEach((symptom) => body.append("symptoms", symptom));
   item.photos.forEach((file, index) => { if (file) body.append(`photo${index}`, file); });
-  const response = await request("/api/cases", { method: "POST", body });
+  // 로그인한 환자면 접수를 계정에 연결합니다.
+  const response = await request("/api/cases", { method: "POST", body, headers: patientAuthHeader() });
   const { id, accessToken } = await response.json() as { id: string; accessToken: string };
   sessionStorage.setItem(tokenKey(id), accessToken);
   sessionStorage.setItem(bookingKey(id), JSON.stringify({
@@ -52,6 +54,40 @@ export async function readCase(id: string): Promise<DoctorCase | null> {
     diagnosis: "", opinion: "", visitRequired: false, visitMessage: "",
     updatedAt: detail.submittedAt, ...detail,
   };
+}
+
+/** 로그인한 환자의 예약 현황 (AI 결과는 서버가 보내지 않습니다) */
+export interface MyCase {
+  id: string;
+  doctorId: string;
+  doctorName: string;
+  doctorHospital: string;
+  date: string;
+  time: string;
+  submittedAt: string;
+  reviewState: string;
+  photoIndices: number[];
+  symptoms: string[];
+  diagnosis?: string;
+  opinion?: string;
+  visitRequired?: boolean;
+  visitMessage?: string;
+}
+
+export async function listMyCases(): Promise<MyCase[]> {
+  const response = await fetch("/api/me/cases", { headers: patientAuthHeader(), cache: "no-store" });
+  if (response.status === 401) throw new Error("로그인이 끝났어요. 다시 로그인해 주세요.");
+  if (!response.ok) throw new Error(`서버 요청에 실패했습니다 (${response.status}).`);
+  return await response.json() as MyCase[];
+}
+
+/** 내가 올린 사진을 화면에 띄울 주소로 바꿉니다. 다 쓰면 URL.revokeObjectURL로 정리하세요. */
+export async function readMyPhoto(caseId: string, index: number): Promise<string> {
+  const response = await fetch(`/api/cases/${encodeURIComponent(caseId)}/photos/${index}`, {
+    headers: patientAuthHeader(), cache: "no-store",
+  });
+  if (!response.ok) throw new Error("사진을 불러오지 못했습니다.");
+  return URL.createObjectURL(await response.blob());
 }
 
 export function forgetCase(id: string) {

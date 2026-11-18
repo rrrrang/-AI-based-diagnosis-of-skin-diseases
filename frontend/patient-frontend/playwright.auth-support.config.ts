@@ -1,6 +1,6 @@
 import { defineConfig } from "@playwright/test";
 
-// Helper-only tests: no login endpoint, browser, server, or deployment is used.
+// Helper-only tests use disposable loopback replies, no browser or deployed API.
 // Existing workflow/release configurations do not collect this directory.
 export default defineConfig({
   testDir: "./tests/auth-support",

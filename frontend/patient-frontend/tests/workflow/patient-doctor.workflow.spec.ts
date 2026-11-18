@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { DoctorWorkflowPage, PatientWorkflowPage } from "./workflow.pages";
 import {
-  doctorIdentityFromEnvironment, patientIdentityFromIntake, type WorkflowIdentity,
+  doctorIdentityFromEnvironment, logoutViaUi, patientIdentityFromIntake, type WorkflowIdentity,
 } from "../support/auth";
 
 const API = process.env.SKINAI_E2E_API_URL || "http://127.0.0.1:18165";
@@ -43,7 +43,7 @@ type CaseDetail = {
 
 async function readCase(client: APIRequestContext, id: string, identity: WorkflowIdentity): Promise<CaseDetail> {
   const response = await client.get(`${API}/api/cases/${id}`, identity.requestOptions());
-  expect(response.status(), "The actual backend must accept this case-specific identity.").toBe(200);
+  expect(response.status(), "The actual backend must accept this authenticated identity.").toBe(200);
   return await response.json() as CaseDetail;
 }
 
@@ -71,11 +71,13 @@ for (const photoCount of [2, 3] as const) {
     const doctor = new DoctorWorkflowPage(doctorPage);
     const unique = Date.now().toString(36);
     const patientName = `CI연결${photoCount}-${unique}`;
+    const patientPhone = "010" + String(Date.now() + photoCount).slice(-8);
     const diagnosis = `CI 확인용 결과 ${photoCount}-${unique}`;
     const opinion = "사진 전송과 의사 확정 후 공개를 확인한 자동검사 문구입니다. 실제 의료 소견이 아닙니다.";
     const started = Date.now();
 
     try {
+      const patientSession = await patient.login(patientPhone, patientName);
       const bookingDate = await patient.reserveDoctor();
       await patient.photosAndSymptoms(sample, photoCount);
       await patient.fillPatient(patientName);
@@ -88,23 +90,23 @@ for (const photoCount of [2, 3] as const) {
       await page.getByRole("button", { name: "AI 분석 요청", exact: true }).click();
       const intake = await intakeResponse;
       expect(intake.status(), "UI must create a real backend case; demo storage is not accepted.").toBe(201);
-      const patientIdentity = patientIdentityFromIntake(await intake.json());
-      const caseId = patientIdentity.caseId;
+      const caseIdentity = patientIdentityFromIntake(await intake.json());
+      const caseId = caseIdentity.caseId;
       const queued = await queueResponse;
       expect(new URL(queued.url()).pathname).toBe(`/api/cases/${caseId}/analyze`);
       expect(queued.status(), "The actual model worker must accept the request.").toBe(202);
       await expect(page).toHaveURL(/#\/patient\/result$/);
       await expect(page.getByRole("heading", { name: "AI 피부 분석 결과" })).toBeVisible();
 
-      const beforeAnalysis = await readCase(page.request, caseId, patientIdentity);
+      const beforeAnalysis = await readCase(page.request, caseId, patientSession);
       expect(beforeAnalysis.photoCount).toBe(photoCount);
       assertPatientProjection(beforeAnalysis, false);
       await expect(page.getByRole("heading", { name: "최종 모의 검토 결과" })).toHaveCount(0);
 
-      await doctor.connect(doctorIdentity, bookingDate, patientName);
+      const doctorSession = await doctor.connect(doctorIdentity, bookingDate, patientName);
       let complete: CaseDetail | undefined;
       await expect.poll(async () => {
-        complete = await readCase(doctorPage.request, caseId, doctorIdentity);
+        complete = await readCase(doctorPage.request, caseId, doctorSession);
         return complete.aiState;
       }, { message: "The real three-model worker must finish the submitted close-up.",
         timeout: 240_000, intervals: [1000, 3000, 5000] }).toBe("완료");
@@ -156,17 +158,24 @@ for (const photoCount of [2, 3] as const) {
 
       await doctor.fillReview(diagnosis, opinion);
       await doctor.saveDraft(caseId);
-      const draftDoctor = await readCase(doctorPage.request, caseId, doctorIdentity);
+      const draftDoctor = await readCase(doctorPage.request, caseId, doctorSession);
       expect(draftDoctor.reviewState).toBe("임시 저장");
-      const beforePublish = await readCase(page.request, caseId, patientIdentity);
+      const beforePublish = await readCase(page.request, caseId, patientSession);
       expect(beforePublish.reviewState).toBe("검토 대기");
       assertPatientProjection(beforePublish, false);
+      const pendingReservations = await page.request.get(`${API}/api/me/cases`, patientSession.requestOptions());
+      expect(pendingReservations.status()).toBe(200);
+      const pendingCase = (await pendingReservations.json() as CaseDetail[]).find((item) => item.id === caseId);
+      expect(pendingCase, "The intake must belong to the logged-in patient.").toBeDefined();
+      for (const key of [...REVIEW_KEYS, "analysis"]) {
+        expect(Object.prototype.hasOwnProperty.call(pendingCase, key), `Reservations must omit draft ${key}`).toBe(false);
+      }
       await patient.refreshResults(caseId);
       await expect(page.getByRole("heading", { name: "최종 모의 검토 결과" })).toHaveCount(0);
       await expect(page.getByText(diagnosis, { exact: false })).toHaveCount(0);
 
       await doctor.publish(caseId);
-      const finalPatient = await readCase(page.request, caseId, patientIdentity);
+      const finalPatient = await readCase(page.request, caseId, patientSession);
       expect(finalPatient.reviewState).toBe("결과 전달 완료");
       expect(finalPatient.diagnosis).toBe(diagnosis);
       expect(finalPatient.opinion).toBe(opinion);
@@ -176,6 +185,34 @@ for (const photoCount of [2, 3] as const) {
       await expect(page.getByText(`검토 내용: ${diagnosis}`, { exact: true })).toBeVisible();
       await expect(page.getByText(`의사 소견: ${opinion}`, { exact: true })).toBeVisible();
       await expect(page.locator("img")).toHaveCount(0);
+
+      // A new browser must find the reservation using the agreed phone/name login,
+      // without relying on the original browser's legacy per-case token.
+      const returningContext = await browser.newContext({ baseURL: new URL(page.url()).origin });
+      try {
+        const returningPage = await returningContext.newPage();
+        const returningPatient = new PatientWorkflowPage(returningPage);
+        const returningSession = await returningPatient.login(patientPhone, patientName, false);
+        const reservations = await returningPage.request.get(`${API}/api/me/cases`, returningSession.requestOptions());
+        expect(reservations.status()).toBe(200);
+        const ownCases = await reservations.json() as CaseDetail[];
+        const returnedCase = ownCases.find((item) => item.id === caseId);
+        expect(returnedCase).toBeDefined();
+        expect(returnedCase!.opinion).toBe(opinion);
+        expect(Object.prototype.hasOwnProperty.call(returnedCase, "analysis")).toBe(false);
+        await expect(returningPage.getByText(`의사 소견: ${opinion}`, { exact: true })).toBeVisible();
+        await logoutViaUi(returningPage);
+        await expect(returningPage.getByRole("button", { name: "시작하기", exact: true })).toBeVisible();
+        expect((await returningPage.request.get(`${API}/api/auth/me`, returningSession.requestOptions())).status()).toBe(401);
+        expect((await returningPage.request.get(`${API}/api/me/cases`, returningSession.requestOptions())).status()).toBe(401);
+      } finally {
+        await returningContext.close();
+      }
+
+      await logoutViaUi(doctorPage);
+      await expect(doctorPage.getByRole("heading", { name: "의사 로그인", exact: true })).toBeVisible();
+      expect((await doctorPage.request.get(`${API}/api/auth/me`, doctorSession.requestOptions())).status()).toBe(401);
+      expect((await doctorPage.request.get(`${API}/api/cases`, doctorSession.requestOptions())).status()).toBe(403);
 
       mkdirSync(output, { recursive: true });
       // Deliberately omit tokens, photo paths, image data, and full clinical payloads.
@@ -191,6 +228,9 @@ for (const photoCount of [2, 3] as const) {
         actual_model_decision: analysis.decision,
         checked: {
           actual_patient_and_doctor_ui: true,
+          real_login_sessions_used_for_api: true,
+          patient_reservations_in_new_browser: true,
+          doctor_and_patient_logout_revokes_session: true,
           three_real_model_results: true,
           doctor_photo_access: true,
           draft_hidden_from_patient_api_and_ui: true,

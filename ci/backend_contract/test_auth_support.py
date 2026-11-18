@@ -3,18 +3,57 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import Mock
 
 if __package__:
     from .auth_support import (DOCTOR_TOKENS_ENV, bearer_headers, doctor_environment,
                                load_doctor_tokens, new_doctor_tokens, patient_headers,
                                patient_token)
+    from .auth_support import login_patient, login_doctor, logout_session
 else:
     from auth_support import (DOCTOR_TOKENS_ENV, bearer_headers, doctor_environment,
                               load_doctor_tokens, new_doctor_tokens, patient_headers,
                               patient_token)
+    from auth_support import login_patient, login_doctor, logout_session
 
 
 class AuthSupportTests(unittest.TestCase):
+    def test_failed_login_never_returns_legacy_or_anonymous_credentials(self):
+        client = Mock()
+        client.post.return_value = Mock(status_code=401, text="private-password-marker")
+        with self.assertRaisesRegex(ValueError, "HTTP 401") as caught:
+            login_doctor(client, login_id="ci-doctor", password="private-password-marker")
+        self.assertNotIn("private-password-marker", str(caught.exception))
+        self.assertEqual(client.post.call_count, 1)
+
+    def test_wrong_role_or_malformed_session_fails_closed(self):
+        original = {"accessToken": "private-session-marker", "expiresAt": 1794950000,
+                    "loginId": "ci-doctor", "role": "doctor", "doctorId": "d1"}
+        for change in ({"role": "patient"}, {"doctorId": "d2"}, {"accessToken": "bad token"},
+                       {"expiresAt": float("nan")}, {"expiresAt": True}, {"loginId": ""}):
+            client = Mock()
+            client.post.return_value = Mock(status_code=200)
+            client.post.return_value.json.return_value = {**original, **change}
+            with self.assertRaises(ValueError) as caught:
+                login_doctor(client, login_id="ci-doctor", password="ephemeral")
+            self.assertNotIn("private-session-marker", str(caught.exception))
+
+    def test_session_representation_does_not_expose_credentials_and_logout_uses_session(self):
+        client = Mock()
+        response = Mock(status_code=200)
+        response.json.return_value = {"accessToken": "private-session-marker", "expiresAt": 1794950000,
+                                      "loginId": "01012345678", "role": "patient", "doctorId": None}
+        client.post.return_value = response
+        session = login_patient(client, phone="01012345678", name="가상 환자", create=True)
+        self.assertNotIn("private-session-marker", repr(session))
+        headers = session.headers()
+        headers.clear()
+        self.assertTrue(session.headers())
+        client.post.return_value = Mock(status_code=204)
+        logout_session(client, session)
+        self.assertTrue(client.post.call_args.kwargs["headers"] == session.headers(),
+                        "Logout must use the login session")
+
     def test_intentional_anonymous_request_has_no_auth_header(self):
         self.assertEqual(bearer_headers(None), {})
 

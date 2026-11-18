@@ -1,18 +1,19 @@
-"""Authentication boundary for tests of the current case-token API.
+"""Explicit login sessions and legacy case credentials for isolated CI tests.
 
-These helpers do not log in, log out, create accounts, or read application
-credentials. Demo doctor tokens belong only to isolated test servers. When
-the real authentication contract arrives, add its implementation here and
-update intake/ownership expectations explicitly; do not fall back silently.
+Login errors never fall back to demo credentials. The legacy helpers below
+remain available only for tests explicitly covering the old case-token API.
 """
 from collections.abc import Mapping
+from dataclasses import dataclass, field
 import json
+import math
 from pathlib import Path
 import re
 import secrets
 
 
 DOCTOR_TOKENS_ENV = "SKINAI_DEMO_DOCTOR_TOKENS"
+DOCTOR_ACCOUNTS_ENV = "SKINAI_DOCTOR_ACCOUNTS"
 _TOKEN = re.compile(r"[A-Za-z0-9._~+/-]+=*")
 _DOCTOR_ID = re.compile(r"[A-Za-z0-9_-]+")
 
@@ -26,6 +27,58 @@ def _token(value):
 def bearer_headers(token):
     """None means an intentionally unauthenticated request; invalid is an error."""
     return {} if token is None else {"Authorization": "Bearer " + _token(token)}
+
+
+@dataclass(frozen=True)
+class LoginSession:
+    """Keep session tokens out of test object representations and failures."""
+    role: str
+    login_id: str
+    doctor_id: str | None
+    expires_at: float
+    _access_token: str = field(repr=False)
+
+    def headers(self):
+        return bearer_headers(self._access_token)
+
+
+def _session(response, role, doctor_id=None):
+    if response.status_code != 200:
+        raise ValueError(f"{role} login failed (HTTP {response.status_code})")
+    try:
+        body = response.json()
+        expires = body.get("expiresAt")
+        if (not isinstance(body.get("loginId"), str) or not body["loginId"]
+                or body.get("role") != role
+                or (role == "patient" and body.get("doctorId") is not None)
+                or (role == "doctor" and body.get("doctorId") != doctor_id)
+                or isinstance(expires, bool) or not isinstance(expires, (int, float))
+                or not math.isfinite(expires) or expires <= 0):
+            raise ValueError("Invalid login session")
+        return LoginSession(role, body["loginId"], body.get("doctorId"), float(expires),
+                            _token(body.get("accessToken")))
+    except (ValueError, TypeError, AttributeError):
+        raise ValueError("Login response did not match the required session format") from None
+
+
+def login_patient(client, *, phone, name, create=False):
+    """Use create=True only for first visit; reservation lookup is create=False."""
+    return _session(client.post("/api/auth/patient", json={
+        "phone": phone, "name": name, "create": create,
+    }), "patient")
+
+
+def login_doctor(client, *, login_id, password, doctor_id="d1"):
+    return _session(client.post("/api/auth/login", json={
+        "loginId": login_id, "password": password,
+    }), "doctor", doctor_id)
+
+
+def logout_session(client, session):
+    """Revoke a login session, never a legacy case-specific credential."""
+    response = client.post("/api/auth/logout", headers=session.headers())
+    if response.status_code != 204:
+        raise ValueError(f"Logout failed (HTTP {response.status_code})")
 
 
 def patient_token(intake):

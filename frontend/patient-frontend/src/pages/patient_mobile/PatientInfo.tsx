@@ -3,7 +3,7 @@
  *
  * 주요 기능
  * 1. 이전 단계에서 등록한 사진과 증상 정보 확인
- * 2. 환자 이름, 나이, 성별 입력
+ * 2. 나이 입력 (이름은 첫 화면 로그인 정보 사용)
  * 3. 상세 증상 작성 (최대 500자)
  * 4. 모의 서비스 안내 및 정보 이용 동의
  * 5. 입력값 검증 및 모의 분석 요청
@@ -15,6 +15,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 // 기존 예약 정보 확인 및 의사 접수 저장소 연결
 import { apiEnabled, requestAnalysis, submitCase } from "../../services/api";
 import { demoFlow } from "../../services/demoFlow";
+import { currentPatient } from "../../services/auth";
 import {
   createPatientCase,
   saveDoctorCase,
@@ -29,13 +30,11 @@ import {
 
 // 기존 환자 UI 전용 CSS
 import "../../css/Patient.css";
+import "../../css/Login.css";
 
 /* ==========================================
    데이터 타입 정의
 ========================================== */
-
-// 성별 선택에 사용할 타입
-type Gender = "female" | "male" | "none";
 
 // 이전 이미지 업로드 페이지에서 전달받는 데이터
 interface UploadData {
@@ -53,9 +52,8 @@ function PatientInfo() {
   const navigate = useNavigate();                             // 페이지 이동 기능
   const location = useLocation();                             // 이전 페이지에서 전달한 데이터 확인
   const uploadData = location.state as UploadData | null;     // 전달받은 사진 및 증상 정보
-  const [name, setName] = useState("");                       // 환자 이름
+  const patientName = currentPatient()?.name ?? "";          // 로그인한 환자 이름
   const [age, setAge] = useState("");                         // 환자 나이
-  const [gender, setGender] = useState<Gender | null>(null);  // 선택한 성별
   const [description, setDescription] = useState("");         // 환자가 직접 작성한 상세 증상
   const [agreed, setAgreed] = useState(false);                // 모의 서비스 정보 이용 동의 여부
   const [errorMessage, setErrorMessage] = useState("");       // 입력 오류 메시지
@@ -74,15 +72,6 @@ function PatientInfo() {
   };
 
   /* ==========================================
-    성별 선택
-  ========================================== */
-
-  const handleGenderSelect = (value: Gender) => {
-    setGender(value);      // 선택한 성별 저장
-    setErrorMessage("");   // 이전 오류 안내 초기화
-  };
-
-  /* ==========================================
     AI 분석 요청 입력값 검증
   ========================================== */
 
@@ -94,9 +83,9 @@ function PatientInfo() {
       setErrorMessage("정면 사진과 부위 1의 근접 사진을 먼저 등록해 주세요.");
       return;
     }
-    // 이름 미입력 확인
-    if (!name.trim()) {
-      setErrorMessage("이름을 입력해 주세요.");
+    // 로그인 정보 확인 (이름은 첫 화면에서 입력)
+    if (!patientName) {
+      setErrorMessage("로그인 정보가 없습니다. 처음 화면에서 다시 시작해 주세요.");
       return;
     }
     // 나이 입력 범위 확인
@@ -107,11 +96,6 @@ function PatientInfo() {
       parsedAge > 120
     ) {
       setErrorMessage("나이를 1~120 사이의 숫자로 입력해 주세요.");
-      return;
-    }
-    // 성별 선택 여부 확인
-    if (gender === null) {
-      setErrorMessage("성별을 선택해 주세요.");
       return;
     }
     // 상세 증상 입력 여부 확인
@@ -131,9 +115,9 @@ function PatientInfo() {
       symptoms: uploadData.symptoms,
       duration: uploadData.duration,
       patient: {
-        name: name.trim(),
+        name: patientName,
         age: parsedAge,
-        gender,
+        gender: "none" as const,
         description: description.trim(),
       },
     };
@@ -234,17 +218,7 @@ function PatientInfo() {
         <div className="info-basic-section">
           <h2>기본 정보</h2>
 
-          {/* 환자 이름 입력 */}
-          <input
-            type="text"
-            className="info-input"
-            placeholder="이름을 입력해 주세요."
-            aria-label="환자 이름"
-            autoComplete="off"
-            maxLength={30}
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-          />
+          <p className="info-patient-name">이름: <strong>{patientName}</strong></p>
 
           {/* 환자 나이 입력 */}
           <input
@@ -257,42 +231,6 @@ function PatientInfo() {
             value={age}
             onChange={(event) => setAge(event.target.value)}
           />
-
-          {/* 성별 선택 버튼 3개 */}
-          <div className="info-gender-grid">
-            <button
-              type="button"
-              className={`info-gender-button ${
-                gender === "female" ? "selected" : ""
-              }`}
-              aria-pressed={gender === "female"}
-              onClick={() => handleGenderSelect("female")}
-            >
-              여성
-            </button>
-
-            <button
-              type="button"
-              className={`info-gender-button ${
-                gender === "male" ? "selected" : ""
-              }`}
-              aria-pressed={gender === "male"}
-              onClick={() => handleGenderSelect("male")}
-            >
-              남성
-            </button>
-
-            <button
-              type="button"
-              className={`info-gender-button ${
-                gender === "none" ? "selected" : ""
-              }`}
-              aria-pressed={gender === "none"}
-              onClick={() => handleGenderSelect("none")}
-            >
-              선택 안 함
-            </button>
-          </div>
         </div>
 
         {/* ==================================

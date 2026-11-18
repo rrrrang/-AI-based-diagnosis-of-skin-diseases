@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 import { Buffer } from "node:buffer";
-import type { DoctorWorkflowIdentity } from "../support/auth";
+import { patientLoginViaUi, type DoctorWorkflowIdentity } from "../support/auth";
 
 // Synthetic, non-personal front fixture; the real worker analyzes close-up slot 1.
 // This checks transmission and visibility, not face quality or diagnosis accuracy.
@@ -11,6 +11,16 @@ const FRONT_FIXTURE = Buffer.from(
 
 export class PatientWorkflowPage {
   constructor(readonly page: Page) {}
+
+  async login(phone: string, name: string, create = true) {
+    const identity = await patientLoginViaUi(this.page, phone, name, create);
+    if (create) {
+      await expect(this.page.getByRole("button", { name: /AI 피부 분석 시작/ })).toBeVisible();
+    } else {
+      await expect(this.page.getByRole("heading", { name: "내 예약 현황", exact: true })).toBeVisible();
+    }
+    return identity;
+  }
 
   async reserveDoctor(): Promise<string> {
     await this.page.goto("/#/patient/reservation");
@@ -52,10 +62,10 @@ export class PatientWorkflowPage {
     await expect(this.page.getByRole("heading", { name: "환자 정보 입력" })).toBeVisible();
   }
 
+  // 이름은 첫 화면 로그인에서 받았으므로 나이와 상세 증상만 입력합니다.
   async fillPatient(name: string) {
-    await this.page.getByLabel("환자 이름").fill(name);
+    await expect(this.page.getByText(name, { exact: true })).toBeVisible();
     await this.page.getByLabel("환자 나이").fill("30");
-    await this.page.getByRole("button", { name: "선택 안 함", exact: true }).click();
     await this.page.getByPlaceholder("증상이 나타난 부위, 시작 시점, 불편한 점을 적어주세요.")
       .fill("CI 통합검사용 가상 접수입니다. 실제 환자 문진이 아닙니다.");
     await this.page.getByRole("checkbox").check();
@@ -78,9 +88,10 @@ export class DoctorWorkflowPage {
 
   async connect(identity: DoctorWorkflowIdentity, date: string, patientName: string) {
     const doctorUrl = process.env.SKINAI_E2E_DOCTOR_URL || "http://127.0.0.1:18167";
-    await identity.connect(this.page, doctorUrl);
+    const session = await identity.connect(this.page, doctorUrl);
     await this.page.getByLabel("예약 날짜", { exact: true }).fill(date);
     await this.page.getByPlaceholder("환자명 검색").fill(patientName);
+    return session;
   }
 
   async openPatient(patientName: string) {

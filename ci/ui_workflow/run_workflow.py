@@ -285,6 +285,8 @@ def main() -> int:
                 "CI": "true", "VITE_SKINAI_API": "true", "SKINAI_API_TARGET": "http://127.0.0.1:18165",
                 "PLAYWRIGHT_BROWSERS_PATH": str(args.browsers), "PYTHONUTF8": "1",
                 "SKINAI_E2E_DOCTOR_TOKEN": doctor_token, "SKINAI_E2E_SAMPLE": str(args.sample.resolve()),
+                # 의사 화면은 아이디·비밀번호로 로그인합니다. 임시 비밀번호는 같은 일회용 값을 씁니다.
+                "SKINAI_E2E_DOCTOR_LOGIN": "ci-doctor", "SKINAI_E2E_DOCTOR_PASSWORD": doctor_token,
                 "SKINAI_E2E_OUTPUT": str(results)})
     report = {"status": "FAILED", "image": args.image, "started_at": datetime.now(timezone.utc).isoformat(),
               "sample_sha256": hashlib.sha256(args.sample.read_bytes()).hexdigest(),
@@ -341,7 +343,10 @@ def main() -> int:
         project = "skinai-ui-workflow-" + secrets.token_hex(4)
         (output / "compose.json").write_text(json.dumps({"name": project, "services": {"api": api, "worker": worker}}, indent=2), encoding="utf-8")
         write_state(output, project)
-        private_env.write_text("SKINAI_DEMO_DOCTOR_TOKENS=" + json.dumps({"d1": doctor_token}) + "\n", encoding="utf-8")
+        private_env.write_text(
+            "SKINAI_DEMO_DOCTOR_TOKENS=" + json.dumps({"d1": doctor_token}) + "\n"
+            + "SKINAI_DOCTOR_ACCOUNTS=" + json.dumps({"d1": {"loginId": "ci-doctor", "password": doctor_token}}) + "\n",
+            encoding="utf-8")
         compose = compose_command(args.docker, output, load_owned_state(output))
         report["compose_project"] = project
         report["source_commit"] = run(["git", "rev-parse", "HEAD"]).strip()

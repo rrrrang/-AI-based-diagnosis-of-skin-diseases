@@ -993,3 +993,77 @@
   }
 
 }
+
+/* 의사 로그인 */
+.doctor-login {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  background-color: #ffffff;
+  border: 1px solid #c4d9d0;
+  border-radius: 14px;
+}
+
+.doctor-login h2 {
+  width: 100%;
+  font-size: 18px;
+  font-weight: 800;
+  color: #163f39;
+}
+
+.doctor-login label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #334f49;
+}
+
+.doctor-login input {
+  width: 220px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #d0ddd8;
+  border-radius: 10px;
+}
+
+.doctor-login button {
+  height: 42px;
+  padding: 0 22px;
+  background-color: #648f85;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.doctor-login-error {
+  width: 100%;
+  color: #b42318;
+  font-size: 13px;
+}
+
+.doctor-session {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #334f49;
+}
+
+.doctor-session button {
+  padding: 6px 14px;
+  background-color: #ffffff;
+  border: 1px solid #c4d9d0;
+  border-radius: 8px;
+  color: #426660;
+  font-weight: 700;
+  cursor: pointer;
+}

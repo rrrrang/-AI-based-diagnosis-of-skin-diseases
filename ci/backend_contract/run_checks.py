@@ -12,9 +12,21 @@ import uuid
 
 PACKAGE = Path(__file__).resolve().parent
 CI_ROOT = PACKAGE.parents[1]
-MIN_TESTS = {"backend": 17, "policy": 1, "http": 20}
+MIN_TESTS = {"backend": 33, "policy": 1, "http": 23}
 REQUIRED_SOURCE = ("main.py", "requirements-backend.txt", "app/routers/cases.py",
-                   "tests/test_backend.py", "tests/test_analysis_queue.py", "tests/test_photo_contract.py", "ensemble/test_policy.py")
+                   "app/routers/auth.py", "tests/test_auth.py", "tests/test_backend.py",
+                   "tests/test_analysis_queue.py", "tests/test_photo_contract.py", "ensemble/test_policy.py")
+REQUIRED_AUTH_TESTS = (
+    "test_first_visit_creates_account_then_same_values_log_in",
+    "test_check_without_account_and_wrong_name",
+    "test_my_reservations_show_only_my_cases",
+    "test_doctor_login_and_review",
+    "test_doctor_wrong_password_and_patient_cannot_act_as_doctor",
+    "test_doctor_five_failures_lock_then_unlock_after_five_minutes",
+    "test_successful_doctor_login_resets_previous_failures",
+    "test_doctor_logout_blocks_old_session_reads_and_review_writes",
+    "test_patient_logout_revokes_session_but_not_legacy_case_credential",
+)
 
 
 def check_result(name, code, output, http_report=None):
@@ -28,6 +40,12 @@ def check_result(name, code, output, http_report=None):
         errors.append(f"Expected at least {MIN_TESTS[name]} tests; ran {count}")
     if not re.search(r"^OK\s*$", output, re.MULTILINE):
         errors.append("A complete OK result without skips or expected failures is required")
+    if name == "backend":
+        for test in REQUIRED_AUTH_TESTS:
+            # A large total alone must not hide missing authentication coverage.
+            pattern = rf"^{re.escape(test)} \(test_auth\.AuthTests\.{re.escape(test)}\).*\bok$"
+            if not re.search(pattern, output, re.MULTILINE):
+                errors.append("Required authentication check did not pass: " + test)
     if name == "http":
         if not isinstance(http_report, dict):
             errors.append("Missing HTTP verification report")
@@ -72,7 +90,8 @@ def main():
     env.update(PYTHONUTF8="1", PYTHONIOENCODING="utf-8", PYTHONDONTWRITEBYTECODE="1",
                TEMP=str(temp), TMP=str(temp), TMPDIR=str(temp))
     # Never select a shared database or inherit another application's module path.
-    for key in ("SKINAI_DB_PATH", "SKINAI_PHOTO_DIR", "SKINAI_DEMO_DOCTOR_TOKENS", "PYTHONPATH", "PYTHONHOME"):
+    for key in ("SKINAI_DB_PATH", "SKINAI_PHOTO_DIR", "SKINAI_DEMO_DOCTOR_TOKENS",
+                "SKINAI_DOCTOR_ACCOUNTS", "PYTHONPATH", "PYTHONHOME"):
         env.pop(key, None)
     commands = [
         ("backend", [sys.executable, "-B", "-m", "unittest", "discover", "-s", "tests", "-v"]),

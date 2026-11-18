@@ -17,6 +17,7 @@ from PIL import Image, UnidentifiedImageError
 from pydantic import BaseModel, Field
 from starlette.datastructures import UploadFile as MultipartUploadFile
 
+from app.accounts import session_user
 from app.db import connect
 from app.jobs import enqueue, latest
 
@@ -45,7 +46,11 @@ def doctor_identity(credentials):
     configured = json.loads(os.environ.get("SKINAI_DEMO_DOCTOR_TOKENS", "{}"))
     matches = [doctor for doctor, token in configured.items()
                if token and hmac.compare_digest(token.encode(), credentials.credentials.encode())]
-    return matches[0] if len(matches) == 1 else None
+    if len(matches) == 1:
+        return matches[0]  # 자동 검사·배포 검사용 시연 토큰 (기존 방식 유지)
+    with closing(connect()) as connection:
+        user = session_user(connection, credentials.credentials)
+    return user["doctor_id"] if user is not None and user["role"] == "doctor" else None
 
 
 class Review(BaseModel):
@@ -66,6 +71,12 @@ def patient_case(case_id: str, credentials: Annotated[
             "SELECT * FROM cases WHERE id = ? AND token_hash = ?",
             (case_id, token_digest(credentials.credentials)),
         ).fetchone()
+        if row is None:  # 접수 토큰이 아니면 로그인한 환자 본인의 접수인지 확인
+            user = session_user(connection, credentials.credentials)
+            if user is not None and user["role"] == "patient":
+                row = connection.execute(
+                    "SELECT * FROM cases WHERE id = ? AND patient_user_id = ?", (case_id, user["id"])
+                ).fetchone()
     if row is None:
         raise HTTPException(404, "Case not found")
     return row
@@ -110,12 +121,19 @@ def create_case(
     photo0: UploadFile,
     photo1: UploadFile,
     photo_contract: Annotated[None, Depends(validate_photo_fields)],
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)],
     photo2: UploadFile | None = None,
     symptoms: Annotated[list[str] | None, Form()] = None,
     duration: Annotated[str, Form(max_length=100)] = "",
     description: Annotated[str, Form(max_length=500)] = "",
 ):
     with closing(connect()) as connection:
+        patient_user_id = None
+        if credentials is not None:  # 로그인한 환자면 접수를 계정에 연결
+            user = session_user(connection, credentials.credentials)
+            if user is None or user["role"] != "patient":
+                raise HTTPException(401, "다시 로그인해 주세요.", headers={"WWW-Authenticate": "Bearer"})
+            patient_user_id = user["id"]
         doctor = connection.execute("SELECT id FROM doctors WHERE id = ?", (doctorId,)).fetchone()
         if doctor is None:
             raise HTTPException(422, "Unknown doctor")
@@ -133,8 +151,8 @@ def create_case(
         try:
             with connection:
                 connection.execute(
-                    "INSERT INTO cases (id, doctor_id, token_hash, intake) VALUES (?, ?, ?, ?)",
-                    (case_id, doctorId, token_digest(token), intake),
+                    "INSERT INTO cases (id, doctor_id, token_hash, intake, patient_user_id) VALUES (?, ?, ?, ?, ?)",
+                    (case_id, doctorId, token_digest(token), intake, patient_user_id),
                 )
                 for index, data, media_type in photos:
                     (directory / str(index)).write_bytes(data)
