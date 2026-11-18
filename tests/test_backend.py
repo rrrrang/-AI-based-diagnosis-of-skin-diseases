@@ -7,12 +7,15 @@ from unittest.mock import patch
 from fastapi.testclient import TestClient
 
 from main import app
+from ci.backend_contract.auth_support import (bearer_headers, doctor_environment,
+                                               new_doctor_tokens, patient_headers)
 
 
 class StartupTests(unittest.TestCase):
     def test_case_intake_and_private_photo(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
+            doctor_tokens = new_doctor_tokens()
             with patch.dict(os.environ, {"SKINAI_DB_PATH": str(root / "db"), "SKINAI_PHOTO_DIR": str(root / "photos")}):
                 with TestClient(app) as client:
                     from PIL import Image
@@ -28,7 +31,7 @@ class StartupTests(unittest.TestCase):
                     self.assertEqual(result.status_code, 201, result.text)
                     body = result.json()
                     url = f"/api/cases/{body['id']}"
-                    headers = {"Authorization": f"Bearer {body['accessToken']}"}
+                    headers = patient_headers(body)
                     self.assertEqual(client.get(url).status_code, 401)
                     self.assertEqual(client.get(url, headers=headers).json()["patientName"], "Demo")
                     photo = client.get(url + "/photos/0", headers=headers)
@@ -47,7 +50,7 @@ class StartupTests(unittest.TestCase):
                     }, files={key: ("photo.png", image.getvalue(), "image/png")
                               for key in ("photo0", "photo1", "photo2")}).json()
                     url = f"/api/cases/{second['id']}"
-                    headers = {"Authorization": f"Bearer {second['accessToken']}"}
+                    headers = patient_headers(second)
                     self.assertEqual(client.post(url + "/analyze", headers=headers).status_code, 503)
                     heartbeat("test-worker")
                     queued = client.post(url + "/analyze", headers=headers)
@@ -59,9 +62,9 @@ class StartupTests(unittest.TestCase):
                     model.predict.return_value = {"decision": "deferred", "candidate": None}
                     self.assertTrue(run_job(job, model, {"yolo": "mock"}))
                     self.assertEqual(client.get(url, headers=headers).json()["aiState"], "완료")
-                    with patch.dict(os.environ, {"SKINAI_DEMO_DOCTOR_TOKENS": '{"d1":"test-one","d2":"test-two"}'}):
-                        doctor = {"Authorization": "Bearer test-one"}
-                        other = {"Authorization": "Bearer test-two"}
+                    with patch.dict(os.environ, doctor_environment(doctor_tokens)):
+                        doctor = bearer_headers(doctor_tokens["d1"])
+                        other = bearer_headers(doctor_tokens["d2"])
                         self.assertEqual(client.get(url, headers=doctor).json()["analysis"]["decision"], "deferred")
                         self.assertNotIn("analysis", client.get(url, headers=headers).json())
                         self.assertEqual(client.get(url + "/photos/2", headers=other).status_code, 404)

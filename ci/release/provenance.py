@@ -23,6 +23,7 @@ INPUT_TREES = (
     "app", "ensemble", "ci/release",
     *(f"frontend/{app}/{folder}" for app in UI_APPS for folder in ("src", "public")),
     "frontend/patient-frontend/tests/workflow",
+    "frontend/patient-frontend/tests/support",
 )
 HELPER_TREE = "ci/ui_workflow"
 EXCLUDED_DIRECTORIES = frozenset({

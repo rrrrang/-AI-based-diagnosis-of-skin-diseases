@@ -1,16 +1,18 @@
 """HTTP-only checks against the separately running backend container."""
 import argparse
 import io
-import json
-import re
 import unittest
 from datetime import date
-from pathlib import Path
 from urllib.parse import urlsplit
 from uuid import uuid4
 
 import httpx
 from PIL import Image
+
+if __package__:
+    from .auth_support import bearer_headers, load_doctor_tokens, patient_token
+else:
+    from auth_support import bearer_headers, load_doctor_tokens, patient_token
 
 
 REVIEW_KEYS = ("diagnosis", "opinion", "visitRequired", "visitMessage", "reviewState")
@@ -35,9 +37,7 @@ class ContainerTests(unittest.TestCase):
         Image.new("RGB", (32, 32), (120, 140, 160)).save(stream, format="PNG")
         cls.photo = stream.getvalue()
 
-    @staticmethod
-    def auth(token):
-        return {"Authorization": "Bearer " + token} if token else {}
+    auth = staticmethod(bearer_headers)
 
     def intake(self, doctor="d1", photo_keys=("photo0", "photo1")):
         name = "CI 가상 검사자 " + uuid4().hex[:8]
@@ -56,7 +56,7 @@ class ContainerTests(unittest.TestCase):
         self.assertTrue(isinstance(data.get("accessToken"), str) and bool(data["accessToken"]))
         self.assertEqual(data.get("aiState"), "대기")
         self.assertEqual(data.get("reviewState"), "검토 대기")
-        return "/api/cases/" + data["id"], data["accessToken"], name
+        return "/api/cases/" + data["id"], patient_token(data), name
 
     def detail(self, url, token):
         response = self.client.get(url, headers=self.auth(token))
@@ -212,18 +212,8 @@ def main():
             or url.query or url.fragment):
         parser.error("Use a local test server URL with an explicit port")
     try:
-        lines = Path(args.env_file).read_text(encoding="utf-8-sig").splitlines()
-        values = [line.partition("=")[2] for line in lines
-                  if line.startswith("SKINAI_DEMO_DOCTOR_TOKENS=")]
-        if len(values) != 1:
-            raise ValueError()
-        tokens = json.loads(values[0])
-        if (not isinstance(tokens, dict) or
-                any(not isinstance(tokens.get(key), str) or
-                    not re.fullmatch(r"[A-Za-z0-9._~+/-]+=*", tokens[key]) for key in ("d1", "d2")) or
-                tokens["d1"] == tokens["d2"]):
-            raise ValueError()
-    except (OSError, UnicodeError, ValueError, TypeError):
+        tokens = load_doctor_tokens(args.env_file)
+    except ValueError:
         parser.error("Read failed: provide the env file with distinct d1/d2 test tokens")
     ContainerTests.base_url = args.base_url.rstrip("/")
     ContainerTests.tokens = tokens

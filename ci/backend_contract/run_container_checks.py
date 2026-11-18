@@ -5,11 +5,15 @@ import json
 import os
 from pathlib import Path
 import re
-import secrets
 import subprocess
 import sys
 import time
 from uuid import uuid4
+
+if __package__:
+    from .auth_support import doctor_environment, new_doctor_tokens
+else:
+    from auth_support import doctor_environment, new_doctor_tokens
 
 PACKAGE = Path(__file__).resolve().parent
 OWNER = "SkinAI-Backend-CI"
@@ -176,8 +180,9 @@ def main():
         check_labels(docker, "image", state["image"], state)
         report["stage"] = "container readiness"
         env_file = output / "doctor-test.env"
-        tokens = {key: secrets.token_hex(24) for key in ("d1", "d2")}
-        env_file.write_text("SKINAI_DEMO_DOCTOR_TOKENS=" + json.dumps(tokens) + "\n", encoding="utf-8")
+        tokens = new_doctor_tokens()
+        env_file.write_text("".join(key + "=" + value + "\n"
+                                    for key, value in doctor_environment(tokens).items()), encoding="utf-8")
         docker.call("container", "create", "--name", state["container"],
                     "--label", OWNER_LABEL + "=" + OWNER, "--label", RUN_LABEL + "=" + nonce,
                     "--publish", "127.0.0.1::8000", "--env-file", str(env_file),

@@ -13,6 +13,9 @@ from fastapi.testclient import TestClient
 from PIL import Image
 
 from app.db import connect
+from ci.backend_contract.auth_support import (
+    login_patient, login_doctor, logout_session, patient_headers,
+)
 from main import app
 
 DOCTORS = {"d1": {"loginId": "doctor1", "password": "doctor-pass-1"},
@@ -32,6 +35,7 @@ class AuthTests(unittest.TestCase):
             "SKINAI_DB_PATH": str(root / "db"),
             "SKINAI_PHOTO_DIR": str(root / "photos"),
             "SKINAI_DOCTOR_ACCOUNTS": json.dumps(DOCTORS),
+            "SKINAI_DEMO_DOCTOR_TOKENS": "{}",  # Login tests must not use the legacy bypass.
         }))
         self.enterContext(patch("app.accounts.PASSWORD_ITERATIONS", 1000))  # 테스트를 빠르게
         self.client = self.enterContext(TestClient(app))
@@ -41,14 +45,12 @@ class AuthTests(unittest.TestCase):
         return self.client.post("/api/auth/patient", json={"phone": phone, "name": name, "create": create})
 
     def patient_session(self, phone="010-1234-5678", name="홍길동"):
-        response = self.patient(phone, name)
-        self.assertEqual(response.status_code, 200, response.text)
-        return {"Authorization": f"Bearer {response.json()['accessToken']}"}
+        return login_patient(self.client, phone=phone, name=name, create=True).headers()
 
     def doctor_session(self, login_id="doctor1", password="doctor-pass-1"):
-        response = self.client.post("/api/auth/login", json={"loginId": login_id, "password": password})
-        self.assertEqual(response.status_code, 200, response.text)
-        return {"Authorization": f"Bearer {response.json()['accessToken']}"}
+        doctor_id = next(key for key, value in DOCTORS.items() if value["loginId"] == login_id)
+        return login_doctor(self.client, login_id=login_id, password=password,
+                            doctor_id=doctor_id).headers()
 
     def submit(self, headers=None):
         return self.client.post("/api/cases", headers=headers or {}, data={
@@ -139,6 +141,78 @@ class AuthTests(unittest.TestCase):
                                           json={"loginId": "nobody", "password": "x"}).status_code, 401)
         patient = self.patient_session()
         self.assertEqual(self.client.get("/api/cases", headers=patient).status_code, 403)
+        case_id = self.submit(patient).json()["id"]
+        review = {"diagnosis": "차단해야 할 수정", "opinion": "환자는 의사 소견을 쓸 수 없음",
+                  "visitRequired": False, "visitMessage": "", "reviewState": "결과 전달 완료"}
+        self.assertEqual(self.client.patch(f"/api/cases/{case_id}/review", headers=patient,
+                                           json=review).status_code, 403)
+        self.assertEqual(self.client.get(f"/api/cases/{case_id}", headers=self.doctor_session())
+                         .json()["reviewState"], "검토 대기")
+
+    def test_doctor_five_failures_lock_then_unlock_after_five_minutes(self):
+        now = time.time()
+        payload = {"loginId": "doctor1", "password": "wrong-password"}
+        with patch("app.routers.auth.time.time", return_value=now):
+            for attempt in range(1, 6):
+                with self.subTest(failed_attempt=attempt):
+                    self.assertEqual(self.client.post("/api/auth/login", json=payload).status_code, 401)
+            self.assertEqual(self.client.post("/api/auth/login", json=payload).status_code, 429)
+            payload["password"] = "doctor-pass-1"
+            self.assertEqual(self.client.post("/api/auth/login", json=payload).status_code, 429)
+        with patch("app.routers.auth.time.time", return_value=now + 299):
+            self.assertEqual(self.client.post("/api/auth/login", json=payload).status_code, 429)
+        with patch("app.routers.auth.time.time", return_value=now + 301):
+            session = login_doctor(self.client, login_id="doctor1", password="doctor-pass-1")
+            self.assertEqual(self.client.get("/api/cases", headers=session.headers()).status_code, 200)
+
+    def test_successful_doctor_login_resets_previous_failures(self):
+        wrong = {"loginId": "doctor1", "password": "wrong-password"}
+        for _ in range(4):
+            self.assertEqual(self.client.post("/api/auth/login", json=wrong).status_code, 401)
+        login_doctor(self.client, login_id="doctor1", password="doctor-pass-1")
+        for _ in range(4):
+            self.assertEqual(self.client.post("/api/auth/login", json=wrong).status_code, 401)
+        # If success did not clear the counter, this would already be locked.
+        self.assertEqual(self.client.get("/api/cases", headers=self.doctor_session()).status_code, 200)
+
+    def test_doctor_logout_blocks_old_session_reads_and_review_writes(self):
+        case_id = self.submit(self.patient_session()).json()["id"]
+        url = f"/api/cases/{case_id}"
+        session = login_doctor(self.client, login_id="doctor1", password="doctor-pass-1")
+        old_headers = session.headers()
+        self.assertEqual(self.client.get(url, headers=old_headers).status_code, 200)
+        logout_session(self.client, session)
+        for path, expected in (("/api/auth/me", 401), ("/api/cases", 403),
+                               (url, 404), (url + "/photos/0", 404)):
+            with self.subTest(path=path):
+                self.assertEqual(self.client.get(path, headers=old_headers).status_code, expected)
+        review = {"diagnosis": "로그아웃 뒤 차단할 수정", "opinion": "저장되면 안 됨",
+                  "visitRequired": False, "visitMessage": "", "reviewState": "결과 전달 완료"}
+        self.assertEqual(self.client.patch(url + "/review", headers=old_headers,
+                                           json=review).status_code, 403)
+        fresh = login_doctor(self.client, login_id="doctor1", password="doctor-pass-1")
+        self.assertEqual(self.client.get("/api/cases", headers=fresh.headers()).status_code, 200)
+        detail = self.client.get(url, headers=fresh.headers()).json()
+        self.assertEqual(detail["reviewState"], "검토 대기")
+        self.assertNotIn("opinion", detail)
+        self.assertEqual(self.client.get("/api/auth/me", headers=old_headers).status_code, 401)
+
+    def test_patient_logout_revokes_session_but_not_legacy_case_credential(self):
+        session = login_patient(self.client, phone="01012345678", name="홍길동", create=True)
+        old_headers = session.headers()
+        intake = self.submit(old_headers).json()
+        case_headers = patient_headers(intake)
+        url = f"/api/cases/{intake['id']}"
+        logout_session(self.client, session)
+        for path in ("/api/auth/me", "/api/me/cases"):
+            self.assertEqual(self.client.get(path, headers=old_headers).status_code, 401)
+        self.assertEqual(self.client.get(url, headers=old_headers).status_code, 404)
+        self.assertEqual(self.submit(old_headers).status_code, 401)
+        # Explicit compatibility contract; do not call this complete access revocation.
+        self.assertEqual(self.client.get(url, headers=case_headers).status_code, 200)
+        fresh = login_patient(self.client, phone="01012345678", name="홍길동", create=False)
+        self.assertEqual([case["id"] for case in self.client.get("/api/me/cases", headers=fresh.headers()).json()],
+                         [intake["id"]])
 
     def test_bad_or_expired_session(self):
         self.assertEqual(self.submit({"Authorization": "Bearer not-a-real-token"}).status_code, 401)

@@ -353,7 +353,7 @@ def main() -> int:
         report["source_changes"] = run(["git", "status", "--short"]).splitlines()
         source_paths = [repo / "main.py", Path(__file__).resolve()]
         for folder in ["app", "ensemble", "frontend/patient-frontend/src", "frontend/doctor-frontend/src",
-                       "frontend/patient-frontend/tests/workflow"]:
+                       "frontend/patient-frontend/tests/workflow", "frontend/patient-frontend/tests/support"]:
             source_paths.extend(p for p in (repo / folder).rglob("*") if p.is_file() and p.suffix in {".py", ".ts", ".tsx", ".json"})
         report["source_sha256"] = {str(p.relative_to(repo)).replace(chr(92), "/"): hashlib.sha256(p.read_bytes()).hexdigest() for p in source_paths}
 

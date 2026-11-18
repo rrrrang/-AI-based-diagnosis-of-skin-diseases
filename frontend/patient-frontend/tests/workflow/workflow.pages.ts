@@ -1,5 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 import { Buffer } from "node:buffer";
+import { patientLoginViaUi, type DoctorWorkflowIdentity } from "../support/auth";
 
 // Synthetic, non-personal front fixture; the real worker analyzes close-up slot 1.
 // This checks transmission and visibility, not face quality or diagnosis accuracy.
@@ -11,16 +12,14 @@ const FRONT_FIXTURE = Buffer.from(
 export class PatientWorkflowPage {
   constructor(readonly page: Page) {}
 
-  // 첫 화면: 전화번호(아이디)와 이름(비밀번호)으로 시작
-  async login(phone: string, name: string) {
-    await this.page.goto("/#/patient/login");
-    await this.page.getByLabel("전화번호", { exact: true }).fill(phone);
-    await this.page.getByLabel("이름", { exact: true }).fill(name);
-    const response = this.page.waitForResponse((r) =>
-      new URL(r.url()).pathname === "/api/auth/patient" && r.request().method() === "POST");
-    await this.page.getByRole("button", { name: "시작하기", exact: true }).click();
-    expect((await response).status()).toBe(200);
-    await expect(this.page.getByRole("button", { name: /AI 피부 분석 시작/ })).toBeVisible();
+  async login(phone: string, name: string, create = true) {
+    const identity = await patientLoginViaUi(this.page, phone, name, create);
+    if (create) {
+      await expect(this.page.getByRole("button", { name: /AI 피부 분석 시작/ })).toBeVisible();
+    } else {
+      await expect(this.page.getByRole("heading", { name: "내 예약 현황", exact: true })).toBeVisible();
+    }
+    return identity;
   }
 
   async reserveDoctor(): Promise<string> {
@@ -87,17 +86,12 @@ export class PatientWorkflowPage {
 export class DoctorWorkflowPage {
   constructor(readonly page: Page) {}
 
-  async connect(loginId: string, password: string, date: string, patientName: string) {
+  async connect(identity: DoctorWorkflowIdentity, date: string, patientName: string) {
     const doctorUrl = process.env.SKINAI_E2E_DOCTOR_URL || "http://127.0.0.1:18167";
-    await this.page.goto(`${doctorUrl}/#/doctor`);
-    await this.page.getByLabel("의사 아이디").fill(loginId);
-    await this.page.getByLabel("비밀번호").fill(password);
-    const response = this.page.waitForResponse((r) =>
-      new URL(r.url()).pathname === "/api/cases" && r.request().method() === "GET");
-    await this.page.getByRole("button", { name: "로그인", exact: true }).click();
-    expect((await response).status()).toBe(200);
+    const session = await identity.connect(this.page, doctorUrl);
     await this.page.getByLabel("예약 날짜", { exact: true }).fill(date);
     await this.page.getByPlaceholder("환자명 검색").fill(patientName);
+    return session;
   }
 
   async openPatient(patientName: string) {
