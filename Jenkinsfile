@@ -98,13 +98,15 @@ exit /b %ERRORLEVEL%
             }
         }
 
-        stage('7. 환자 필수 입력 자동검사') {
+        stage('7. 인증 도구·환자 필수 입력 자동검사') {
             steps {
                 dir('source/frontend/patient-frontend') {
                     bat encoding: 'UTF-8', script: '''
 @echo off
 chcp 65001 >nul
 set "PATH=%UI_NODE_DIR%;%PATH%"
+call ".\\node_modules\\.bin\\playwright.cmd" test --config playwright.auth-support.config.ts
+if errorlevel 1 exit /b 1
 call ".\\node_modules\\.bin\\playwright.cmd" test tests/e2e/patient-required-input.spec.ts
 exit /b %ERRORLEVEL%
 '''

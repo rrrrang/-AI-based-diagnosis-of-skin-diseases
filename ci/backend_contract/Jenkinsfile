@@ -95,6 +95,10 @@ exit /b %CHECK_EXIT%
 chcp 65001 >nul
 set "TEMP=%CD%\\temp"
 set "TMP=%TEMP%"
+"%TEST_PYTHON%" -B -X utf8 "%CHECKS_DIR%/test_auth_support.py" > "logs/auth-support-tests.log" 2>&1
+set "CHECK_EXIT=%ERRORLEVEL%"
+type "logs\\auth-support-tests.log"
+if not "%CHECK_EXIT%"=="0" exit /b %CHECK_EXIT%
 "%TEST_PYTHON%" -B -X utf8 "%CHECKS_DIR%/test_runner.py" > "logs/runner-tests.log" 2>&1
 set "CHECK_EXIT=%ERRORLEVEL%"
 type "logs\\runner-tests.log"
