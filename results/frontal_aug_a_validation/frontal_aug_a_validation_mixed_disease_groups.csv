@@ -1,0 +1,3 @@
+﻿group_id,image_count,actual_diseases,predicted_diseases,correct_count,incorrect_count,group_accuracy,all_correct
+H1_272947,2,"건선, 지루",주사,0,2,0.0,False
+H0_57694,3,"여드름, 지루","아토피, 여드름, 지루",2,1,66.67,False
