@@ -67,8 +67,9 @@ def main():
                             args.yolo_root.resolve(), thresholds)
         for index, (image_id, path, label) in enumerate(images, 1):
             with Image.open(path) as image:
-                prediction = ensemble.predict_models(image, image_id)
-            row = {'image_id': image_id, 'label': label, **decide(prediction, thresholds)}
+                prediction, yolo_scores = ensemble.predict_models_with_metadata(image, image_id)
+            row = {'image_id': image_id, 'label': label,
+                   **decide(prediction, thresholds, yolo_disease_scores=yolo_scores)}
             results.write(json.dumps(row, ensure_ascii=False) + '\n')
             if index % 25 == 0 or index == len(images):
                 results.flush()

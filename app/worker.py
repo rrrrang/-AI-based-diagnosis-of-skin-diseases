@@ -57,7 +57,7 @@ def main():
     weights = {
         "mobilenet": mobile / "model/best.pt",
         "resnet50": resnet / "models/resnet50_side_best.pth",
-        "yolo": yolo / "models/yolo11_detect/side_hard_negative/weights/best.pt",
+        "yolo": yolo / "models/yolo11_detect/side_six_class_augmented/weights/best.pt",
     }
     versions = {}
     for model, path in weights.items():

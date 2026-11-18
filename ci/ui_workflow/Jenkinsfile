@@ -45,9 +45,9 @@ pipeline {
                     env.WORKFLOW_DOCKER = env.CI_DOCKER_EXE ?: 'C:/Users/human/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe'
                     env.WORKFLOW_NODE = env.CI_NODE_DIR ?: 'D:/SkinAI_DevOps/tools/node-v24.22.2-win-x64'
                     env.WORKFLOW_BROWSERS = env.CI_BROWSER_DIR ?: 'D:/SkinAI_DevOps/playwright-browsers'
-                    env.WORKFLOW_MODELS = env.CI_MODEL_DIR ?: 'D:/SkinAI_DevOps/ensemble_docker_check/models'
+                    env.WORKFLOW_MODELS = env.CI_MODEL_DIR ?: 'D:/SkinAI_DevOps/model_bundles/yolo-six-20261117'
                     env.WORKFLOW_SAMPLE = env.CI_SAMPLE_FILE ?: 'D:/SkinAI_DevOps/backend_ensemble_check/samples/sample.png'
-                    env.WORKFLOW_IMAGE = env.CI_WORKFLOW_IMAGE ?: 'skinai-backend-ensemble:20261113'
+                    env.WORKFLOW_IMAGE = env.CI_WORKFLOW_IMAGE ?: 'skinai-backend-ensemble:yolo-six-20261117'
                 }
                 dir("${env.WORKFLOW_SOURCE}") {
                     script {
@@ -159,7 +159,7 @@ exit /b %ERRORLEVEL%
             }
         }
         success {
-            echo '전체 연결 검사 2개와 준비·정리 검사 23개를 통과했습니다. 검사 기록을 보관하고 이번 실행 폴더를 정리했습니다.'
+            echo '전체 연결 검사 2개와 모델 확인·준비·정리 검사를 통과했습니다. 검사 기록을 보관하고 이번 실행 폴더를 정리했습니다.'
         }
     }
 }

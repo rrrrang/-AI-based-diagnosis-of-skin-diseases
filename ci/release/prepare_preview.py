@@ -17,6 +17,7 @@ import urllib.error
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / 'ci/ui_workflow'))
 from run_workflow import run_process, sanitize_text, redact_artifacts
+from model_evidence import load_model_identity, verify_workflow_model_evidence
 sys.path.insert(0, str(Path(__file__).parent / 'handoff'))
 from candidate import validate_candidate
 sys.path.insert(0, str(Path(__file__).parent))
@@ -200,6 +201,8 @@ def main():
         dirty = bool(run(['git', 'status', '--porcelain'], 'source-status.log').strip())
         input_hashes = snapshot_inputs(REPO)
         write_json(results/'source-inputs.json', input_hashes)
+        identity = load_model_identity(REPO)
+        report['model_identity'] = identity
         run([sys.executable, '-B', str(REPO/'ci/release/backend/support/model_guard.py'), '--models-root', str(args.models.resolve())], 'model-bundle.log')
         suffix = commit[:12] + '-' + secrets.token_hex(4)
         images = {}
@@ -271,9 +274,9 @@ def main():
         run([args.node_dir/'npm.cmd','ci','--no-audit','--no-fund'], 'test-packages.log', cwd=REPO/'frontend/patient-frontend')
         run([args.node_dir/'npm.cmd','exec','--','playwright','test','--config','playwright.release.config.ts'],
             'image-workflow.log', timeout=1000, cwd=REPO/'frontend/patient-frontend')
-        for count in [2,3]:
-            if json.loads((results/f'workflow-{count}-photos.json').read_text(encoding='utf-8'))['status'] != 'passed':
-                raise RuntimeError('Missing successful packaged workflow evidence')
+        if load_model_identity(REPO) != identity:
+            raise RuntimeError('Model lock or guard changed during packaged verification')
+        report['model_verification'] = verify_workflow_model_evidence(results, identity)
         report.update(status='passed', services=4, no_host_source_or_model_mounts=True, ui_proxy_checks='passed',
                       workflow_cases=2, source_commit=commit, sample_sha256=digest(args.sample),
                       packaged_image_ids=actual_services)

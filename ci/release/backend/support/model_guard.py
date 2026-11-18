@@ -11,7 +11,7 @@ import re
 import stat
 from pathlib import Path, PurePosixPath
 
-TRUSTED_LOCK_SHA256 = "76b4ea83e6c241680ed8bebdf2790d8070caeab0baff38950a458c2e6dd0e2d8"
+TRUSTED_LOCK_SHA256 = "6a385c64f0980a19cea5f41f013dc082169db745e66ce901a67407a085da1467"
 DEFAULT_LOCK = Path(__file__).resolve().parents[1] / "model-lock.json"
 MODELS = frozenset(("mobilenet", "resnet50", "yolo"))
 

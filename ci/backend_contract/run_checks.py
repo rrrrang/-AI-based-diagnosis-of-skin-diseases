@@ -12,10 +12,12 @@ import uuid
 
 PACKAGE = Path(__file__).resolve().parent
 CI_ROOT = PACKAGE.parents[1]
-MIN_TESTS = {"backend": 33, "policy": 1, "http": 23}
+MIN_TESTS = {"backend": 33, "policy": 17, "http": 23}
+POLICY_MODULES = ("ensemble.test_policy", "ensemble.test_inference_contract")
 REQUIRED_SOURCE = ("main.py", "requirements-backend.txt", "app/routers/cases.py",
                    "app/routers/auth.py", "tests/test_auth.py", "tests/test_backend.py",
-                   "tests/test_analysis_queue.py", "tests/test_photo_contract.py", "ensemble/test_policy.py")
+                   "tests/test_analysis_queue.py", "tests/test_photo_contract.py",
+                   "ensemble/test_policy.py", "ensemble/test_inference_contract.py")
 REQUIRED_AUTH_TESTS = (
     "test_first_visit_creates_account_then_same_values_log_in",
     "test_check_without_account_and_wrong_name",
@@ -26,6 +28,17 @@ REQUIRED_AUTH_TESTS = (
     "test_successful_doctor_login_resets_previous_failures",
     "test_doctor_logout_blocks_old_session_reads_and_review_writes",
     "test_patient_logout_revokes_session_but_not_legacy_case_credential",
+)
+REQUIRED_POLICY_TESTS = (
+    "ensemble.test_policy.VotingTests.test_rules",
+    "ensemble.test_policy.VotingTests.test_six_class_normal_requires_consensus_without_retained_disease",
+    "ensemble.test_policy.VotingTests.test_normal_top_cannot_hide_lower_scoring_yolo_disease",
+    "ensemble.test_policy.VotingTests.test_disease_majority_is_preserved_when_yolo_also_detects_normal",
+    "ensemble.test_policy.VotingTests.test_nonfinite_or_nonnumeric_prediction_and_threshold_rejected",
+    "ensemble.test_policy.VotingTests.test_incomplete_or_inconsistent_class_rows_rejected",
+    "ensemble.test_policy.VotingTests.test_top_prediction_must_agree_with_full_scores",
+    "ensemble.test_inference_contract.YoloInferenceContractTests.test_predict_passes_lower_scoring_disease_metadata_into_policy",
+    "ensemble.test_inference_contract.YoloInferenceContractTests.test_schema_role_or_image_mismatch_is_rejected",
 )
 
 
@@ -46,6 +59,12 @@ def check_result(name, code, output, http_report=None):
             pattern = rf"^{re.escape(test)} \(test_auth\.AuthTests\.{re.escape(test)}\).*\bok$"
             if not re.search(pattern, output, re.MULTILINE):
                 errors.append("Required authentication check did not pass: " + test)
+    if name == "policy":
+        for test_id in REQUIRED_POLICY_TESTS:
+            test = test_id.rsplit(".", 1)[-1]
+            pattern = rf"^{re.escape(test)} \({re.escape(test_id)}\).*\bok$"
+            if not re.search(pattern, output, re.MULTILINE):
+                errors.append("Required six-class model policy check did not pass: " + test_id)
     if name == "http":
         if not isinstance(http_report, dict):
             errors.append("Missing HTTP verification report")
@@ -95,7 +114,7 @@ def main():
         env.pop(key, None)
     commands = [
         ("backend", [sys.executable, "-B", "-m", "unittest", "discover", "-s", "tests", "-v"]),
-        ("policy", [sys.executable, "-B", "-m", "unittest", "ensemble.test_policy", "-v"]),
+        ("policy", [sys.executable, "-B", "-m", "unittest", *POLICY_MODULES, "-v"]),
         ("http", [sys.executable, "-B", str(PACKAGE / "check_http.py"), "--source-root", str(root),
                   "--output", str(output / "http"), "--port", str(args.port)]),
     ]

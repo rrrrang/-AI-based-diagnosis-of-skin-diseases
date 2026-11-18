@@ -9,10 +9,11 @@ import {
 const API = process.env.SKINAI_E2E_API_URL || "http://127.0.0.1:18165";
 const MODEL_KEYS = ["mobilenet", "resnet50", "yolo"];
 const CANDIDATE_KEYS = ["psoriasis", "atopic_dermatitis", "acne", "normal", "rosacea", "seborrheic_dermatitis"];
+const CANDIDATE_LABELS = ["건선", "아토피", "여드름", "정상", "주사", "지루"];
 const REVIEW_KEYS = ["diagnosis", "opinion", "visitRequired", "visitMessage"];
 const PRIVATE_RESULT_KEYS = [
   "analysis", "photoIndices", "photos", "predictions", "analysisPhoto",
-  "maskPhoto", "models", "modelVersions", "accessToken",
+  "maskPhoto", "models", "modelVersions", "yolo_disease_scores", "accessToken",
 ];
 
 function requiredEnv(name: string) {
@@ -28,6 +29,13 @@ type Analysis = {
   models: Record<string, { candidate: string; score: number } | null>;
   modelVersions: Record<string, string>;
   analyzedPhotoIndex: number;
+  yolo_disease_scores: {
+    class_id: number;
+    name: string;
+    label: string;
+    detected: boolean;
+    score: number | null;
+  }[];
 };
 type CaseDetail = {
   id: string;
@@ -124,12 +132,33 @@ for (const photoCount of [2, 3] as const) {
         }
         if (prediction !== null) {
           expect(CANDIDATE_KEYS).toContain(prediction.candidate);
-          if (model === "yolo") expect(prediction.candidate).not.toBe("normal");
           expect(Number.isFinite(prediction.score)).toBe(true);
           expect(prediction.score).toBeGreaterThanOrEqual(0);
           expect(prediction.score).toBeLessThanOrEqual(1);
         }
       }
+      // The six-class detector can emit normal (ID 3). These are retained
+      // detection scores, not calibrated probabilities or a confirmed diagnosis.
+      expect(Array.isArray(analysis.yolo_disease_scores), "The actual YOLO adapter must return all six score rows.").toBe(true);
+      expect(analysis.yolo_disease_scores).toHaveLength(6);
+      for (const [index, row] of analysis.yolo_disease_scores.entries()) {
+        expect(row.class_id).toBe(index);
+        expect(row.name).toBe(CANDIDATE_KEYS[index]);
+        expect(row.label).toBe(CANDIDATE_LABELS[index]);
+        expect(typeof row.detected).toBe("boolean");
+        if (row.detected) {
+          expect(typeof row.score).toBe("number");
+          expect(Number.isFinite(row.score)).toBe(true);
+          expect(row.score).toBeGreaterThanOrEqual(0.25);
+          expect(row.score).toBeLessThanOrEqual(1);
+        } else {
+          expect(row.score).toBeNull();
+        }
+      }
+      const detections = analysis.yolo_disease_scores.filter((row) => row.detected)
+        .sort((left, right) => right.score! - left.score! || left.class_id - right.class_id);
+      const top = detections[0];
+      expect(analysis.models.yolo).toEqual(top ? { candidate: top.name, score: top.score } : null);
       expect(["majority", "single_qualified", "normal_consensus", "deferred", "undetermined"])
         .toContain(analysis.decision);
       expect(complete!.photoIndices).toEqual(photoCount === 3 ? [0, 1, 2] : [0, 1]);
@@ -232,6 +261,7 @@ for (const photoCount of [2, 3] as const) {
           patient_reservations_in_new_browser: true,
           doctor_and_patient_logout_revokes_session: true,
           three_real_model_results: true,
+          yolo_six_class_response_checked: true,
           doctor_photo_access: true,
           draft_hidden_from_patient_api_and_ui: true,
           confirmed_text_visible_to_patient: true,

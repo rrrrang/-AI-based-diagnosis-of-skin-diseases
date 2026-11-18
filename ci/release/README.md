@@ -102,7 +102,7 @@ git branch --show-current
 $previewOutput = Join-Path 'D:\SkinAI_DevOps\release_preview' ('run-' + [guid]::NewGuid().ToString('N'))
 & 'D:\miniconda3\python.exe' -B '.\ci\release\prepare_preview.py' `
   --output $previewOutput `
-  --models 'D:\SkinAI_DevOps\ensemble_docker_check\models' `
+  --models 'D:\SkinAI_DevOps\model_bundles\yolo-six-20261117' `
   --sample 'D:\SkinAI_DevOps\backend_ensemble_check\samples\sample.png' `
   --docker 'C:\Users\human\AppData\Local\Programs\DockerDesktop\resources\bin\docker.exe' `
   --node-dir 'D:\SkinAI_DevOps\tools\node-v24.22.2-win-x64' `

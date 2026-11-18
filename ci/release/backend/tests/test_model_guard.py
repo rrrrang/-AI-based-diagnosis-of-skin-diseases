@@ -114,14 +114,14 @@ class ModelGuardTests(unittest.TestCase):
 class CommittedLockTests(unittest.TestCase):
     def test_committed_lock_checksum_and_expected_models(self):
         document = guard.load_lock()
-        self.assertEqual(len(document["files"]), 10)
+        self.assertEqual(len(document["files"]), 9)
         self.assertEqual({item["model"] for item in document["files"]}, guard.MODELS)
         self.assertEqual(
             {item["path"]: item["sha256"] for item in document["files"] if item["path"].endswith((".pt", ".pth"))},
             {
                 "mobilenet/model/best.pt": "493e76716efeada4bbb3effddc7f1e9ee9f78055cef4e8492cbddfa7fc45ea6f",
                 "resnet50/models/resnet50_side_best.pth": "2fb9580777988c5bb9506be107d8e1d18d53a857d9cce7ead4f79ab62842e0d3",
-                "yolo/models/yolo11_detect/side_hard_negative/weights/best.pt": "5578f2729fd6e76001febff9109c81ae2482527ebddd3bc83bda783ef38f60a7",
+                "yolo/models/yolo11_detect/side_six_class_augmented/weights/best.pt": "e792fb2374a6024f49249a40a9f2807282ef8d1bad9c3ec5c2f48055d03ed800",
             },
         )
 

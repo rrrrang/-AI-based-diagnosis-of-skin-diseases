@@ -47,7 +47,7 @@ pipeline {
                     env.RELEASE_DOCKER = env.CI_DOCKER_EXE ?: 'C:/Users/human/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe'
                     env.RELEASE_NODE = env.CI_NODE_DIR ?: 'D:/SkinAI_DevOps/tools/node-v24.22.2-win-x64'
                     env.RELEASE_BROWSERS = env.CI_BROWSER_DIR ?: 'D:/SkinAI_DevOps/playwright-browsers'
-                    env.RELEASE_MODELS = env.CI_MODEL_DIR ?: 'D:/SkinAI_DevOps/ensemble_docker_check/models'
+                    env.RELEASE_MODELS = env.CI_MODEL_DIR ?: 'D:/SkinAI_DevOps/model_bundles/yolo-six-20261117'
                     env.RELEASE_SAMPLE = env.CI_SAMPLE_FILE ?: 'D:/SkinAI_DevOps/backend_ensemble_check/samples/sample.png'
                     env.TEMP = "${env.RELEASE_RUN}/temp"
                     env.TMP = env.TEMP

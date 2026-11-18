@@ -7,15 +7,25 @@ import sys
 import tempfile
 import unittest
 
-from run_checks import MIN_TESTS, REQUIRED_SOURCE, REQUIRED_AUTH_TESTS, check_result
+from run_checks import (MIN_TESTS, REQUIRED_SOURCE, REQUIRED_AUTH_TESTS,
+                        POLICY_MODULES, REQUIRED_POLICY_TESTS, check_result)
+
+
+def backend_output():
+    lines = [f"{name} (test_auth.AuthTests.{name}) ... ok" for name in REQUIRED_AUTH_TESTS]
+    return "\n".join(lines) + f"\nRan {MIN_TESTS['backend']} tests in 0.1s\n\nOK\n"
+
+
+def policy_output(omitted=None):
+    lines = [f"{test_id.rsplit('.', 1)[-1]} ({test_id}) ... ok"
+             for test_id in REQUIRED_POLICY_TESTS if test_id != omitted]
+    return "\n".join(lines) + f"\nRan {MIN_TESTS['policy']} tests in 0.1s\n\nOK\n"
 
 
 class ResultGateTests(unittest.TestCase):
     def test_complete_suite_passes(self):
         count = MIN_TESTS["backend"]
-        output = "\n".join(f"{name} (test_auth.AuthTests.{name}) ... ok" for name in REQUIRED_AUTH_TESTS)
-        output += f"\nRan {count} tests in 0.1s\n\nOK\n"
-        self.assertEqual(check_result("backend", 0, output), (count, []))
+        self.assertEqual(check_result("backend", 0, backend_output()), (count, []))
 
     def test_total_count_cannot_replace_missing_authentication_checks(self):
         count = MIN_TESTS["backend"]
@@ -25,13 +35,39 @@ class ResultGateTests(unittest.TestCase):
         self.assertTrue(check_result("backend", 0, "Ran 0 tests in 0.1s\n\nOK\n")[1])
 
     def test_skips_cannot_pass(self):
-        self.assertTrue(check_result("backend", 0, "Ran 17 tests in 0.1s\n\nOK (skipped=1)\n")[1])
+        output = backend_output().replace("\nOK\n", "\nOK (skipped=1)\n")
+        self.assertTrue(check_result("backend", 0, output)[1])
 
     def test_expected_failure_cannot_pass(self):
-        self.assertTrue(check_result("policy", 0, "Ran 1 test in 0.1s\n\nOK (expected failures=1)\n")[1])
+        output = policy_output().replace("\nOK\n", "\nOK (expected failures=1)\n")
+        self.assertTrue(check_result("policy", 0, output)[1])
 
     def test_nonzero_exit_cannot_pass(self):
-        self.assertTrue(check_result("backend", 1, "Ran 17 tests in 0.1s\n\nOK\n")[1])
+        self.assertTrue(check_result("backend", 1, backend_output())[1])
+
+    def test_complete_six_class_policy_report_passes(self):
+        self.assertEqual(check_result("policy", 0, policy_output()), (MIN_TESTS["policy"], []))
+
+    def test_policy_count_cannot_replace_each_missing_critical_case(self):
+        for test_id in REQUIRED_POLICY_TESTS:
+            with self.subTest(test=test_id):
+                count, errors = check_result("policy", 0, policy_output(omitted=test_id))
+                self.assertEqual(count, MIN_TESTS["policy"])
+                self.assertTrue(any(test_id in error for error in errors))
+
+    def test_legacy_single_policy_test_is_insufficient(self):
+        output = "test_rules (ensemble.test_policy.VotingTests.test_rules) ... ok\nRan 1 test in 0.1s\n\nOK\n"
+        self.assertTrue(check_result("policy", 0, output)[1])
+
+    def test_actual_policy_and_adapter_output_passes_gate(self):
+        root = Path(__file__).resolve().parents[2]
+        result = subprocess.run([sys.executable, "-B", "-m", "unittest", *POLICY_MODULES, "-v"],
+                                cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                text=True, encoding="utf-8", errors="replace", timeout=30,
+                                env={**os.environ, "PYTHONUTF8": "1", "PYTHONDONTWRITEBYTECODE": "1"})
+        count, errors = check_result("policy", result.returncode, result.stdout)
+        self.assertGreaterEqual(count, 17)
+        self.assertFalse(errors, "\n".join(errors))
 
     def test_missing_http_report_cannot_pass(self):
         self.assertTrue(check_result("http", 0, "Ran 20 tests in 1s\n\nOK\n")[1])

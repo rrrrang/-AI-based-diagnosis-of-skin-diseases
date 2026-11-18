@@ -9,7 +9,7 @@ UI·Backend 결과와 함께 SkinAI-Release-CI의 업로드 조건으로 사용�
 준비
 - D드라이브 작업 폴더를 사용하는 Windows Jenkins 실행 환경
 - Docker Desktop, Python 3.12 이상, Node.js, 미리 설치한 Playwright Chromium
-- skinai-backend-ensemble:20261113 로컬 이미지
+- skinai-backend-ensemble:yolo-six-20261117 로컬 이미지
 - MobileNet·ResNet50·YOLO 모델 폴더와 개인정보가 없는 검사 가능한 근접사진
 - 현재 이미지의 /srv/support에는 worker_entry.py, worker_health.py와
   모델 해시·worker 준비상태 검사 코드가 포함되어 있습니다.
@@ -17,6 +17,14 @@ UI·Backend 결과와 함께 SkinAI-Release-CI의 업로드 조건으로 사용�
 - 설치된 Playwright 버전에 맞는 Chromium을 준비합니다.
 - 18165 / 18166 / 18167 포트가 비어 있어야 합니다.
 - Docker Compose는 env_file의 required: false 설정을 지원해야 합니다.
+
+새 모델용 로컬 검사 이미지 준비
+- 모델 폴더는 ci/release/backend/model-lock.json에 고정된 9개 파일과 일치해야 합니다.
+- 기존 모델 폴더·검사 이미지를 덮어쓰지 않고 별도 이름으로 만듭니다.
+- 프로젝트 최상위 폴더에서 실행합니다.
+docker build --load --platform linux/amd64 -f ci/release/backend/Dockerfile --target worker --build-context models=D:/SkinAI_DevOps/model_bundles/yolo-six-20261117 -t skinai-backend-ensemble:yolo-six-20261117 .
+- 사진 2장·3장 검사 모두 실행한 모델 3개의 해시와 6개 라벨 응답을 확인합니다.
+- 새 YOLO의 투표 기준 0.70은 기존 예시값을 유지한 임시 연결 기준입니다.
 
 Jenkins의 main 전환 설정
 아래는 준비한 전환 기준이며 아직 실제 Jenkins 변경을 뜻하지 않습니다.
@@ -35,7 +43,7 @@ Jenkins의 main 전환 설정
   새 작업 폴더, 임시 파일과 npm 캐시는 D드라이브에 둡니다.
 
 Jenkins 검사와 기록
-- 먼저 정리·중단 복구 검사 23개를 실행합니다. 이 검사는 실제 Docker 서버를 사용하지 않습니다.
+- 먼저 모델 근거·정리·중단 복구 검사 32개를 실행합니다. 이 검사는 실제 Docker 서버를 사용하지 않습니다.
 - 그다음 실제 UI·API·MobileNet·ResNet50·YOLO를 연결한 브라우저 흐름 2개를 실행합니다.
   각각 사진 2장과 3장을 접수하고, 의사의 사진 조회·임시 저장·최종 확정과 환자 결과를 확인합니다.
 - 검사 성공·실패·중단 모두 이번 실행의 테스트 컨테이너만 정리합니다.
@@ -55,10 +63,10 @@ $env:npm_config_cache='D:\SkinAI_DevOps\npm-cache'
 $env:TEMP='D:\SkinAI_DevOps\workflow-temp'
 $env:TMP=$env:TEMP
 New-Item -ItemType Directory -Path $env:TEMP -Force | Out-Null
-& 'D:\miniconda3\python.exe' '.\ci\ui_workflow\run_workflow.py' --models 'D:\SkinAI_DevOps\ensemble_docker_check\models' --sample 'D:\SkinAI_DevOps\backend_ensemble_check\samples\sample.png' --output 'D:\SkinAI_DevOps\ui_workflow_verification_next' --docker 'C:\Users\human\AppData\Local\Programs\DockerDesktop\resources\bin\docker.exe' --node-dir 'D:\SkinAI_DevOps\tools\node-v24.22.2-win-x64' --browsers 'D:\SkinAI_DevOps\playwright-browsers'
+& 'D:\miniconda3\python.exe' '.\ci\ui_workflow\run_workflow.py' --models 'D:\SkinAI_DevOps\model_bundles\yolo-six-20261117' --sample 'D:\SkinAI_DevOps\backend_ensemble_check\samples\sample.png' --output 'D:\SkinAI_DevOps\ui_workflow_verification_next' --docker 'C:\Users\human\AppData\Local\Programs\DockerDesktop\resources\bin\docker.exe' --node-dir 'D:\SkinAI_DevOps\tools\node-v24.22.2-win-x64' --browsers 'D:\SkinAI_DevOps\playwright-browsers'
 
 --output은 매번 새 폴더 이름을 사용합니다.
-실행 순서: 패키지 설치 → 별도 API/worker 실행 → 두 UI 빌드 → 2개 브라우저 검사 → 테스트 컨테이너 정리.
+실행 순서: 고정 모델 파일 확인 → 패키지 설치 → 별도 API/worker 실행 → 두 UI 빌드 → 2개 브라우저 검사 → 테스트 컨테이너 정리.
 결과는 --output 아래 results 폴더에 있습니다. summary.json이 PASSED이고 두 workflow JSON이 passed인지 확인합니다.
 로컬 실행 결과 폴더는 Jenkins와 달리 자동으로 삭제되지 않습니다.
 입력 사진 형식 검사는 기존 tests/e2e/patient-required-input.spec.ts에서 따로 실행합니다.

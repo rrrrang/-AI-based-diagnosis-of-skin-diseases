@@ -14,6 +14,8 @@ import socket
 import subprocess
 import sys
 
+from model_evidence import GUARD_PATH, LOCK_PATH, load_model_identity, verify_workflow_model_evidence
+
 
 class WindowsJob:
     """A private job kills only this command's descendants if the runner exits."""
@@ -250,7 +252,7 @@ def main() -> int:
     parser.add_argument("--docker", required=True)
     parser.add_argument("--node-dir", type=Path)
     parser.add_argument("--browsers", type=Path)
-    parser.add_argument("--image", default="skinai-backend-ensemble:20261113")
+    parser.add_argument("--image", default="skinai-backend-ensemble:yolo-six-20261117")
     args = parser.parse_args()
     repo, output = args.repo.resolve(), args.output.resolve()
     if args.cleanup:
@@ -321,6 +323,10 @@ def main() -> int:
     started = False
     before = {}
     try:
+        identity = load_model_identity(repo)
+        report["model_identity"] = identity
+        run([sys.executable, "-B", str(repo / GUARD_PATH), "--models-root", str(args.models.resolve()),
+             "--lock", str(repo / LOCK_PATH)], log="model-bundle.log")
         report["image_id"] = run([args.docker, "image", "inspect", args.image, "--format", "{{.Id}}"]).strip()
         before = existing_containers()
         mounts = [f"{(repo / 'app').as_posix()}:/srv/app:ro",
@@ -330,6 +336,7 @@ def main() -> int:
                   "read_only": True, "cap_drop": ["ALL"], "security_opt": ["no-new-privileges:true"],
                   "tmpfs": ["/tmp:rw,nosuid,nodev,size=134217728,mode=1777"]}
         api = {**shared, "env_file": [{"path": ".env.test", "required": False}], "ports": ["127.0.0.1:18165:8000"],
+               "command": ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"],
                "volumes": mounts + ["./data/db:/data/db", "./data/photos:/data/photos"],
                "mem_limit": "512m", "cpus": 1,
                "healthcheck": {"test": ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=2)"],
@@ -351,7 +358,8 @@ def main() -> int:
         report["compose_project"] = project
         report["source_commit"] = run(["git", "rev-parse", "HEAD"]).strip()
         report["source_changes"] = run(["git", "status", "--short"]).splitlines()
-        source_paths = [repo / "main.py", Path(__file__).resolve()]
+        source_paths = [repo / "main.py", Path(__file__).resolve(),
+                        repo / "ci/ui_workflow/model_evidence.py", repo / LOCK_PATH, repo / GUARD_PATH]
         for folder in ["app", "ensemble", "frontend/patient-frontend/src", "frontend/doctor-frontend/src",
                        "frontend/patient-frontend/tests/workflow", "frontend/patient-frontend/tests/support"]:
             source_paths.extend(p for p in (repo / folder).rglob("*") if p.is_file() and p.suffix in {".py", ".ts", ".tsx", ".json"})
@@ -367,10 +375,9 @@ def main() -> int:
                 cwd=repo / f"frontend/{service}-frontend", log=f"{service}-build.log", timeout=180)
         run([args.node_dir / "npm.cmd", "exec", "--", "playwright", "test", "--config", "playwright.workflow.config.ts"],
             cwd=repo / "frontend/patient-frontend", log="workflow.log", timeout=1000)
-        for count in [2, 3]:
-            evidence = results / f"workflow-{count}-photos.json"
-            if not evidence.exists() or json.loads(evidence.read_text(encoding="utf-8")).get("status") != "passed":
-                raise RuntimeError(f"Passing workflow evidence missing: {evidence.name}")
+        if load_model_identity(repo) != identity:
+            raise RuntimeError("Model lock or guard changed during the workflow")
+        report["model_verification"] = verify_workflow_model_evidence(results, identity)
         report["status"] = "PASSED"
     except (Exception, KeyboardInterrupt) as exc:
         report["error"] = sanitize_text(str(exc), [doctor_token])
