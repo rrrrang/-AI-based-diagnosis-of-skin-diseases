@@ -1,0 +1,3 @@
+﻿model,checkpoint,epoch,val_loss,val_accuracy,test_accuracy,error_count,error_rate
+Frontal Crop,resnet50_frontal_crop_best.pth,13,0.4593422812084819,0.8511627906976744,0.8662131519274376,59,0.13378684807256236
+Frontal Aug A,resnet50_frontal_aug_a_best.pth,15,0.40900269996288213,0.8767441860465116,0.8888888888888888,49,0.1111111111111111
