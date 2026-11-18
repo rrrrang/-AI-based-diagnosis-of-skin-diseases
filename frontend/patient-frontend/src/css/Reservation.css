@@ -1,0 +1,1068 @@
+/* ==========================================
+  피부진단 AI - 의사 예약 모바일 UI 
+  예약 페이지 전체 레이아웃
+========================================== */
+/* 예약 페이지를 화면 가운데 정렬 */
+.reservation-page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* 모바일 앱 형태의 흰색 카드 */
+.reservation-card {
+  width: 390px;
+  height: 870px;
+
+  max-width: 100%;
+  min-height: 0;
+  flex-shrink: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 22px;
+
+  background: #ffffff;
+  border: 1.7px solid #164b43;
+  border-radius: 28px;
+
+  color: #102f2c;
+  overflow: hidden;
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================
+   3. 모바일 카드 내부 스크롤
+========================================== */
+
+/*
+ * 새로 추가한 영역
+ * 카드 크기와 사방 여백은 그대로 유지하고
+ * 내부 내용만 세로로 스크롤
+ */
+.reservation-scroll {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* 스크롤 마지막 콘텐츠 아래 여백 */
+  padding: 0 0 24px;
+
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+
+  box-sizing: border-box;
+}
+
+/* Chrome, Edge, Safari 스크롤바 숨김 */
+.reservation-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* 카드 내부의 크기 계산 통일 */
+.reservation-card *,
+.reservation-card *::before,
+.reservation-card *::after {
+  box-sizing: border-box;
+}
+
+/* 프로필 이미지 축소 */
+.reservation-doctor-card .res-doctor-card > img,
+.reservation-doctor-card .res-doctor-card > svg {
+  width: 80px !important;
+  height: 110px !important;
+}
+
+/* ==========================================
+  상단 피부진단 AI 로고
+========================================== */
+/* 로고 + 브랜드 이름 */
+.res-brand {
+  min-height: 60px;
+
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #102f2c;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* 기존 main_logo.png */
+.res-brand img {
+  width: 60px;
+  height: 60px;
+
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* 피부진단 AI 텍스트 */
+.res-brand strong {
+  color: #102f2c;
+
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -1.2px;
+  line-height: 1.2;
+}
+/* ==========================================
+  페이지 제목
+========================================== */
+/* 가상 의사 선택 / 예약 날짜·시간 선택 */
+.res-page-title {
+  margin: 5px 0 0;
+
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -1.2px;
+  line-height: 1.3;
+
+  color: #102f2c;
+}
+
+/* 제목 아래 안내 문구 */
+.res-subtitle {
+  margin: 0 0 20px;
+
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+
+  color: #273b37;
+}
+
+/* ==========================================
+  의사 선택 카드 3개
+========================================== */
+
+/* 의사 카드 세로 정렬 */
+.res-doctor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  padding: 0;
+}
+
+/* 의사 카드 기본 디자인 */
+.res-doctor-card {
+  position: relative;
+
+  width: 100%;
+  min-height: 130px;
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  padding: 12px;
+
+  background-color: #ffffff;
+  border: 1.5px solid #cbded3;
+  border-radius: 17px;
+
+  text-align: left;
+  color: #102f2c;
+
+  font: inherit;
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* 선택된 의사 카드의 진한 녹색 테두리 */
+.res-doctor-card.is-selected {
+  border: 2.5px solid #23833d;
+  box-shadow: 0 0 0 1px rgba(35, 131, 61, 0.06);
+}
+
+/* 마우스 올렸을 때 */
+.res-doctor-card:hover {
+  border-color: #23833d;
+}
+/* ==========================================
+  의사 이름 / 병원 / 성별 / 예약순위
+========================================== */
+
+/* 의사 정보 세로 배치 */
+.res-doctor-details {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  gap: 8px;
+}
+
+/* 김서연, 박지훈, 이다은 */
+.res-doctor-details > strong {
+  color: #102f2c;
+
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.9px;
+  line-height: 1.2;
+}
+
+/* 병원명 / 성별 / 예약 순위 */
+.res-doctor-details > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+
+  color: #1b3630;
+}
+
+/* 정보 아이콘 */
+.res-doctor-details > span svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+
+  color: #164b43;
+}
+
+/* 예약순위 1위(샘플) */
+.res-doctor-details .res-rank,
+.res-rank {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  width: 100%;
+
+  padding: 5px 8px;
+  border-radius: 99px;
+
+  background: #e5f2e9;
+
+  color: #14532d;
+
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.res-selected-details .res-rank {
+  background: #c9eed5;
+  color: #14532d;
+
+  padding: 5px 10px;
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* 예약순위 왕관 아이콘 */
+.res-rank svg {
+  color: #164b43;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+  의사 카드 오른쪽 선택 및 예약 가능
+========================================== */
+
+.res-doctor-availability {
+  width: 70px;
+  min-width: 70px;
+
+  align-self: stretch;
+
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: center;
+
+  gap: 8px;
+  border-left: 1px solid #c9ddd1;
+  padding: 0 0 0 10px;
+  color: #102f2c;
+}
+
+/* 선택 여부를 표시하는 동그란 버튼 */
+.res-choice-circle {
+  position: absolute;
+
+  top: 14px;
+  right: 14px;
+
+  width: 26px;
+  height: 26px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: 2px solid #88aaa0;
+  border-radius: 50%;
+
+  color: #ffffff;
+}
+
+/* 선택된 원형 표시 */
+.res-doctor-card.is-selected .res-choice-circle {
+  background-color: #236855;
+  border-color: #236855;
+}
+
+/* 예약 가능 텍스트 */
+.res-doctor-availability small {
+  margin-top: 20px;
+
+  color: #102f2c;
+
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* 초록색 점 + 가능 글자 */
+.res-available-dot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #193c32;
+
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* 예약 가능 초록 점 */
+.res-available-dot::before {
+  content: "";
+
+  width: 12px;
+  height: 12px;
+
+  background: #38a332;
+  border-radius: 50%;
+}
+
+/* ==========================================
+  하단 날짜·시간 선택 / 예약 확정 버튼
+========================================== */
+
+/* 시안의 진한 초록색 전체 너비 버튼 */
+.res-primary {
+  width: 100%;
+  min-height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  margin-top: 50px; 
+  /* 예약 버튼 위 여백 축소 */
+
+  /* flex-shrink: 0;    */
+  /* 버튼 높이가 줄어들지 않게 설정 */
+
+  padding: 12px 16px;
+
+  background: linear-gradient(
+    180deg,
+    #307967 0%,
+    #185b49 100%
+  );
+
+  border: none;
+  border-radius: 13px;
+
+  color: #ffffff;
+
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+
+  cursor: pointer;
+}
+
+/* 버튼 호버 */
+.res-primary:hover:not(:disabled) {
+  background: #174f40;
+}
+
+/* 예약 날짜/시간 미선택 */
+.res-primary:disabled {
+  background: #b3c4bc;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+  두 번째 화면 - 선택된 의사 정보 상단 예약 정보 통합 영역
+========================================== */
+
+.reservation-calendar-card {
+  padding: 24px;
+}
+
+/* 예약 정보 전체 영역 */
+.res-booking-top {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+/* 예약 정보 제목 */
+.res-booking-title {
+  margin: 0 0 10px;
+  color: #102f2c;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+}
+
+/* 예약 정보 카드 */
+.res-selected-doctor {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  margin: 0;
+  padding: 14px 16px;
+
+  background: #edf5f0;
+  border-radius: 16px;
+}
+
+/* 프로필 가로 배치 */
+.res-selected-profile {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.res-selected-profile > img,
+.res-selected-profile > svg {
+  width: 90px !important;
+  height: 100px !important;
+  background-color: #ffffff;
+}
+
+/* 의사 기본 정보 */
+.res-selected-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+
+  min-width: 0;
+}
+
+/* 의사 이름 */
+.res-selected-details > strong {
+  color: #102f2c;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+/* 병원 및 성별 */
+.res-selected-details > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #334f49;
+  font-size: 12px;
+}
+
+/* 의사 정보와 날짜 구분 */
+.res-booking-divider {
+  width: 100%;
+  height: 1px;
+
+  background-color: #cbded3;
+}
+
+/* 예약 날짜 / 시간 행 */
+.res-booking-detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* 날짜 / 시간 항목명 */
+.res-booking-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  color: #334f49;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* 항목 아이콘 */
+.res-booking-label svg {
+  color: #236855;
+}
+
+/* 선택된 날짜 / 시간 */
+.res-booking-detail > strong {
+  color: #102f2c;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+}
+/* ==========================================
+  월간 예약 달력
+========================================== */
+
+/* 이미지처럼 회색 테두리의 둥근 달력 */
+.res-calendar {
+  width: 100%;
+
+  padding: 13px 12px 12px;
+
+  background-color: #ffffff;
+  border: 1.3px solid #ccd7d3;
+  border-radius: 17px;
+}
+
+/* 달력 상단 월 변경 영역 */
+.res-calendar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 10px;
+}
+
+/* 2026년 11월 */
+.res-calendar-head strong {
+  color: #102f2c;
+
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+}
+
+/* 좌우 화살표 */
+.res-calendar-head button {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  background: transparent;
+  border: none;
+
+  color: #102f2c;
+  cursor: pointer;
+}
+
+/* 이동할 수 없는 달 */
+.res-calendar-head button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* 요일과 날짜를 7칸으로 */
+.res-days,
+.res-dates {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 1px;
+}
+
+/* 일 월 화 수 목 금 토 */
+.res-days b {
+  padding: 6px 0;
+
+  text-align: center;
+  color: #283b35;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 일요일 빨간 글씨 */
+.res-days b:first-child {
+  color: #e04040;
+}
+
+/* 날짜 버튼 */
+.res-dates button {
+  width: 100%;
+  min-height: 41px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+  padding: 4px 0;
+
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+
+  color: #102f2c;
+  font-size: 15px;
+
+  cursor: pointer;
+}
+
+/* 날짜 위에 마우스를 올릴 때 */
+.res-dates button:hover:not(:disabled):not(.selected) {
+  background: #edf5f0;
+}
+
+/* 선택된 날짜 - 진한 녹색 */
+.res-dates button.selected {
+  background: #236855;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* 예약 불가능한 날짜 */
+.res-dates button:disabled {
+  color: #8f9691;
+  cursor: not-allowed;
+}
+
+/* 날짜 아래 상태 점 */
+.res-dates button i {
+  width: 9px;
+  height: 9px;
+
+  display: block;
+
+  background: #d3d3d3;
+  border-radius: 50%;
+}
+
+/* 예약 가능한 날짜 */
+.res-dates button i.available {
+  background: #38a332;
+}
+
+/* 선택된 날짜 하단 흰색 점 */
+.res-dates button.selected i {
+  background: #ffffff;
+}
+
+/* 달력 시작 / 끝 빈칸 */
+.res-empty {
+  min-height: 41px;
+}
+
+/* 예약 가능 / 불가능 범례 */
+.res-calendar-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 16px;
+  margin-top: 8px;
+}
+
+/* 범례 텍스트 */
+.res-calendar-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #283b35;
+  font-size: 12px;
+}
+
+/* 범례 동그라미 */
+.res-calendar-legend i {
+  width: 9px;
+  height: 9px;
+
+  display: inline-block;
+
+  background: #d3d3d3;
+  border-radius: 50%;
+}
+
+/* 예약 가능 초록색 범례 */
+.res-calendar-legend i.available {
+  background: #38a332;
+}
+
+/* ==========================================
+  예약 시간 선택
+========================================== */
+
+/* 시간 선택 제목 */
+.res-section-title {
+  margin: 14px 0 8px;
+
+  color: #102f2c;
+
+  font-size: 19px;
+  font-weight: 800;
+}
+
+/* 이미지 기준 가로 4열 */
+.res-time-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* 예약 가능한 시간 버튼 */
+.res-time-grid button {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+
+  padding: 5px;
+
+  background: #ffffff;
+  border: 1.2px solid #236855;
+  border-radius: 11px;
+
+  color: #102f2c;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+/* 선택한 시간 */
+.res-time-grid button.selected {
+  background: linear-gradient(
+    180deg,
+    #307967,
+    #185b49
+  );
+
+  border-color: #236855;
+  color: #ffffff;
+}
+
+/* 예약 불가능한 시간 */
+.res-time-grid button:disabled {
+  background: #eeeeee;
+  border-color: #d3d3d3;
+  color: #a4a8aa;
+
+  cursor: not-allowed;
+}
+
+/* 날짜를 고르기 전 안내 */
+.res-select-date {
+  grid-column: 1 / -1;
+
+  margin: 10px 0;
+
+  text-align: center;
+  color: #748781;
+  font-size: 13px;
+}
+
+/* ==========================================
+  의사 선택 화면으로 돌아가기
+========================================== */
+.res-text-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  margin: 10px auto 0;
+  padding: 6px 10px;
+
+  background: transparent;
+  border: none;
+
+  color: #236855;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+/* ==========================================
+  하단 시뮬레이션 안내
+========================================== */
+.res-footnote {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+
+  margin: 12px 0 0;
+
+  color: #81918a;
+  font-size: 11px;
+  text-align: center;
+}
+
+/* 아이콘이 글자와 함께 표시되도록 */
+.res-footnote svg {
+  flex-shrink: 0;
+}
+
+/* ==========================================
+  모바일 반응형
+========================================== */
+@media (max-width: 480px) {
+
+  /* 좌우 여백 최소화 */
+  .reservation-page {
+    width: 100%;
+    height: 100dvh;
+
+    padding: 0;
+    overflow: hidden;
+  }
+
+
+  /* 모바일 앱 카드 */
+  .reservation-card {
+    width: 100%;
+    max-width: none;
+
+    height: 100dvh;
+    min-height: 0;
+    max-height: none;
+
+    padding: 16px 12px;
+
+    border: none;
+    border-radius: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 로고 영역 */
+  .res-brand {
+    min-height: 67px;
+    padding: 5px 8px;
+  }
+
+  .res-brand img {
+    width: 57px;
+    height: 57px;
+  }
+
+  .res-brand strong {
+    font-size: 25px;
+  }
+
+  /* 화면 제목 */
+  .res-page-title {
+    margin-left: 8px;
+    margin-right: 8px;
+
+    font-size: 20px;
+  }
+
+  .res-subtitle {
+    margin-left: 8px;
+    margin-right: 8px;
+
+    font-size: 13px;
+    margin-bottom: 22px;
+  }
+
+  /* 의사 카드 사이 간격 */
+  .res-doctor-list {
+    gap: 15px;
+  }
+
+  /* 의사 카드 */
+  .res-doctor-card {
+    min-height: 143px;
+    gap: 8px;
+    padding: 10px 8px;
+  }
+
+  /* 모바일 의사 일러스트 */
+  .res-doctor-card > img,
+  .res-doctor-card > svg {
+    width: 70px !important;
+    height: 90px !important;
+  }
+
+  /* 의사 이름 */
+  .res-doctor-details {
+    gap: 7px;
+  }
+
+  .res-doctor-details > strong {
+    font-size: 19px;
+  }
+
+  /* 병원과 성별 정보 */
+  .res-doctor-details > span {
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .res-doctor-details > span svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* 예약순위 */
+  .res-doctor-details .res-rank {
+    font-size: 10px;
+    padding: 4px 5px;
+  }
+
+  /* 카드 우측 예약 가능 표시 */
+  .res-doctor-availability {
+    width: 62px;
+    min-width: 62px;
+
+    padding-left: 6px;
+    gap: 10px;
+  }
+
+  .res-doctor-availability small,
+  .res-available-dot {
+    font-size: 11px;
+  }
+
+  .res-choice-circle {
+    width: 25px;
+    height: 25px;
+
+    top: 10px;
+    right: 9px;
+  }
+
+  .res-booking-title {
+    font-size: 21px;
+  }
+
+  .res-selected-doctor {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .res-selected-profile {
+    gap: 10px;
+  }
+
+  .res-selected-profile > img,
+  .res-selected-profile > svg {
+    width: 58px !important;
+    height: 64px !important;
+  }
+
+  .res-selected-details > strong {
+    font-size: 17px;
+  }
+
+  .res-selected-details > span,
+  .res-booking-label,
+  .res-booking-detail > strong {
+    font-size: 11px;
+  }
+
+  /* 달력 */
+  .res-calendar {
+    padding: 10px 7px;
+  }
+
+  .res-calendar-head strong {
+    font-size: 19px;
+  }
+
+  .res-days b {
+    font-size: 12px;
+  }
+
+  .res-dates button,
+  .res-empty {
+    min-height: 38px;
+  }
+
+  .res-dates button {
+    font-size: 13px;
+  }
+
+  /* 시간 버튼은 모바일에서도 4열 유지 */
+  .res-time-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .res-time-grid button {
+    min-height: 37px;
+    font-size: 12px;
+  }
+
+  /* 하단 예약 버튼 */
+  .res-primary {
+    min-height: 54px;
+    font-size: 18px;
+  }
+}
+
+
+/* ==========================================
+   16. 아주 작은 모바일 화면
+========================================== */
+
+@media (max-width: 360px) {
+
+  .res-doctor-card > img,
+  .res-doctor-card > svg {
+    width: 70px !important;
+    height: 86px !important;
+  }
+
+  .res-doctor-availability {
+    width: 54px;
+    min-width: 54px;
+  }
+
+  .res-doctor-details > strong {
+    font-size: 17px;
+  }
+
+  .res-doctor-details > span {
+    font-size: 10px;
+  }
+
+  .res-rank {
+    font-size: 9px;
+  }
+}

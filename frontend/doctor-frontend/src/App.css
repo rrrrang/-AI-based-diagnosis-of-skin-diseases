@@ -1,0 +1,191 @@
+
+/* 공통 레이아웃 및 헤더 스타일 */
+
+/* 전체 앱 영역 */
+.app-container {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 상단 공통 헤더 */
+
+.main-header {
+  width: min(calc(100% - 100px));
+  margin: 8px auto 0;
+  padding: 10px 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  background-color: var(--surface);
+  border-radius: 16px;
+}
+
+/* 왼쪽 로고와 브랜드 이름 */
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 기존 PNG 로고 */
+.header-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+/* 피부진단 AI 텍스트 */
+.header-title {
+  color: var(--text-main);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  white-space: nowrap;
+}
+
+/* UI 전환 버튼 */
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* 기본 버튼 디자인 */
+.header-button {
+  min-width: 114px;
+  padding: 12px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--primary-light);
+  border-radius: 10px;
+
+  background-color: #ffffff;
+  color: var(--primary-dark);
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* 현재 선택된 버튼 */
+.header-button.active {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+}
+
+/* 비활성 버튼에 마우스를 올렸을 때 */
+.header-button:not(.active):hover {
+  background-color: var(--surface-light);
+}
+
+/* 공통 페이지 콘텐츠 */
+
+.page-content {
+  width: min(calc(100% - 140px));
+  margin: 28px auto;
+}
+
+/* 메인 페이지 선택 링크 */
+.home-links {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.home-links a {
+  padding: 14px 24px;
+  border-radius: 10px;
+  background-color: var(--primary);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* ==========================================
+   환자 UI - 시연용 전환 메뉴
+========================================== */
+
+/* 환자 화면에서는 기존 흰색 헤더 제거 */
+.main-header.patient-mode {
+  width: calc(100% - 40px);
+  margin: 10px auto 0;
+  padding: 0;
+
+  /* 버튼을 오른쪽에 배치 */
+  justify-content: flex-end;
+
+  background: transparent;
+  border-radius: 0;
+}
+
+/* 환자 UI의 전환 메뉴 */
+.patient-mode .header-nav {
+  display: flex;
+  gap: 8px;
+}
+
+/* 전환 버튼 크기 축소 */
+.patient-mode .header-button {
+  min-width: 140px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+/* ==========================================
+   의사 UI - 기존 웹 헤더 유지
+========================================== */
+
+.main-header.doctor-mode {
+  /* 기존 헤더 디자인 유지 */
+  justify-content: space-between;
+}
+
+
+/* 모바일 화면 대응 */
+
+@media (max-width: 600px) {
+  /* 실제 스마트폰에서는 시연용 전환 메뉴 숨김 */
+  .main-header.patient-mode {
+    display: none;
+  }
+  .main-header {
+    width: calc(100% - 40px);
+    min-height: 60px;
+    padding: 10px 20px;
+    gap: 8px;
+  }
+
+  .header-logo {
+    width: 46px;
+    height: 46px;
+  }
+
+  .header-brand {
+    gap: 6px;
+  }
+
+  .header-title {
+    font-size: 18px;
+  }
+
+  .header-nav {
+    gap: 6px;
+  }
+
+  .header-button {
+    min-width: 62px;
+    padding: 9px 7px;
+    font-size: 12px;
+  }
+
+  .home-links {
+    flex-direction: column;
+  }
+}

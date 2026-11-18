@@ -1,0 +1,65 @@
+
+/* 전체 기본 스타일 및 공통 색상 */
+/* 세이지 그린 디자인 색상 변수 */
+:root {
+  --primary: #648f85;
+  --primary-dark: #334f49;
+  --primary-light: #a8c9b7;
+
+  --background: #f2f7f4;
+  --surface: #ffffff;
+  --surface-light: #edf5f0;
+
+  --text-main: #163f39;
+  --text-sub: #64756f;
+  --border-color: #c4d9d0;
+
+  font-family: "Pretendard", "Malgun Gothic", sans-serif;
+  color: var(--text-main);
+  background-color: var(--background);
+}
+
+/* 모든 요소의 크기 계산 방식 통일 */
+* {
+  box-sizing: border-box;
+}
+
+/* 전체 페이지 기본 설정 */
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+/* 기본 배경 */
+body {
+  min-width: 320px;
+  background-color: var(--background);
+}
+
+/* 버튼과 입력창의 글꼴 통일 */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/* 링크 기본 스타일 */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 버튼 마우스 커서 */
+button {
+  cursor: pointer;
+}
+
+/* 이미지 비율 유지 */
+img {
+  max-width: 100%;
+  display: block;
+}
