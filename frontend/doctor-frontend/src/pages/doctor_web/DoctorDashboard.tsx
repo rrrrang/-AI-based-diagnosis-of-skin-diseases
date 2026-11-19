@@ -707,6 +707,7 @@ export default function DoctorDashboard() {
       {/* 2단계 환자 자료 및 AI 분석 연결 */}
       {selectedPatient && photoError && <p role="alert">{photoError}</p>}
       <PatientReview
+        key={selectedPatient?.id ?? "no-patient"}
         patient={loadedPhotos && selectedPatient && loadedPhotos.id === selectedPatient.id
           ? { ...selectedPatient, photos: loadedPhotos.photos,
               analysisPhoto: loadedPhotos.photos[selectedPatient.analysis?.analyzedPhotoIndex ?? -1] ?? null,
