@@ -611,6 +611,12 @@
   font-weight: 700;
 }
 
+/* AI 분석 요청 버튼 비활성화 */
+.doctor-demo-action button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .doctor-demo-action p,
 .doctor-hint {
   font-size: 11px;
