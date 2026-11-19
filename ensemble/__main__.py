@@ -1,28 +1,10 @@
 import argparse
 import json
 import sys
-from collections.abc import Mapping
 from contextlib import redirect_stdout
 from pathlib import Path
 
-from .policy import LABELS, Prediction, decide, validate_thresholds, validate_yolo_scores, yolo_top_row
-
-
-def parse_yolo_response(response, image_id):
-    """Reject incompatible detector output before any ensemble vote is counted."""
-    if (not isinstance(response, Mapping) or response.get('schema_version') != '2.0'
-            or response.get('image_id') != image_id or response.get('input_role') != 'side_closeup'):
-        raise ValueError('Expected six-class YOLO schema 2.0 for the requested side/close-up image')
-    rows = validate_yolo_scores(response.get('disease_scores'))
-    top = yolo_top_row(rows)
-    expected_status = 'candidates_for_review' if top is not None else 'undetermined'
-    if response.get('status') != expected_status or response.get('top_candidate') != top:
-        raise ValueError('YOLO response status or top candidate disagrees with the full scores')
-    if (response.get('score_type') != 'uncalibrated_detection_confidence'
-            or response.get('scores_sum_to_100') is not False
-            or response.get('normal_confirmed') is not False):
-        raise ValueError('YOLO scores must remain uncalibrated candidates, not a confirmed diagnosis')
-    return (Prediction(top['name'], top['score']) if top else None), rows
+from .policy import LABELS, Prediction, decide, validate_thresholds
 
 
 class Ensemble:
@@ -38,7 +20,7 @@ class Ensemble:
 
         self.mobilenet = Predictor(ckpt=mobilenet_root / 'model/best.pt')
         self.yolo = DiseasePredictor(
-            weights=yolo_root / 'models/yolo11_detect/side_six_class_augmented/weights/best.pt'
+            weights=yolo_root / 'models/yolo11_detect/side_hard_negative/weights/best.pt'
         )
         checkpoint = torch.load(
             resnet_root / 'models/resnet50_side_best.pth',
@@ -58,34 +40,77 @@ class Ensemble:
 
     def predict(self, image, image_id, role):
         if role != 'side_closeup':
-            return {'image_id': image_id, 'input_role': role,
-                    'decision': 'unsupported_input', 'candidate': None}
-        predictions, yolo_scores = self.predict_models_with_metadata(image, image_id)
-        return {'image_id': image_id, 'input_role': role,
-                **decide(predictions, self.thresholds, yolo_disease_scores=yolo_scores)}
+            return {
+                'image_id': image_id,
+                'input_role': role,
+                'decision': 'unsupported_input',
+                'candidate': None
+            }
+
+        predictions, class_scores = self._predict_models(image, image_id)
+
+        return {
+            'image_id': image_id,
+            'input_role': role,
+            **decide(predictions, self.thresholds),
+            'resnetClassScores': class_scores
+        }
 
     def overlay(self, image):
         """MobileNet이 주목한 부위를 색으로 표시한 그림(Grad-CAM). 의사 참고용이며 투표에는 쓰지 않는다."""
         return self.mobilenet.predict(image, with_cam=True)['overlay']
 
+    
     def predict_models(self, image, image_id):
-        """Legacy per-model access. Use predict() or metadata-aware access for voting."""
-        predictions, _ = self.predict_models_with_metadata(image, image_id)
+        predictions, _ = self._predict_models(image, image_id)
         return predictions
 
-    def predict_models_with_metadata(self, image, image_id):
+    def _predict_models(self, image, image_id):
         import torch
 
+        # MobileNetV3 분석
         mobile = self.mobilenet.predict(image, with_cam=False)
+
+        # ResNet50 분석
         with torch.inference_mode():
-            scores = self.resnet(self.resnet_transform(image.convert('RGB')).unsqueeze(0))
-            confidence, index = scores.softmax(dim=1)[0].max(dim=0)
-        yolo, yolo_scores = parse_yolo_response(self.yolo.predict(image, image_id, 'side_closeup'), image_id)
+            scores = self.resnet(
+                self.resnet_transform(
+                    image.convert('RGB')
+                ).unsqueeze(0)
+            )
+
+            # 정상 포함 6개 클래스 전체 예측 점수
+            probabilities = scores.softmax(dim=1)[0]
+
+            # 가장 높은 예측 점수
+            confidence, index = probabilities.max(dim=0)
+
+            # 질환별 점수 저장
+            class_scores = dict(
+                zip(LABELS.values(), probabilities.tolist())
+            )
+
+        # YOLO11n 분석
+        yolo = self.yolo.predict(
+            image, image_id, 'side_closeup'
+        )['top_candidate']
+
+        # 모델별 분석 결과와 전체 분류 점수 반환
         return {
-            'mobilenet': Prediction(LABELS[mobile['pred']], mobile['conf']),
-            'resnet50': Prediction(tuple(LABELS.values())[index.item()], confidence.item()),
-            'yolo': yolo,
-        }, yolo_scores
+            'mobilenet': Prediction(
+                LABELS[mobile['pred']],
+                mobile['conf']
+            ),
+            'resnet50': Prediction(
+                tuple(LABELS.values())[index.item()],
+                confidence.item()
+            ),
+            'yolo': Prediction(
+                yolo['name'],
+                yolo['score']
+            ) if yolo is not None else None,
+        }, class_scores
+
 
 
 def main():
