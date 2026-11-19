@@ -1,4 +1,7 @@
-import { apiEnabled } from "../../services/api";
+import {
+  apiEnabled,
+  requestDoctorAnalysis
+} from "../../services/api";
 
 /**
  * PatientReview.tsx
@@ -8,7 +11,7 @@ import { apiEnabled } from "../../services/api";
  * 하단: 의사 최종 소견 작성
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   Camera,
@@ -57,6 +60,16 @@ const DEMO_PREDICTIONS: Prediction[] = [
   { label: "질환 후보 B", score: 23 },
   { label: "기타 후보", score: 9 },
 ];
+
+// 실제 AI 모델 분석 대상 6개 클래스
+const CLASS_LABELS = {
+  psoriasis: "건선",
+  atopic_dermatitis: "아토피",
+  acne: "여드름",
+  normal: "정상",
+  rosacea: "주사",
+  seborrheic_dermatitis: "지루성 피부염",
+};
 
 /* ==========================================
    2. 사진 표시 컴포넌트
@@ -133,7 +146,11 @@ function VerticalPredictionChart({
   return (
     <div className="doctor-chart-section">
       <div className="doctor-chart-header">
-        <h3>질환별 AI 예측 점수</h3>
+      <h3>
+        {isDemo
+          ? "질환별 AI 예측 점수"
+          : "질환별 AI 예측 점수 (ResNet50)"}
+      </h3>
 
         {isDemo && (
           <span className="doctor-status is-demo">
@@ -187,10 +204,11 @@ function VerticalPredictionChart({
                       }`}
                       style={{
                         height: `${score}%`,
+                        minHeight: 0,
                       }}
-                    >
-                      <span>{item.score}%</span>
-                    </div>
+                      >
+                        <span>{item.score.toFixed(1)}%</span>
+                      </div>
                   </div>
 
                   <div
@@ -236,6 +254,20 @@ export default function PatientReview({
   const [visitMessage, setVisitMessage] =
     useState("");
 
+  
+  // AI 분석 요청 상태
+  const [requestingAnalysis, setRequestingAnalysis] =
+    useState(false);
+
+  const [analysisRequestError, setAnalysisRequestError] =
+    useState("");
+
+  const [queuedLocally, setQueuedLocally] =
+    useState(false);
+
+  // 중복 분석 요청 방지
+  const analysisRequestLock = useRef(false);
+
   // 결과 저장 상태
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
@@ -279,8 +311,91 @@ export default function PatientReview({
     patient?.aiState === "완료" ||
     patient?.aiState === "시연 결과";
 
+    // 실제 AI 모델에서 반환한 전체 예측 점수
+  const scores = patient?.analysis?.resnetClassScores;
+
+  // 질환별 세로 막대그래프 데이터
+  const classPredictions: Prediction[] =
+    scores &&
+    Object.keys(CLASS_LABELS).every(
+      (code) =>
+        Number.isFinite(scores[code]) &&
+        scores[code] >= 0 &&
+        scores[code] <= 1
+    )
+      ? Object.entries(CLASS_LABELS).map(
+          ([code, label]) => ({
+            label,
+            score: scores[code] * 100,
+          })
+        )
+      : [];
+
   const isFinal =
     patient?.reviewState === "결과 전달 완료";
+  
+    
+    // AI 분석 작업 진행 여부
+    const jobActive =
+      patient?.analysisJobState === "pending" ||
+      patient?.analysisJobState === "processing" ||
+      patient?.aiState === "분석 중" ||
+      (
+        queuedLocally &&
+        patient?.analysisJobState == null &&
+        patient?.aiState === "대기"
+      );
+  
+    // AI 분석 요청 가능 여부
+    const canRequestAnalysis =
+      !!patient &&
+      !isFinal &&
+      !jobActive &&
+      !requestingAnalysis &&
+      (
+        patient.aiState === "대기" ||
+        patient.aiState === "실패"
+      );
+  
+    // 실제 AI 모델 분석 요청
+    const startAnalysis = async () => {
+      if (
+        !patient ||
+        !canRequestAnalysis ||
+        analysisRequestLock.current
+      ) return;
+  
+      analysisRequestLock.current = true;
+  
+      setRequestingAnalysis(true);
+      setAnalysisRequestError("");
+  
+      try {
+        const result = await requestDoctorAnalysis(
+          patient.id,
+          patient.aiState === "실패"
+        );
+  
+        setQueuedLocally(
+          result.state === "pending" ||
+          result.state === "processing"
+        );
+  
+        await onSaved();
+  
+      } catch (error) {
+        setAnalysisRequestError(
+          error instanceof Error
+            ? error.message
+            : "AI 분석 요청에 실패했습니다."
+        );
+  
+      } finally {
+        analysisRequestLock.current = false;
+        setRequestingAnalysis(false);
+      }
+    };
+  
 
   // 실제 AI 분석 결과 또는 명시된 시연 결과가
   // 있을 때만 소견 작성 가능
@@ -504,6 +619,44 @@ export default function PatientReview({
                 </span>
               </div>
 
+              {/* 실제 AI 분석 요청 버튼 */}
+              {apiEnabled && (
+                <div className="doctor-demo-action">
+                  <button
+                    type="button"
+                    disabled={!canRequestAnalysis}
+                    onClick={() => void startAnalysis()}
+                  >
+                    {requestingAnalysis
+                      ? "분석 요청 중..."
+                      : patient.aiState === "완료"
+                        ? "AI 분석 완료"
+                        : jobActive
+                          ? "AI 분석 진행 중..."
+                          : patient.aiState === "실패"
+                            ? "AI 분석 재요청"
+                            : "AI 분석 요청"}
+                  </button>
+              
+                  {jobActive && (
+                    <p role="status">
+                      AI 분석 중입니다.
+                      결과가 자동으로 갱신됩니다.
+                    </p>
+                  )}
+              
+                  {analysisRequestError && (
+                    <p
+                      className="doctor-error"
+                      role="alert"
+                    >
+                      {analysisRequestError}
+                    </p>
+                  )}
+                </div>
+              )}
+
+
               {/* AI 원본 / 마스킹 이미지 */}
               <h3>분석 이미지 비교</h3>
 
@@ -525,38 +678,41 @@ export default function PatientReview({
                   : "이번 분석에는 Grad-CAM 이미지가 생성되지 않았습니다."}</p>
               )}
 
+
+
               {/* 질환별 세로 막대그래프 */}
               {apiEnabled ? (
-                <div className="doctor-analysis-pending">
-                  <div>
-                    <strong>{patient.analysis?.decision === "deferred" ? "판단 보류" :
-                      patient.analysis?.decision === "undetermined" ? "판단 불가" :
-                      patient.analysis?.decision === "unsupported_input" ? "지원하지 않는 이미지" :
-                      patient.analysis?.candidate ? `검토 후보 · ${patient.analysis.candidate}` :
-                      patient.aiState === "실패" ? "분석 실패" : "AI 분석 결과 대기 중"}</strong>
-                    {patient.analysis?.models && (
-                      <div>
-                        <h3>모델별 분석 결과</h3>
-                        {([ ["mobilenet", "MobileNetV3"], ["resnet50", "ResNet50"], ["yolo", "YOLO11n"] ] as const).map(([key, name]) => {
-                          const model = patient.analysis?.models?.[key];
-                          const threshold = patient.analysis?.thresholds?.[key];
-                          return (
-                            <p key={key}><strong>{name}</strong> · {model
-                              ? `${model.candidate} / ${(model.score * 100).toFixed(1)}%${typeof threshold === "number" && model.score < threshold ? " (투표 기준 미달)" : ""}`
-                              : "후보 없음"}</p>
-                          );
-                        })}
-                        <small>모델별 점수는 질환 확진 확률이 아닙니다.</small>
-                      </div>
-                    )}
-                    {patient.analysis && (
-                      <ul>{Object.entries(patient.analysis.votes ?? {}).map(([code, count]) =>
-                        <li key={code}>{code} · {count}표</li>)}</ul>
-                    )}
+                patient.aiState === "완료" &&
+                classPredictions.length === 6 ? (
+                  <VerticalPredictionChart
+                    data={classPredictions}
+                    isDemo={false}
+                  />
+                ) : (
+                  <div className="doctor-analysis-pending">
+                    <Info size={20} />
+
+                    <div>
+                      <strong>
+                        {patient.aiState === "실패"
+                          ? "AI 분석 실패"
+                          : patient.aiState === "완료"
+                            ? "질환별 예측 점수가 없습니다."
+                            : "AI 분석 결과 대기 중"}
+                      </strong>
+
+                      <p>
+                        {patient.aiState === "실패"
+                          ? "AI 분석을 다시 요청해 주세요."
+                          : patient.aiState === "완료"
+                            ? "업데이트된 AI 워커로 새 분석을 진행해 주세요."
+                            : "분석 완료 후 질환별 예측 점수가 표시됩니다."}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                )
               ) : resultAvailable &&
-              patient.predictions.length > 0 ? (
+                patient.predictions.length > 0 ? (
                 <VerticalPredictionChart
                   data={patient.predictions}
                   isDemo={
@@ -580,6 +736,8 @@ export default function PatientReview({
                   </div>
                 </div>
               )}
+
+
 
               {/* AI 미연결 시 테스트 버튼 */}
               {!apiEnabled && patient.aiState === "대기" && (
