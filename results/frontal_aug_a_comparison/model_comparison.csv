@@ -1,0 +1,3 @@
+﻿model,test_count,correct,incorrect,accuracy
+aspect,441,382,59,86.62131519274377
+aug_a,441,392,49,88.88888888888889
