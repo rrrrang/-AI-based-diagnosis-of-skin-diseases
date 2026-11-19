@@ -196,7 +196,15 @@ def case_detail(connection, case, doctor=False):
     if review_json:
         data.update(json.loads(review_json))
     if doctor:
+        if case["patient_user_id"]:
+            user = connection.execute("SELECT login_id FROM users WHERE id = ? AND role = 'patient'", (case["patient_user_id"],)).fetchone()
+            if user:
+                data["patientPhone"] = user["login_id"]
+        # 현재 AI 분석 작업 상태
+        data["analysisJobState"] = job["state"] if job else None
+        
         data["analysis"] = json.loads(job["result"]) if job and job["result"] else None
+
         data["photoIndices"] = [row[0] for row in connection.execute(
             "SELECT photo_index FROM photos WHERE case_id = ? ORDER BY photo_index", (case["id"],)
         )]
@@ -238,13 +246,34 @@ def save_review(case_id: str, review: Review,
         return case_detail(connection, case, doctor=True)
 
 
+
 @router.post("/{case_id}/analyze")
-def analyze(case: Annotated[object, Depends(patient_case)], response: Response, retry: bool = False):
+def analyze(
+    case_id: str,
+    response: Response,
+    credentials: Annotated[
+        HTTPAuthorizationCredentials | None,
+        Depends(bearer)
+    ],
+    retry: bool = False
+):
+    # 환자 본인 또는 담당 의사만 분석 요청 가능
+    case, _ = case_for_view(case_id, credentials)
+
     job, created = enqueue(case["id"], retry)
+
     if job is None:
-        raise HTTPException(422, "A close-up photo is required")
+        raise HTTPException(
+            422, "A close-up photo is required"
+        )
+
     response.status_code = 202 if created else 200
-    return {"jobId": job["id"], "state": job["state"]}
+
+    return {
+        "jobId": job["id"],
+        "state": job["state"]
+    }
+
 
 
 @router.get("/{case_id}/photos/{index}")
