@@ -55,14 +55,26 @@ export interface DoctorCase {
   photoCount?: number;
   photoIndices?: number[];
 
+  
   // AI 분석 정보
   aiState: AIState;
+  
+  // AI 분석 작업 상태
+  analysisJobState?:
+    | "pending"
+    | "processing"
+    | "completed"
+    | "failed"
+    | null;
+  
   predictions: Prediction[];
+
+  
   
   // 앙상블 모델 분석 결과
   analysis?: {
     candidate: string | null;
-  
+
     decision:
       | "majority"
       | "single_qualified"
@@ -70,14 +82,29 @@ export interface DoctorCase {
       | "deferred"
       | "undetermined"
       | "unsupported_input";
-  
+
     votes?: Record<string, number>;
     analyzedPhotoIndex: number;
     modelVersions?: Record<string, string>;
     overlayAvailable?: boolean;
-    models?: Partial<Record<"mobilenet" | "resnet50" | "yolo", { candidate: string; score: number } | null>>;
-    thresholds?: Partial<Record<"mobilenet" | "resnet50" | "yolo", number>>;
+
+    // 정상 포함 6개 클래스 전체 예측 점수
+    resnetClassScores?: Record<string, number>;
+
+    // 모델별 분석 결과
+    models?: Partial<
+      Record<
+        "mobilenet" | "resnet50" | "yolo",
+        { candidate: string; score: number } | null
+      >
+    >;
+
+    // 모델별 분석 기준값
+    thresholds?: Partial<
+      Record<"mobilenet" | "resnet50" | "yolo", number>
+    >;
   } | null;
+
 
   // AI 분석 원본 및 마스킹 이미지
   analysisPhoto: File | Blob | null;
