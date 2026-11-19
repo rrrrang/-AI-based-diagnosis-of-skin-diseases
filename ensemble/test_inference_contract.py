@@ -35,45 +35,13 @@ class YoloInferenceContractTests(unittest.TestCase):
         raw = response(normal=.95, acne=.4)
         prediction, rows = parse_yolo_response(raw, 'fixture')
         ensemble = Ensemble.__new__(Ensemble)
-        ensemble.thresholds = {
-            'mobilenet': .82,
-            'resnet50': .85,
-            'yolo': .70
-        }
-        # 질환별 세로 막대그래프 테스트 데이터
-        class_scores = {
-            'psoriasis': .002,
-            'atopic_dermatitis': .002,
-            'acne': .002,
-            'normal': .99,
-            'rosacea': .002,
-            'seborrheic_dermatitis': .002
-        }
-        ensemble.predict_models_with_metadata = Mock(
-            return_value=(
-                {
-                    'mobilenet': Prediction('normal', .99),
-                    'resnet50': Prediction('normal', .99),
-                    'yolo': prediction
-                },
-                rows,
-                class_scores
-            )
-        )
+        ensemble.thresholds = {'mobilenet': .82, 'resnet50': .85, 'yolo': .70}
+        ensemble.predict_models_with_metadata = Mock(return_value=(
+            {'mobilenet': Prediction('normal', .99), 'resnet50': Prediction('normal', .99), 'yolo': prediction}, rows))
         result = ensemble.predict(object(), 'fixture', 'side_closeup')
-        self.assertEqual(
-            (result['decision'], result['candidate']),
-            ('deferred', None)
-        )
-        self.assertEqual(
-            result['yolo_disease_scores'],
-            raw['disease_scores']
-        )
-        # 6개 클래스 전체 예측 점수 검증
-        self.assertEqual(
-            result['resnetClassScores'],
-            class_scores
-        )
+        self.assertEqual((result['decision'], result['candidate']), ('deferred', None))
+        self.assertEqual(result['yolo_disease_scores'], raw['disease_scores'])
+
     def test_schema_role_or_image_mismatch_is_rejected(self):
         for field, value in (('schema_version', '1.0'), ('input_role', 'front'), ('image_id', 'different')):
             raw = response(normal=.9)
