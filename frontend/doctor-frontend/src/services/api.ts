@@ -54,11 +54,24 @@ export async function doctorLogout(): Promise<void> {
   }
 }
 
-type Detail = Pick<DoctorCase, "id" | "doctorId" | "date" | "time" | "patientName" |
-  "age" | "gender" | "patientPhone" | "symptoms" | "duration" | "description" | "aiState" |
-  "reviewState" | "submittedAt" | "analysis"> &
-  Partial<Pick<DoctorCase, "diagnosis" | "opinion" | "visitRequired" | "visitMessage">> &
-  { photoIndices: number[] };
+type Detail = Pick<
+  DoctorCase,
+  "id" | "doctorId" | "date" | "time" |
+  "patientName" | "age" | "gender" |
+  "patientPhone" | "symptoms" | "duration" |
+  "description" | "aiState" | "reviewState" |
+  "submittedAt" | "analysis" | "analysisJobState"
+> &
+Partial<
+  Pick<
+    DoctorCase,
+    "diagnosis" | "opinion" |
+    "visitRequired" | "visitMessage"
+  >
+> &
+{
+  photoIndices: number[];
+};
 
 async function request(path: string, options?: RequestInit) {
   const token = sessionStorage.getItem(doctorTokenKey);
@@ -73,6 +86,17 @@ async function request(path: string, options?: RequestInit) {
     throw new Error("로그인이 끝났어요. 다시 로그인해 주세요.");
   }
   if (!response.ok) throw new Error(`의사 API 요청 실패 (${response.status})`);
+  if (response.status === 503) {
+    throw new Error(
+      "AI 분석 워커가 실행 중인지 확인해 주세요."
+    );
+  }
+  
+  if (response.status === 422) {
+    throw new Error(
+      "분석에 필요한 상세 부위 사진을 확인해 주세요."
+    );
+  }
   return response;
 }
 
@@ -87,6 +111,26 @@ export async function listAssignedCases(doctorId?: string): Promise<DoctorCase[]
     updatedAt: detail.submittedAt, ...detail,
   }));
 }
+
+
+// 담당 의사의 실제 AI 분석 요청
+export async function requestDoctorAnalysis(
+  caseId: string,
+  retry = false
+): Promise<{
+  jobId: string;
+  state: NonNullable<DoctorCase["analysisJobState"]>;
+}> {
+  const response = await request(
+    `/api/cases/${encodeURIComponent(caseId)}/analyze${retry ? "?retry=true" : ""}`,
+    {
+      method: "POST",
+    }
+  );
+
+  return response.json();
+}
+
 
 export async function readCasePhotos(item: DoctorCase): Promise<DoctorCase> {
   const photos = await Promise.all([0, 1, 2].map(async (index) => {
