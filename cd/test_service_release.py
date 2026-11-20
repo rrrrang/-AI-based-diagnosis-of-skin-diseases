@@ -48,8 +48,13 @@ class ComposeTests(unittest.TestCase):
         self.assertEqual(services["patient-ui"]["ports"], ["127.0.0.1:18266:8080"])
         self.assertEqual(services["doctor-ui"]["ports"], ["127.0.0.1:18267:8080"])
         self.assertEqual({name: service["image"] for name, service in services.items()}, images)
-        self.assertEqual(services["api"]["volumes"], ["db:/data/db", "photos:/data/photos"])
-        self.assertEqual(services["worker"]["volumes"], ["db:/data/db", "photos:/data/photos:ro"])
+        self.assertEqual(services["api"]["volumes"],
+                         ["db:/data/db", "photos:/data/photos", "analysis:/data/analysis:ro"])
+        self.assertEqual(services["worker"]["volumes"],
+                         ["db:/data/db", "photos:/data/photos:ro", "analysis:/data/analysis"])
+        self.assertEqual(set(config["volumes"]), {"db", "photos", "analysis"})
+        for name in ("api", "worker"):
+            self.assertEqual(services[name]["environment"]["SKINAI_ANALYSIS_DIR"], "/data/analysis")
         self.assertEqual(services["worker"]["network_mode"], "none")
         self.assertEqual(services["api"]["env_file"], ["runtime.env"])
         self.assertNotIn("env_file", services["patient-ui"])
