@@ -149,7 +149,7 @@ function VerticalPredictionChart({
       <h3>
         {isDemo
           ? "질환별 AI 예측 점수"
-          : "질환별 AI 예측 점수 (ResNet50)"}
+          : "질환별 AI 예측 점수"}
       </h3>
 
         {isDemo && (
@@ -680,6 +680,55 @@ export default function PatientReview({
 
 
 
+              {/* 앙상블 판정 및 모델별 후보 점수 (실제 서버 응답) */}
+              {apiEnabled && patient.aiState === "완료" && patient.analysis && (
+                <div className="doctor-ensemble-summary">
+                  <h3>앙상블 판정</h3>
+                  <strong className="doctor-ensemble-decision">
+                    {patient.analysis.decision === "deferred"
+                      ? "판단 보류"
+                      : patient.analysis.decision === "undetermined"
+                        ? "판단 불가"
+                        : patient.analysis.decision === "unsupported_input"
+                          ? "지원하지 않는 이미지"
+                          : patient.analysis.candidate
+                            ? (CLASS_LABELS[patient.analysis.candidate as keyof typeof CLASS_LABELS]
+                              ?? patient.analysis.candidate)
+                            : "분석 후보 없음"}
+                  </strong>
+
+                  <h3>모델별 후보 점수</h3>
+                  <div className="doctor-model-score-list">
+                    {([
+                      ["mobilenet", "MobileNetV3"],
+                      ["resnet50", "ResNet50"],
+                      ["yolo", "YOLO11n"],
+                    ] as const).map(([key, name]) => {
+                      const model = patient.analysis?.models?.[key];
+                      const threshold = patient.analysis?.thresholds?.[key];
+                      const label = model
+                        ? (CLASS_LABELS[model.candidate as keyof typeof CLASS_LABELS]
+                          ?? model.candidate)
+                        : "후보 없음";
+                      return (
+                        <div className="doctor-model-score-row" key={key}>
+                          <span>{name}</span>
+                          <strong>{label}</strong>
+                          <span>
+                            {model && Number.isFinite(model.score)
+                              ? `${(model.score * 100).toFixed(1)}%`
+                              : "—"}
+                          </span>
+                          {model && typeof threshold === "number" && model.score < threshold && (
+                            <small>투표 기준 미달</small>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* 질환별 세로 막대그래프 */}
               {apiEnabled ? (
                 patient.aiState === "완료" &&
@@ -749,11 +798,6 @@ export default function PatientReview({
                   >
                     시연용 예측 그래프 표시
                   </button>
-
-                  <p>
-                    가상 점수를 사용한 UI 테스트이며
-                    실제 AI 분석 결과가 아닙니다.
-                  </p>
                 </div>
               )}
 
