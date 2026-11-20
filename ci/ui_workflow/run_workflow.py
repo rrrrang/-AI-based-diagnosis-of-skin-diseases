@@ -14,7 +14,8 @@ import socket
 import subprocess
 import sys
 
-from model_evidence import GUARD_PATH, LOCK_PATH, load_model_identity, verify_workflow_model_evidence
+from model_evidence import (GUARD_PATH, LOCK_PATH, load_model_identity,
+                            verify_workflow_model_evidence, verify_gradcam_evidence)
 
 
 class WindowsJob:
@@ -242,6 +243,14 @@ def cleanup_run(output, docker, run=None):
     return {"test_containers_cleaned": True, "compose_project": project}
 
 
+def test_addresses(api_port, patient_port, doctor_port):
+    ports = (api_port, patient_port, doctor_port)
+    if any(type(port) is not int or not 1024 <= port <= 65535 for port in ports) or len(set(ports)) != 3:
+        raise ValueError("Use three distinct test ports between 1024 and 65535")
+    return {f"SKINAI_E2E_{name}_URL": f"http://127.0.0.1:{port}"
+            for name, port in zip(("API", "PATIENT", "DOCTOR"), ports)}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[2])
@@ -253,6 +262,11 @@ def main() -> int:
     parser.add_argument("--node-dir", type=Path)
     parser.add_argument("--browsers", type=Path)
     parser.add_argument("--image", default="skinai-backend-ensemble:yolo-six-20261117")
+    parser.add_argument("--api-port", type=int, default=18165)
+    parser.add_argument("--patient-port", type=int, default=18166)
+    parser.add_argument("--doctor-port", type=int, default=18167)
+    parser.add_argument("--gradcam-only", action="store_true",
+                        help="Run focused image checks only; never produces full workflow approval")
     args = parser.parse_args()
     repo, output = args.repo.resolve(), args.output.resolve()
     if args.cleanup:
@@ -269,7 +283,11 @@ def main() -> int:
                  repo / "frontend/patient-frontend/playwright.workflow.config.ts"]:
         if not path.exists():
             parser.error(f"Required path not found: {path}")
-    for port in [18165, 18166, 18167]:
+    try:
+        addresses = test_addresses(args.api_port, args.patient_port, args.doctor_port)
+    except ValueError as error:
+        parser.error(str(error))
+    for port in [args.api_port, args.patient_port, args.doctor_port]:
         with socket.socket() as probe:
             if probe.connect_ex(("127.0.0.1", port)) == 0:
                 parser.error(f"Port {port} is already in use; existing server left untouched")
@@ -278,21 +296,30 @@ def main() -> int:
     output.mkdir(parents=True)
     results = output / "results"
     results.mkdir()
-    for sub in ["data/db", "data/photos"]:
+    for sub in ["data/db", "data/photos", "data/analysis"]:
         (output / sub).mkdir(parents=True)
     doctor_token = secrets.token_urlsafe(32)
     private_env = output / ".env.test"
     env = os.environ.copy()
     env.update({"PATH": str(args.node_dir) + os.pathsep + env.get("PATH", ""),
-                "CI": "true", "VITE_SKINAI_API": "true", "SKINAI_API_TARGET": "http://127.0.0.1:18165",
+                "CI": "true", "VITE_SKINAI_API": "true", "SKINAI_API_TARGET": addresses["SKINAI_E2E_API_URL"],
                 "PLAYWRIGHT_BROWSERS_PATH": str(args.browsers), "PYTHONUTF8": "1",
                 "SKINAI_E2E_DOCTOR_TOKEN": doctor_token, "SKINAI_E2E_SAMPLE": str(args.sample.resolve()),
                 # 의사 화면은 아이디·비밀번호로 로그인합니다. 임시 비밀번호는 같은 일회용 값을 씁니다.
                 "SKINAI_E2E_DOCTOR_LOGIN": "ci-doctor", "SKINAI_E2E_DOCTOR_PASSWORD": doctor_token,
                 "SKINAI_E2E_OUTPUT": str(results)})
+    env.update(addresses)
+    other_password = secrets.token_urlsafe(32) if args.gradcam_only else None
+    if other_password:
+        env.update(SKINAI_E2E_OTHER_DOCTOR_LOGIN="ci-other-doctor",
+                   SKINAI_E2E_OTHER_DOCTOR_PASSWORD=other_password)
+    else:
+        env.pop("SKINAI_E2E_OTHER_DOCTOR_LOGIN", None)
+        env.pop("SKINAI_E2E_OTHER_DOCTOR_PASSWORD", None)
     report = {"status": "FAILED", "image": args.image, "started_at": datetime.now(timezone.utc).isoformat(),
               "sample_sha256": hashlib.sha256(args.sample.read_bytes()).hexdigest(),
-              "scope": "Real API, 3-model execution and UI workflow; not clinical accuracy"}
+              "test_mode": "gradcam-only" if args.gradcam_only else "full-workflow",
+              "scope": "Real API, 3-model execution and UI checks; not clinical accuracy"}
 
     def run(command, *, cwd=repo, log="commands.log", timeout=300):
         print("RUN:", " ".join(map(str, command)), flush=True)
@@ -332,34 +359,40 @@ def main() -> int:
         mounts = [f"{(repo / 'app').as_posix()}:/srv/app:ro",
                   f"{(repo / 'ensemble').as_posix()}:/srv/ensemble:ro",
                   f"{(repo / 'main.py').as_posix()}:/srv/main.py:ro"]
-        shared = {"image": args.image, "environment": {"SKINAI_DB_PATH": "/data/db/backend.sqlite3", "SKINAI_PHOTO_DIR": "/data/photos"},
+        shared = {"image": args.image, "environment": {"SKINAI_DB_PATH": "/data/db/backend.sqlite3",
+                  "SKINAI_PHOTO_DIR": "/data/photos", "SKINAI_ANALYSIS_DIR": "/data/analysis"},
                   "read_only": True, "cap_drop": ["ALL"], "security_opt": ["no-new-privileges:true"],
                   "tmpfs": ["/tmp:rw,nosuid,nodev,size=134217728,mode=1777"]}
-        api = {**shared, "env_file": [{"path": ".env.test", "required": False}], "ports": ["127.0.0.1:18165:8000"],
+        api = {**shared, "env_file": [{"path": ".env.test", "required": False}], "ports": [f"127.0.0.1:{args.api_port}:8000"],
                "command": ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"],
-               "volumes": mounts + ["./data/db:/data/db", "./data/photos:/data/photos"],
+               "volumes": mounts + ["./data/db:/data/db", "./data/photos:/data/photos", "./data/analysis:/data/analysis:ro"],
                "mem_limit": "512m", "cpus": 1,
                "healthcheck": {"test": ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=2)"],
                                "interval": "5s", "timeout": "4s", "retries": 12}}
         worker = {**shared, "command": ["python", "/srv/support/worker_entry.py", "--mobilenet-root", "/models/mobilenet",
                           "--resnet-root", "/models/resnet50", "--yolo-root", "/models/yolo", "--thresholds", "/srv/ensemble/thresholds.example.json"],
                   "depends_on": {"api": {"condition": "service_healthy"}},
-                  "volumes": mounts + ["./data/db:/data/db", "./data/photos:/data/photos:ro", f"{args.models.resolve().as_posix()}:/models:ro"],
+                  "volumes": mounts + ["./data/db:/data/db", "./data/photos:/data/photos:ro",
+                                       "./data/analysis:/data/analysis", f"{args.models.resolve().as_posix()}:/models:ro"],
                   "mem_limit": "4g", "cpus": 2, "pids_limit": 128, "network_mode": "none",
                   "healthcheck": {"test": ["CMD", "python", "/srv/support/worker_health.py"], "interval": "5s", "timeout": "4s", "start_period": "45s", "retries": 12}}
         project = "skinai-ui-workflow-" + secrets.token_hex(4)
         (output / "compose.json").write_text(json.dumps({"name": project, "services": {"api": api, "worker": worker}}, indent=2), encoding="utf-8")
         write_state(output, project)
+        accounts = {"d1": {"loginId": "ci-doctor", "password": doctor_token}}
+        if other_password:
+            accounts["d2"] = {"loginId": "ci-other-doctor", "password": other_password}
         private_env.write_text(
             "SKINAI_DEMO_DOCTOR_TOKENS=" + json.dumps({"d1": doctor_token}) + "\n"
-            + "SKINAI_DOCTOR_ACCOUNTS=" + json.dumps({"d1": {"loginId": "ci-doctor", "password": doctor_token}}) + "\n",
+            + "SKINAI_DOCTOR_ACCOUNTS=" + json.dumps(accounts) + "\n",
             encoding="utf-8")
         compose = compose_command(args.docker, output, load_owned_state(output))
         report["compose_project"] = project
         report["source_commit"] = run(["git", "rev-parse", "HEAD"]).strip()
         report["source_changes"] = run(["git", "status", "--short"]).splitlines()
         source_paths = [repo / "main.py", Path(__file__).resolve(),
-                        repo / "ci/ui_workflow/model_evidence.py", repo / LOCK_PATH, repo / GUARD_PATH]
+                        repo / "ci/ui_workflow/model_evidence.py", repo / LOCK_PATH, repo / GUARD_PATH,
+                        repo / "frontend/patient-frontend/playwright.workflow.config.ts"]
         for folder in ["app", "ensemble", "frontend/patient-frontend/src", "frontend/doctor-frontend/src",
                        "frontend/patient-frontend/tests/workflow", "frontend/patient-frontend/tests/support"]:
             source_paths.extend(p for p in (repo / folder).rglob("*") if p.is_file() and p.suffix in {".py", ".ts", ".tsx", ".json"})
@@ -373,12 +406,17 @@ def main() -> int:
         for service in ["patient", "doctor"]:
             run([args.node_dir / "npm.cmd", "run", "build", "--", "--outDir", "dist-e2e"],
                 cwd=repo / f"frontend/{service}-frontend", log=f"{service}-build.log", timeout=180)
-        run([args.node_dir / "npm.cmd", "exec", "--", "playwright", "test", "--config", "playwright.workflow.config.ts"],
+        config = "tests/workflow/playwright.gradcam.config.ts" if args.gradcam_only else "playwright.workflow.config.ts"
+        run([args.node_dir / "npm.cmd", "exec", "--", "playwright", "test", "--config", config],
             cwd=repo / "frontend/patient-frontend", log="workflow.log", timeout=1000)
         if load_model_identity(repo) != identity:
             raise RuntimeError("Model lock or guard changed during the workflow")
-        report["model_verification"] = verify_workflow_model_evidence(results, identity)
-        report["status"] = "PASSED"
+        if args.gradcam_only:
+            report["gradcam_verification"] = verify_gradcam_evidence(results, identity)
+            report["status"] = "GRADCAM_PASSED"
+        else:
+            report["model_verification"] = verify_workflow_model_evidence(results, identity)
+            report["status"] = "PASSED"
     except (Exception, KeyboardInterrupt) as exc:
         report["error"] = sanitize_text(str(exc), [doctor_token])
         print("FAILED:", report["error"], flush=True)
@@ -414,7 +452,7 @@ def main() -> int:
         summary = sanitize_text(json.dumps(report, ensure_ascii=False, indent=2), [doctor_token])
         (results / "summary.json").write_text(summary, encoding="utf-8")
         print(summary, flush=True)
-    return 0 if report["status"] == "PASSED" else 1
+    return 0 if report["status"] in ("PASSED", "GRADCAM_PASSED") else 1
 
 
 if __name__ == "__main__":

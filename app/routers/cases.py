@@ -31,9 +31,13 @@ def photo_root():
     return Path(os.environ.get("SKINAI_PHOTO_DIR", "data/private-photos"))
 
 
+def analysis_root():
+    return Path(os.environ.get("SKINAI_ANALYSIS_DIR", "data/private-analysis"))
+
+
 def overlay_path(case_id, job_id):
-    # 분석 작업마다 하나씩 저장한다. 사진과 같은 비공개 폴더를 쓴다.
-    return photo_root() / case_id / f"overlay-{job_id}.png"
+    # 원본 사진은 읽기 전용으로 유지하고 분석 결과는 별도로 저장한다.
+    return analysis_root() / case_id / f"overlay-{job_id}.png"
 
 
 def token_digest(token):
@@ -300,7 +304,12 @@ def get_analysis_image(case_id: str,
     with closing(connect()) as connection:
         job = latest(connection, case["id"])
     result = json.loads(job["result"]) if job and job["state"] == "completed" and job["result"] else {}
-    path = overlay_path(case["id"], job["id"]) if job else None
-    if not result.get("overlayAvailable") or not path.is_file():
+    if not result.get("overlayAvailable"):
+        raise HTTPException(404, "Analysis image not found")
+    path = overlay_path(case["id"], job["id"])
+    if not path.is_file():
+        # 이전 버전이 저장한 그림도 읽을 수 있도록 한다. 이 경로에는 쓰지 않는다.
+        path = photo_root() / case["id"] / f"overlay-{job['id']}.png"
+    if not path.is_file():
         raise HTTPException(404, "Analysis image not found")
     return FileResponse(path, media_type="image/png", headers={"Cache-Control": "private, no-store"})

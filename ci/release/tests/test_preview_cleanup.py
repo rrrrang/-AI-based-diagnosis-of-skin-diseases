@@ -40,7 +40,7 @@ class FakeDocker:
         self.resources["network"][project + "_private"] = {
             "Id": "network-1", "Name": project + "_private", "Labels": dict(labels),
         }
-        for volume in ("db", "photos"):
+        for volume in ("db", "photos", "analysis"):
             name = project + "_" + volume
             self.resources["volume"][name] = {"Name": name, "Labels": dict(labels)}
 
@@ -89,7 +89,7 @@ class FakeDocker:
             for name, item in list(self.resources["container"].items()):
                 if self.labels("container", item).get("com.docker.compose.project") == self.project:
                     del self.resources["container"][name]
-            for name in (self.project + "_db", self.project + "_photos"):
+            for name in (self.project + suffix for suffix in ("_db", "_photos", "_analysis")):
                 self.resources["volume"].pop(name, None)
             self.resources["network"].pop(self.project + "_private", None)
             return result(stdout="Removed isolated preview resources\n")
@@ -177,6 +177,17 @@ class CleanupOwnershipTests(unittest.TestCase):
     def test_unlabelled_network_name_collision_is_refused(self):
         self.fake.resources["network"][self.project + "_private"]["Labels"] = {}
         self.assert_refuses_before_down()
+
+    def test_unlabelled_analysis_volume_collision_is_refused(self):
+        self.fake.resources["volume"][self.project + "_analysis"]["Labels"] = {}
+        self.assert_refuses_before_down()
+
+    def test_analysis_storage_has_asymmetric_access(self):
+        config = preview.compose_for(self.images, self.project)
+        self.assertIn("photos:/data/photos:ro", config["services"]["worker"]["volumes"])
+        self.assertIn("analysis:/data/analysis", config["services"]["worker"]["volumes"])
+        self.assertIn("analysis:/data/analysis:ro", config["services"]["api"]["volumes"])
+        self.assertEqual(set(config["volumes"]), {"db", "photos", "analysis"})
 
     def test_labelled_resource_with_wrong_owner_is_refused(self):
         self.fake.resources["volume"][self.project + "_db"]["Labels"][

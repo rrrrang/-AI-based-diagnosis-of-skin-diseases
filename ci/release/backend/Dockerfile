@@ -2,11 +2,12 @@
 FROM python:3.12-slim-bookworm@sha256:935c3c5b12357a7e10caa9c1e6ca5692344d97cf229832ef584be2cec9fc03df AS api
 ENV PYTHONUTF8=1 PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH=/srv HOME=/tmp \
-    SKINAI_DB_PATH=/data/db/backend.sqlite3 SKINAI_PHOTO_DIR=/data/photos
+    SKINAI_DB_PATH=/data/db/backend.sqlite3 SKINAI_PHOTO_DIR=/data/photos \
+    SKINAI_ANALYSIS_DIR=/data/analysis
 WORKDIR /srv
 RUN groupadd --gid 10001 skinai \
     && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /tmp --shell /usr/sbin/nologin skinai \
-    && mkdir -p /data/db /data/photos \
+    && mkdir -p /data/db /data/photos /data/analysis \
     && chown -R 10001:10001 /data
 COPY ci/release/backend/requirements-api.lock /srv/support/requirements-api.lock
 RUN python -m pip install --no-cache-dir --no-deps -r /srv/support/requirements-api.lock \

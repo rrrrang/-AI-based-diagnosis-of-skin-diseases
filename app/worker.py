@@ -19,17 +19,24 @@ def save_overlay(job, ensemble, photo):
     make = getattr(ensemble, "overlay", None)
     if make is None:
         return False
+    temporary = None
     try:
         overlay = make(photo)
         if not isinstance(overlay, Image.Image):
             return False
         path = overlay_path(job["case_id"], job["id"])
+        path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_name(path.name + ".tmp")
         overlay.save(temporary, format="PNG")
         temporary.replace(path)  # 다 쓴 뒤에 이름을 바꿔서, 반쯤 쓴 파일이 보이지 않게 한다
         return True
     except Exception:
         logging.exception("Overlay failed for job %s", job["id"])
+        if temporary is not None:
+            try:
+                temporary.unlink(missing_ok=True)
+            except OSError:
+                logging.warning("Could not remove incomplete overlay for job %s", job["id"], exc_info=True)
         return False
 
 

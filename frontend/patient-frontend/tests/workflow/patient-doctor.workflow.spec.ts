@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { DoctorWorkflowPage, PatientWorkflowPage } from "./workflow.pages";
 import { PHOTO_SLOT_LABELS } from "../pages/patient-upload.page";
+import { assertGradcam } from "./gradcam.assertions";
 import {
   doctorIdentityFromEnvironment, logoutViaUi, patientIdentityFromIntake, type WorkflowIdentity,
 } from "../support/auth";
@@ -11,6 +12,8 @@ const API = process.env.SKINAI_E2E_API_URL || "http://127.0.0.1:18165";
 const MODEL_KEYS = ["mobilenet", "resnet50", "yolo"];
 const CANDIDATE_KEYS = ["psoriasis", "atopic_dermatitis", "acne", "normal", "rosacea", "seborrheic_dermatitis"];
 const CANDIDATE_LABELS = ["건선", "아토피", "여드름", "정상", "주사", "지루"];
+const CANDIDATE_NAMES = Object.fromEntries(CANDIDATE_KEYS.map((key, index) => [key, CANDIDATE_LABELS[index]]));
+const MODEL_LABELS = ["MobileNetV3", "ResNet50", "YOLO11n"];
 const REVIEW_KEYS = ["diagnosis", "opinion", "visitRequired", "visitMessage"];
 const PRIVATE_RESULT_KEYS = [
   "analysis", "photoIndices", "photos", "predictions", "analysisPhoto",
@@ -24,9 +27,11 @@ function requiredEnv(name: string) {
 }
 
 type Analysis = {
+  overlayAvailable?: boolean;
   decision: string;
   candidate: string | null;
   votes: Record<string, number>;
+  thresholds: Record<string, number>;
   models: Record<string, { candidate: string; score: number } | null>;
   modelVersions: Record<string, string>;
   analyzedPhotoIndex: number;
@@ -189,10 +194,29 @@ for (const photoCount of [2, 3] as const) {
         await expect.poll(() => photo.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
       }
       await expect(doctorPage.getByRole("img", { name: "AI 분석 원본", exact: true })).toBeVisible();
+      const gradcamEvidence = await assertGradcam({ doctorPage, caseId, analysis, doctorSession, patientSession });
       await expect(doctorPage.getByRole("button", { name: "시연용 예측 그래프 표시" })).toHaveCount(0);
       const decisionText = analysis.decision === "deferred" ? "판단 보류" :
-        analysis.decision === "undetermined" ? "판단 불가" : `검토 후보 · ${analysis.candidate}`;
-      await expect(doctorPage.getByText(decisionText, { exact: true })).toBeVisible();
+        analysis.decision === "undetermined" ? "판단 불가" :
+          analysis.candidate ? CANDIDATE_NAMES[analysis.candidate] : "분석 후보 없음";
+      const ensembleSection = doctorPage.locator(".doctor-ensemble-summary");
+      await expect(ensembleSection.getByRole("heading", { name: "앙상블 판정", exact: true })).toBeVisible();
+      await expect(ensembleSection.locator(".doctor-ensemble-decision")).toHaveText(decisionText);
+      await expect(ensembleSection.locator(".doctor-ensemble-decision")).toBeVisible();
+      await expect(ensembleSection.locator(".doctor-model-score-row")).toHaveCount(3);
+      for (const [index, key] of MODEL_KEYS.entries()) {
+        const row = ensembleSection.locator(".doctor-model-score-row").filter({
+          has: doctorPage.getByText(MODEL_LABELS[index], { exact: true }),
+        });
+        const prediction = analysis.models[key];
+        await expect(row).toBeVisible();
+        await expect(row.locator("strong")).toHaveText(prediction ? CANDIDATE_NAMES[prediction.candidate] : "후보 없음");
+        const scoreText = prediction ? `${(prediction.score * 100).toFixed(1)}%` : "—";
+        await expect(row.getByText(scoreText, { exact: true })).toBeVisible();
+        expect(Number.isFinite(analysis.thresholds[key]), `${key} must have its actual voting threshold.`).toBe(true);
+        await expect(row.getByText("투표 기준 미달", { exact: true }))
+          .toHaveCount(prediction && prediction.score < analysis.thresholds[key] ? 1 : 0);
+      }
 
       await doctor.fillReview(diagnosis, opinion);
       await doctor.saveDraft(caseId);
@@ -257,6 +281,7 @@ for (const photoCount of [2, 3] as const) {
       // Deliberately omit tokens, photo paths, image data, and full clinical payloads.
       writeFileSync(path.join(output, `workflow-${photoCount}-photos.json`), JSON.stringify({
         status: "passed",
+        verification_scope: "full-workflow",
         case_id: caseId,
         photo_count: photoCount,
         intake_http: 201,
@@ -265,12 +290,16 @@ for (const photoCount of [2, 3] as const) {
         model_keys: MODEL_KEYS,
         model_versions: analysis.modelVersions,
         actual_model_decision: analysis.decision,
+        gradcam: gradcamEvidence.gradcam,
         checked: {
+          ...gradcamEvidence.checked,
           actual_patient_and_doctor_ui: true,
           real_login_sessions_used_for_api: true,
           patient_reservations_in_new_browser: true,
           doctor_and_patient_logout_revokes_session: true,
           three_real_model_results: true,
+          ensemble_decision_visible_in_doctor_ui: true,
+          three_model_rows_match_api: true,
           yolo_six_class_response_checked: true,
           doctor_photo_access: true,
           draft_hidden_from_patient_api_and_ui: true,

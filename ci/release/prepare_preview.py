@@ -39,13 +39,15 @@ def compose_for(images, project):
                     'security_opt': ['no-new-privileges:true'],
                     'tmpfs': ['/tmp:rw,nosuid,nodev,size=134217728,mode=1777'],
                     'labels': {'com.skinai.preview.owner': OWNER}}
-    common = {**restrictions, 'environment': {'SKINAI_DB_PATH': '/data/db/backend.sqlite3', 'SKINAI_PHOTO_DIR': '/data/photos'}}
+    common = {**restrictions, 'environment': {'SKINAI_DB_PATH': '/data/db/backend.sqlite3',
+              'SKINAI_PHOTO_DIR': '/data/photos', 'SKINAI_ANALYSIS_DIR': '/data/analysis'}}
     api = {**common, 'image': images['api'], 'pull_policy': 'never',
            'env_file': [{'path': '.env.preview', 'required': False}],
-           'ports': ['127.0.0.1:18165:8000'], 'volumes': ['db:/data/db', 'photos:/data/photos'],
+           'ports': ['127.0.0.1:18165:8000'],
+           'volumes': ['db:/data/db', 'photos:/data/photos', 'analysis:/data/analysis:ro'],
            'networks': ['private'], 'mem_limit': '512m', 'cpus': 1}
     worker = {**common, 'image': images['worker'], 'pull_policy': 'never',
-              'volumes': ['db:/data/db', 'photos:/data/photos:ro'], 'network_mode': 'none',
+              'volumes': ['db:/data/db', 'photos:/data/photos:ro', 'analysis:/data/analysis'], 'network_mode': 'none',
               'depends_on': {'api': {'condition': 'service_healthy'}}, 'mem_limit': '4g', 'cpus': 2, 'pids_limit': 128}
     services = {'api': api, 'worker': worker}
     for name, port in [('patient-ui', 18166), ('doctor-ui', 18167)]:
@@ -54,7 +56,7 @@ def compose_for(images, project):
                           'depends_on': {'api': {'condition': 'service_healthy'}}, 'mem_limit': '128m', 'cpus': 0.5}
     return {'name': project, 'services': services,
             'networks': {'private': {'labels': {'com.skinai.preview.owner': OWNER}}},
-            'volumes': {name: {'labels': {'com.skinai.preview.owner': OWNER}} for name in ['db', 'photos']}}
+            'volumes': {name: {'labels': {'com.skinai.preview.owner': OWNER}} for name in ['db', 'photos', 'analysis']}}
 
 
 def cleanup(output, docker):
@@ -89,7 +91,7 @@ def cleanup(output, docker):
     # Compose addresses declared volumes by name, including resources without
     # project labels. Inspect those names explicitly before any removal.
     expected_names = {'network': [project + '_private'],
-                      'volume': [project + '_db', project + '_photos']}
+                      'volume': [project + suffix for suffix in ('_db', '_photos', '_analysis')]}
     def inspect_named(kind, name):
         # Missing-resource error text differs across Docker versions. Enumerate
         # exact names first; a Docker error is never treated as absence.
@@ -123,7 +125,7 @@ def cleanup(output, docker):
                 service = labels.get('com.docker.compose.service')
                 if service not in SERVICES or name != f'{project}-{service}-1':
                     raise RuntimeError('Unexpected preview container')
-            elif kind == 'volume' and name not in {project + '_db', project + '_photos'}:
+            elif kind == 'volume' and name not in {project + suffix for suffix in ('_db', '_photos', '_analysis')}:
                 raise RuntimeError('Unexpected preview volume')
             elif kind == 'network' and name != project + '_private':
                 raise RuntimeError('Unexpected preview network')

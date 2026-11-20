@@ -9,13 +9,28 @@ import time
 import unittest
 from unittest.mock import patch
 
-from run_workflow import cleanup_run, run_process, sanitize_text, write_state
+from run_workflow import cleanup_run, run_process, sanitize_text, write_state, test_addresses
 
 
 PROJECT = "skinai-ui-workflow-a1b2c3d4"
 CONTAINER_ID = "a" * 64
 NETWORK_ID = "b" * 64
 TOKEN = "unit-test-ephemeral-token"
+
+
+class TestAddressTests(unittest.TestCase):
+    def test_isolated_ports_keep_all_addresses_on_loopback(self):
+        self.assertEqual(test_addresses(18365, 18366, 18367), {
+            "SKINAI_E2E_API_URL": "http://127.0.0.1:18365",
+            "SKINAI_E2E_PATIENT_URL": "http://127.0.0.1:18366",
+            "SKINAI_E2E_DOCTOR_URL": "http://127.0.0.1:18367",
+        })
+
+    def test_conflicting_or_invalid_ports_are_rejected(self):
+        for ports in ((18365, 18365, 18367), (0, 18366, 18367),
+                      (65536, 18366, 18367), (True, 18366, 18367)):
+            with self.subTest(ports=ports), self.assertRaises(ValueError):
+                test_addresses(*ports)
 
 
 class FakeDocker:

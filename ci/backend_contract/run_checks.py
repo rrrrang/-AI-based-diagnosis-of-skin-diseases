@@ -109,7 +109,7 @@ def main():
     env.update(PYTHONUTF8="1", PYTHONIOENCODING="utf-8", PYTHONDONTWRITEBYTECODE="1",
                TEMP=str(temp), TMP=str(temp), TMPDIR=str(temp))
     # Never select a shared database or inherit another application's module path.
-    for key in ("SKINAI_DB_PATH", "SKINAI_PHOTO_DIR", "SKINAI_DEMO_DOCTOR_TOKENS",
+    for key in ("SKINAI_DB_PATH", "SKINAI_PHOTO_DIR", "SKINAI_ANALYSIS_DIR", "SKINAI_DEMO_DOCTOR_TOKENS",
                 "SKINAI_DOCTOR_ACCOUNTS", "PYTHONPATH", "PYTHONHOME"):
         env.pop(key, None)
     commands = [
