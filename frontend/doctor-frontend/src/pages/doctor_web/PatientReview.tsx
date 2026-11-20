@@ -7,7 +7,7 @@ import {
  * PatientReview.tsx
  *
  * 왼쪽: 환자가 제출한 자료
- * 오른쪽: AI 분석 이미지 및 질환별 예측 점수
+ * 오른쪽: AI 분석 이미지, 앙상블 판정 및 모델별 후보 점수
  * 하단: 의사 최종 소견 작성
  */
 
@@ -17,15 +17,11 @@ import {
   Camera,
   CheckCircle2,
   ClipboardList,
-  Info,
   ScanFace,
   Stethoscope,
 } from "lucide-react";
 
-import type {
-  DoctorCase,
-  Prediction,
-} from "../../types/doctorCase";
+import type { DoctorCase } from "../../types/doctorCase";
 
 import {
   saveDoctorCase,
@@ -52,13 +48,6 @@ const PHOTO_LABELS = [
   "전체 부위",
   "상세 부위 1",
   "상세 부위 2",
-];
-
-// 실제 AI 결과가 아닌 시연용 점수
-const DEMO_PREDICTIONS: Prediction[] = [
-  { label: "질환 후보 A", score: 68 },
-  { label: "질환 후보 B", score: 23 },
-  { label: "기타 후보", score: 9 },
 ];
 
 // 실제 AI 모델 분석 대상 6개 클래스
@@ -122,112 +111,6 @@ function PreviewPhoto({
       </div>
 
       <span>{label}</span>
-    </div>
-  );
-}
-
-/* ==========================================
-   3. 세로 막대그래프 컴포넌트
-========================================== */
-
-function VerticalPredictionChart({
-  data,
-  isDemo,
-}: {
-  data: Prediction[];
-  isDemo: boolean;
-}) {
-  // 최대 6개 후보 표시
-  // 높은 점수 순서대로 정렬
-  const entries = [...data]
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 6);
-
-  return (
-    <div className="doctor-chart-section">
-      <div className="doctor-chart-header">
-      <h3>
-        {isDemo
-          ? "질환별 AI 예측 점수"
-          : "질환별 AI 예측 점수"}
-      </h3>
-
-        {isDemo && (
-          <span className="doctor-status is-demo">
-            시연용 수치
-          </span>
-        )}
-      </div>
-
-      <div className="doctor-chart">
-
-        {/* Y축: 0~100 */}
-        <div className="doctor-chart-axis">
-          <span>100</span>
-          <span>75</span>
-          <span>50</span>
-          <span>25</span>
-          <span>0</span>
-        </div>
-
-        {/* 그래프 영역 */}
-        <div className="doctor-chart-plot">
-
-          {/* 가로 기준선 */}
-          <div className="doctor-chart-gridlines">
-            <i />
-            <i />
-            <i />
-            <i />
-            <i />
-          </div>
-
-          {/* 질환별 세로 막대 */}
-          <div className="doctor-chart-columns">
-            {entries.map((item, index) => {
-              const score = Math.max(
-                0,
-                Math.min(100, item.score)
-              );
-
-              return (
-                <div
-                  key={`${item.label}-${index}`}
-                  className="doctor-chart-column"
-                >
-                  <div className="doctor-chart-bar-area">
-                    <div
-                      className={`doctor-chart-bar ${
-                        index === 0
-                          ? "is-primary"
-                          : ""
-                      }`}
-                      style={{
-                        height: `${score}%`,
-                        minHeight: 0,
-                      }}
-                      >
-                        <span>{item.score.toFixed(1)}%</span>
-                      </div>
-                  </div>
-
-                  <div
-                    className="doctor-chart-name"
-                    title={item.label}
-                  >
-                    {item.label}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      <p className="doctor-hint">
-        AI 예측 점수는 확정 진단이나
-        실제 진단 정확도를 의미하지 않습니다.
-      </p>
     </div>
   );
 }
@@ -310,26 +193,6 @@ export default function PatientReview({
   const resultAvailable =
     patient?.aiState === "완료" ||
     patient?.aiState === "시연 결과";
-
-    // 실제 AI 모델에서 반환한 전체 예측 점수
-  const scores = patient?.analysis?.resnetClassScores;
-
-  // 질환별 세로 막대그래프 데이터
-  const classPredictions: Prediction[] =
-    scores &&
-    Object.keys(CLASS_LABELS).every(
-      (code) =>
-        Number.isFinite(scores[code]) &&
-        scores[code] >= 0 &&
-        scores[code] <= 1
-    )
-      ? Object.entries(CLASS_LABELS).map(
-          ([code, label]) => ({
-            label,
-            score: scores[code] * 100,
-          })
-        )
-      : [];
 
   const isFinal =
     patient?.reviewState === "결과 전달 완료";
@@ -461,49 +324,8 @@ export default function PatientReview({
     }
   };
 
-  /* ========================================
-     8. AI 예측 그래프 시연
-  ======================================== */
-
-  const applyDemo = async () => {
-    if (!patient || patient.aiState !== "대기") {
-      return;
-    }
-
-    setSaving(true);
-    setSaveError("");
-
-    try {
-      await saveDoctorCase({
-        ...patient,
-
-        // 실제 모델 결과가 아닌 시연 결과
-        aiState: "시연 결과",
-        predictions: DEMO_PREDICTIONS,
-
-        // 상세 부위 사진을 시연용 분석 원본으로 사용
-        analysisPhoto: patient.photos[1] ?? patient.photos[2] ?? null,
-
-        // 실제 마스킹 이미지가 없어 비워 둠
-        maskPhoto: null,
-
-        updatedAt: new Date().toISOString(),
-      });
-
-      await onSaved();
-    } catch (error) {
-      setSaveError(
-        error instanceof Error
-          ? error.message
-          : "시연 결과 표시 실패"
-      );
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  /* ========================================
-     9. 화면 표시
+/* ========================================
+     8. 화면 표시
   ======================================== */
 
   return (
@@ -726,78 +548,6 @@ export default function PatientReview({
                       );
                     })}
                   </div>
-                </div>
-              )}
-
-              {/* 질환별 세로 막대그래프 */}
-              {apiEnabled ? (
-                patient.aiState === "완료" &&
-                classPredictions.length === 6 ? (
-                  <VerticalPredictionChart
-                    data={classPredictions}
-                    isDemo={false}
-                  />
-                ) : (
-                  <div className="doctor-analysis-pending">
-                    <Info size={20} />
-
-                    <div>
-                      <strong>
-                        {patient.aiState === "실패"
-                          ? "AI 분석 실패"
-                          : patient.aiState === "완료"
-                            ? "질환별 예측 점수가 없습니다."
-                            : "AI 분석 결과 대기 중"}
-                      </strong>
-
-                      <p>
-                        {patient.aiState === "실패"
-                          ? "AI 분석을 다시 요청해 주세요."
-                          : patient.aiState === "완료"
-                            ? "업데이트된 AI 워커로 새 분석을 진행해 주세요."
-                            : "분석 완료 후 질환별 예측 점수가 표시됩니다."}
-                      </p>
-                    </div>
-                  </div>
-                )
-              ) : resultAvailable &&
-                patient.predictions.length > 0 ? (
-                <VerticalPredictionChart
-                  data={patient.predictions}
-                  isDemo={
-                    patient.aiState === "시연 결과"
-                  }
-                />
-              ) : (
-                <div className="doctor-analysis-pending">
-                  <Info size={20} />
-
-                  <div>
-                    <strong>
-                      AI 분석 결과가 아직 없습니다.
-                    </strong>
-
-                    <p>
-                      실제 모델 연결 후
-                      AI 분석 이미지, 마스킹 이미지,
-                      질환별 세로 그래프가 표시됩니다.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-
-
-              {/* AI 미연결 시 테스트 버튼 */}
-              {!apiEnabled && patient.aiState === "대기" && (
-                <div className="doctor-demo-action">
-                  <button
-                    type="button"
-                    disabled={saving}
-                    onClick={() => void applyDemo()}
-                  >
-                    시연용 예측 그래프 표시
-                  </button>
                 </div>
               )}
 
