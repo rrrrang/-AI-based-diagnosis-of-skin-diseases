@@ -1080,3 +1080,56 @@
 .doctor-auth-overlay {position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;padding:20px;}
 .doctor-auth-dialog {width:min(100%,380px);display:flex;flex-direction:column;align-items:stretch;margin:0;box-sizing:border-box;}
 .doctor-auth-dialog input {width:100%;box-sizing:border-box;}
+
+/* 실제 AI 분석: 앙상블 판정 및 모델별 후보 점수 */
+.doctor-ensemble-summary {
+  margin-top: 22px;
+  padding: 16px;
+  border: 1px solid #e2ebe5;
+  border-radius: 10px;
+  background: #f7faf8;
+}
+
+.doctor-ensemble-summary h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: var(--primary-dark);
+}
+
+.doctor-ensemble-summary h3:not(:first-child) {
+  margin-top: 20px;
+}
+
+.doctor-ensemble-decision {
+  display: block;
+  font-size: 17px;
+  color: var(--primary-dark);
+}
+
+.doctor-model-score-list {
+  display: grid;
+  gap: 8px;
+}
+
+.doctor-model-score-row {
+  display: grid;
+  grid-template-columns: minmax(88px, 1fr) minmax(0, 1.2fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  background: #ffffff;
+  border: 1px solid #e8eee9;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.doctor-model-score-row strong {
+  color: var(--primary-dark);
+  overflow-wrap: anywhere;
+}
+
+.doctor-model-score-row small {
+  grid-column: 1 / -1;
+  color: #a06538;
+}
